@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply text-white bg-gradient-to-b from-[#6394db] to-[#4f77e1] from-10% to-90% bg-no-repeat;
+}
