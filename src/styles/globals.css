@@ -3,5 +3,61 @@
 @tailwind utilities;
 
 body {
-  @apply text-white bg-gradient-to-b from-[#6394db] to-[#4f77e1] from-10% to-90% bg-no-repeat;
+  @apply text-white bg-gradient-to-b from-[#020024] to-[#345D9D] from-10% to-90% bg-no-repeat;
+}
+
+.container {
+  @apply max-w-[1200px];
+}
+
+.bg-main {
+  @apply bg-white/10 backdrop-blur-sm shadow-lg shadow-black/30;
+}
+
+.pagination {
+  gap: 3px;
+  display: flex;
+  margin: 20px;
+  justify-content: center;
+}
+
+.pagination li {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 2px;
+  cursor: pointer;
+  font-weight: bold;
+  @apply bg-main rounded-lg;
+}
+
+.pagination li a {
+  line-height: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+.pagination li.break {
+  border: none;
+}
+
+.pagination li.selected {
+  background-color: #91d8ff;
+}
+
+.dark .pagination li.selected {
+  background-color: #5a5fff;
+}
+
+.ReactModal__Overlay {
+  background-color: rgba(0,0,0,0.4) !important;
+}
+
+.ReactModal__Content {
+  @apply bg-opacity-[30!important] backdrop-blur-2xl shadow-lg shadow-black max-w-[700px] w-full;
+  background-color: #ffffff1f!important;
+  border: none!important;
+  border-radius: 15px!important;
 }

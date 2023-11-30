@@ -6,7 +6,7 @@ export default function Layout({ children }) {
   return (
     <>
       <Header />
-      <div className="container mx-auto min-h-[calc(100vh-180px)] ">
+      <div className="container mx-auto min-h-[calc(100vh-190px)] ">
         {children}
       </div>
       <Footer />
