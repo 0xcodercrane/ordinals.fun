@@ -12,8 +12,11 @@ import BuyModal from "@/components/buyModal";
 import ActivityRow from '@/components/activityRow';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import FixedBar from '@/components/fixedbar';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Home() {
+  const count = useSelector((state) => state.counter.value)
+  const dispatch = useDispatch()
   const [itemOffset, setItemOffset] = useState(0);
   const [activityItemOffset, setActivityItemOffset] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,6 +25,10 @@ export default function Home() {
   const [isBuyMode, setIsBuyMode] = useState(false);
   const [toBuyLists, setToBuyLists] = useState([]);
   const [showFixedBar, setShowFixedBar] = useState(false);
+
+  const example = () => {
+    dispatch(increment())
+  }
 
   const openBuyModal = () => {
     setModalOpen(true);
