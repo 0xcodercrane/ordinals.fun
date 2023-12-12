@@ -3,14 +3,14 @@ import Head from "next/head";
 import React from "react";
 import { FaPlay, FaPause, FaBackward, FaForward } from "react-icons/fa";
 import { SiBitcoinsv } from "react-icons/si";
-import MenuBar from "@/components/Menu";
-import Wave from "@/components/Wave";
+import MenuBar from "@/components/sections/Menu";
+import Wave from "@/components/UI/Wave";
 import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
 import "@/styles/Home.module.css";
 import { AudioContext } from "@/context/audio";
 import Link from "next/link";
-import Layout from "@/components/Layout";
+import Layout from "@/components/sections/Layout";
 
 export default function Home() {
   const audioContext = useContext(AudioContext);

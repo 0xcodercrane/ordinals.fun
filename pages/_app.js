@@ -7,16 +7,11 @@ import Head from "next/head";
 import Script from "next/script";
 import WalletContext from "@/context/wallet";
 import AudioContext from "@/context/audio";
-import InscribeBitmapContext from "@/context/inscribeBitmap";
+import InscribeLiteMapContext from "@/context/inscribeLiteMap";
 import InscribeContext from "@/context/inscribe";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import { store } from "@/store";
-import { PersistGate } from "redux-persist/integration/react";
-import { persistStore } from "redux-persist";
-import { createWrapper } from "next-redux-wrapper";
-
-let persistor = persistStore(store);
 
 function App({ Component, pageProps }) {
   return (
@@ -43,25 +38,20 @@ function App({ Component, pageProps }) {
       <Script src="/js/lib/qrcode.js"></Script>
 
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <InscribeBitmapContext>
-            <WalletContext>
-              <AudioContext>
-                <InscribeContext>
-                  <NextNProgress color="#f0932b" />
-                  <Component {...pageProps} />
-                  <ToastContainer />
-                </InscribeContext>
-              </AudioContext>
-            </WalletContext>
-          </InscribeBitmapContext>
-        </PersistGate>
+        <InscribeLiteMapContext>
+          <WalletContext>
+            <AudioContext>
+              <InscribeContext>
+                <NextNProgress color="#f0932b" />
+                <Component {...pageProps} />
+                <ToastContainer />
+              </InscribeContext>
+            </AudioContext>
+          </WalletContext>
+        </InscribeLiteMapContext>
       </Provider>
     </>
   );
 }
 
-const makestore = () => store;
-const wrapper = createWrapper(makestore);
-
-export default wrapper.withRedux(App);
+export default App;

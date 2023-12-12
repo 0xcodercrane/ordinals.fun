@@ -17,9 +17,9 @@ import {
 } from 'firebase/database'
 import { db } from '@/services/firebase'
 
-export const InscribeBitmapContext = React.createContext()
+export const InscribeLiteMapContext = React.createContext()
 
-const IncribeBitmap = (props) => {
+const IncribeLiteMap = (props) => {
   function saveInscriptions(data) {
     const dbRef = ref(db, '/inscriptions')
     push(dbRef, data)
@@ -666,10 +666,10 @@ const IncribeBitmap = (props) => {
   }
 
   return (
-    <InscribeBitmapContext.Provider value={{ inscribeOrder }}>
+    <InscribeLiteMapContext.Provider value={{ inscribeOrder }}>
       {props.children}
-    </InscribeBitmapContext.Provider>
+    </InscribeLiteMapContext.Provider>
   )
 }
 
-export default IncribeBitmap
+export default IncribeLiteMap

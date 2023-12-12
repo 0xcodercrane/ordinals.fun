@@ -5,7 +5,7 @@ import { FaTimes } from 'react-icons/fa'
 const InscriptionList = ({ text, audio, cancelBlock }) => {
   return (
     <div className='flex relative justify-between w-full rounded px-4 py-2 m-1 items-center bg-gray-100 drop-shadow hover:bg-gray-300 transition ease-in-out'>
-      <div className='text-gray-700 font-extralight'>{text}.bitBitmap</div>
+      <div className='text-gray-700 font-extralight'>{text}.LiteMap</div>
       <div className='text-gray-700 text-sm'>
         {audio ? (
           <>

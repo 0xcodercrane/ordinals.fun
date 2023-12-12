@@ -34,7 +34,7 @@
 .inscribeForm input:focus {
   transition: all;
   transition-duration: 0.3s;
-  border: 1px solid #f0932b;
+  border: 1px solid #ffffff;
 }
 .inscribeForm div {
   border: 1px solid transparent;
@@ -42,7 +42,7 @@
 .inscribeForm div:hover {
   transition: all;
   transition-duration: 0.3s;
-  border: 1px solid #f0932b;
+  border: 1px solid #ffffff;
 }
 .inscribeDropzoneIcon {
   font-size: 42px;

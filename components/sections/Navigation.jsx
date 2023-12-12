@@ -10,7 +10,7 @@ export default function Navigation() {
     <Nav className="links-block">
       <div className="lg:flex lg:justify-center lg:items-center hidden">
         <Link className="font-semibold text-white" href="/">
-          Bitmap
+          LiteMap
         </Link>
       </div>
       <div className="lg:flex lg:justify-center lg:items-center hidden">
@@ -43,7 +43,7 @@ export default function Navigation() {
                 className="font-semibold text-white hover:text-white "
                 href="/"
               >
-                Bitmap
+                LiteMap
               </Link>
             </li>
             <li className="py-2 px-3 flex hover:bg-gray-400  hover:text-white transition ease-out cursor-pointer">

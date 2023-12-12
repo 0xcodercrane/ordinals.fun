@@ -112,7 +112,7 @@
 
 html,
 body {
-  background: radial-gradient(ellipse at bottom, #4b3411e0 0%, #140800 100%);
+  background: radial-gradient(ellipse at bottom, #11304ee0 0%, #000811 100%);
   max-width: 100vw;
   overflow-x: hidden;
   font-family: NippoBold, "opentype";
@@ -135,7 +135,7 @@ a {
   }
 }
 
-/* Bitmap Page CSS */
+/* LiteMap Page CSS */
 
 .main {
   display: flex;
@@ -601,7 +601,7 @@ section > .marquee {
   bottom: 0px;
   height: 3px;
   width: 1px;
-  background: #f0932b;
+  background: #2b49f0;
   animation: sound 0ms -800ms linear infinite alternate;
   transform: translateY(50%);
   display: flex;
@@ -630,7 +630,7 @@ section > .marquee {
 }
 
 .links-block a:hover {
-  color: #f0932b;
+  color: #6ac5e0;
 }
 
 .loading {
@@ -673,7 +673,7 @@ section > .marquee {
     #333 !important;
 }
 .range-slider__range {
-  background: #ffbf00 !important;
+  background: #00aeff !important;
   transition: height 0.3s !important;
   height: 25px !important;
   width: 8px !important;
@@ -711,7 +711,7 @@ section > .marquee {
   }
 }
 
-.snow_effect {
+.main_btn {
   @apply backdrop-blur-xl;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -719,13 +719,13 @@ section > .marquee {
   text-decoration: none;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
-  background: #5e440c6e;
+  background: #0c525e6e;
   outline: none;
   border-radius: 15px;
-  border: 1px solid #4c2e006e;
+  border: 1px solid #00364c6e;
   box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.466),
-    /* highlight */ inset 0 0 6px #a26d27a9,
-    /* inner glow */ inset 0 80px 80px -40px #ac71239d,
+    /* highlight */ inset 0 0 6px #2785a2a9,
+    /* inner glow */ inset 0 80px 80px -40px #236aac9d,
     /* gradient */ 1px 1px 3px rgba(0, 0, 0, 0.589); /* shadow */
 
   position: relative;
@@ -736,7 +736,7 @@ section > .marquee {
   transition: 500ms linear;
 }
 
-.snow_effect::before {
+.main_btn::before {
   content: "";
   display: block;
   position: absolute;
@@ -744,4 +744,27 @@ section > .marquee {
   left: -3px;
   right: 0;
   height: 23px;
+}
+
+.main_btn:hover {
+  background: #156ca6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75), 0 0 40px #fff;
+  box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.25),
+    /* highlight */ inset 0 0 6px #2c94da,
+    /* inner glow */ inset 0 80px 80px -40px #309edd,
+    /* gradient */ 1px 1px 3px rgba(0, 0, 0, 0.75); /* shadow */
+}
+.main_btn:focus {
+  outline: none; /*FF*/
+}
+.main_btn:active {
+  box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.25),
+    /* highlight */ inset 0 0 6px #2c86da,
+    /* inner glow */ inset 0 80px 80px -40px #307bdd,
+    /* gradient */ 0px 1px 0px rgba(255, 255, 255, 0.25); /* shadow */
+
+  -webkit-transition: 50ms linear;
+  -moz-transition: 50ms linear;
+  -o-transition: 50ms linear;
+  transition: 50ms linear;
 }

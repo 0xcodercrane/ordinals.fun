@@ -27,7 +27,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { BsFillTriangleFill } from "react-icons/bs";
-import Layout from "@/components/Layout";
+import Layout from "@/components/sections/Layout";
 import { Spinner } from "react-bootstrap";
 import RangeSlider from "react-range-slider-input";
 
@@ -443,7 +443,7 @@ export default function Inscribe() {
                 <div>
                   <div className='flex'>
                     <BsFillTriangleFill className='mt-1'/>
-                    <p className='ml-2'>{modalInscription.inscription.number}.bitBitmap</p>
+                    <p className='ml-2'>{modalInscription.inscription.number}.LiteMap</p>
                   </div>
                   {modalInscription.inscription.totalScore}
                 </div>

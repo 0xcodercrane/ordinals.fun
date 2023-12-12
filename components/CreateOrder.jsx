@@ -3,7 +3,7 @@ import Spinner from "react-bootstrap/Spinner";
 import styles from "@/styles/inscribe.module.css";
 import { InscribeContext } from "@/context/inscribe";
 import InscriptionList from "@/components/InscriptionList";
-import FeeRecommend from "@/components/feerecommend";
+import FeeRecommend from "@/components/UI/feerecommend";
 import { FaArrowLeft, FaCopy } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -48,7 +48,7 @@ const CreateOrder = () => {
         </div>
         <div className="py-2">
           <h2 className="sm:text-4xl text-center text-2xl text-gray-800">
-            Inscribe bitBitmap
+            Inscribe LiteMap
           </h2>
         </div>
         <div className="flex flex-col items-center rounded w-full h-[200px] bg-gray-200 border-b border-t border-l border-r px-3 py-2 cursor-pointer hover:border-dashed border-1.5 hover:border-orange-400 overflow-y-auto overflow-x-hidden scroll-smooth	transition ease-in-out duration-150">

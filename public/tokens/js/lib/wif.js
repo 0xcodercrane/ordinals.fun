@@ -36452,7 +36452,7 @@ module.exports=[
     "race",
     "rack",
     "radar",
-    "Bitmap",
+    "LiteMap",
     "rail",
     "rain",
     "raise",
