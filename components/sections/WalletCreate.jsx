@@ -1,12 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { booted } from "@/store/slices/account";
 import { WalletContext } from "../../context/wallet";
 
 export default function WalletCreate({ setType }) {
   const walletContext = useContext(WalletContext);
-  const account = useSelector((state) => state.account);
-  const dispatch = useDispatch();
 
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -18,7 +14,7 @@ export default function WalletCreate({ setType }) {
     entropy: 128,
     hdPath: "",
     passphrase: "",
-    addressType: 0,
+    addressType: 1,
     step1Completed: true,
     tabType: "STEP1",
     restoreWalletType: 0,
@@ -33,7 +29,6 @@ export default function WalletCreate({ setType }) {
   const btnClick = async () => {
     try {
       const encryptBooted = walletContext.Boot(password);
-      // dispatch(booted(encryptBooted));
       const mnemonic = await walletContext.generateMnemonic(
         contextData.entropy
       );

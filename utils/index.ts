@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-
+import * as bitcoin from "bitcoinjs-lib";
 export * from "./hooks";
 export * from "./WalletContext";
 
@@ -179,4 +179,56 @@ export function satoshisToAmount(val: number) {
 export function amountToSatoshis(val: any) {
   const num = new BigNumber(val);
   return num.multipliedBy(100000000).toNumber();
+}
+
+export function toPsbtNetwork() {
+  return {
+    messagePrefix: "\x19Litecoin Signed Message:\n",
+    bech32: "ltc",
+    bip32: {
+      public: 0x019da462,
+      private: 0x019d9cfe,
+    },
+    pubKeyHash: 0x30,
+    scriptHash: 0x32,
+    wif: 0xb0,
+  };
+}
+
+export function publicKeyToAddress(publicKey, type) {
+  const network = toPsbtNetwork();
+  if (!publicKey) return "";
+  const pubkey = Buffer.from(publicKey, "hex");
+  if (type === 0) {
+    const { address } = bitcoin.payments.p2pkh({
+      pubkey,
+      network,
+    });
+    return address || "";
+  } else if (type === 1 || 4) {
+    const { address } = bitcoin.payments.p2wpkh({
+      pubkey,
+      network,
+    });
+    return address || "";
+  } else if (type === 2 || type === 5) {
+    const { address } = bitcoin.payments.p2tr({
+      internalPubkey: pubkey.slice(1, 33),
+      network,
+    });
+    return address || "";
+  } else if (type === 3) {
+    const data = bitcoin.payments.p2wpkh({
+      pubkey,
+      network,
+    });
+    const { address } = bitcoin.payments.p2sh({
+      pubkey,
+      network,
+      redeem: data,
+    });
+    return address || "";
+  } else {
+    return "";
+  }
 }

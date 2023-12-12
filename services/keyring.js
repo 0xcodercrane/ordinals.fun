@@ -11,6 +11,8 @@ const { ObservableStore } = require("@metamask/obs-store");
 const { HdKeyring } = require("@unisat/bitcoin-hd-keyring");
 const { SimpleKeyring } = require("@unisat/bitcoin-simple-keyring");
 
+const { publicKeyToAddress } = require("./../utils");
+
 const preference = require("./preference");
 const { DisplayKeyring } = require("./display");
 
@@ -154,7 +156,7 @@ class KeyringService extends EventEmitter {
     }
 
     return await this.encryptor.decrypt(
-      this.password,
+      this.password
       // this.memStore.getState().preMnemonics
     );
   };
@@ -453,6 +455,39 @@ class KeyringService extends EventEmitter {
       addrs = addrs.concat(accounts);
     }
     return addrs;
+  };
+
+  displayedKeyringToWalletKeyring = (
+    displayedKeyring,
+    index,
+  ) => {
+    const addressType = displayedKeyring.addressType;
+    const key = "keyring_" + index;
+    const type = displayedKeyring.type;
+    const accounts = [];
+    for (let j = 0; j < displayedKeyring.accounts.length; j++) {
+      const { pubkey } = displayedKeyring.accounts[j];
+      const address = publicKeyToAddress(pubkey, addressType);
+      const accountKey = key + "#" + j;
+      accounts.push({
+        type,
+        pubkey,
+        address,
+        index: j,
+        key: accountKey,
+      });
+    }
+    const hdPath = type === displayedKeyring.keyring.hdPath;
+
+    const keyring = {
+      index,
+      key,
+      type,
+      addressType,
+      accounts,
+      hdPath,
+    };
+    return keyring;
   };
 
   getKeyringForAccount = async (

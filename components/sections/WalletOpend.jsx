@@ -4,14 +4,10 @@ import React, { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaArrowRight, FaCopy } from "react-icons/fa";
-import { useSelector } from "react-redux";
 
 export default function WalletOpend({ setType }) {
-  const account = useSelector(state =>  state)
 
   const [listType, setListType] = useState(false);
-
-  console.log('account', account)
 
   return (
     <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
@@ -53,6 +49,7 @@ export default function WalletOpend({ setType }) {
                 width={40}
                 height={60}
                 className="rounded-md"
+                alt=""
               />
               <p>LiteMaps</p>
             </div>

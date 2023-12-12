@@ -10,8 +10,6 @@ import AudioContext from "@/context/audio";
 import InscribeLiteMapContext from "@/context/inscribeLiteMap";
 import InscribeContext from "@/context/inscribe";
 import { ToastContainer } from "react-toastify";
-import { Provider } from "react-redux";
-import { store } from "@/store";
 
 function App({ Component, pageProps }) {
   return (
@@ -37,19 +35,17 @@ function App({ Component, pageProps }) {
       <Script src="/js/lib/bech32.2.0.0.js"></Script>
       <Script src="/js/lib/qrcode.js"></Script>
 
-      <Provider store={store}>
-        <InscribeLiteMapContext>
-          <WalletContext>
-            <AudioContext>
-              <InscribeContext>
-                <NextNProgress color="#f0932b" />
-                <Component {...pageProps} />
-                <ToastContainer />
-              </InscribeContext>
-            </AudioContext>
-          </WalletContext>
-        </InscribeLiteMapContext>
-      </Provider>
+      <InscribeLiteMapContext>
+        <WalletContext>
+          <AudioContext>
+            <InscribeContext>
+              <NextNProgress color="#f0932b" />
+              <Component {...pageProps} />
+              <ToastContainer />
+            </InscribeContext>
+          </AudioContext>
+        </WalletContext>
+      </InscribeLiteMapContext>
     </>
   );
 }
