@@ -1,3 +1,4 @@
+"use client";
 import "@/styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import "tailwindcss/tailwind.css";
@@ -10,8 +11,22 @@ import AudioContext from "@/context/audio";
 import InscribeLiteMapContext from "@/context/inscribeLiteMap";
 import InscribeContext from "@/context/inscribe";
 import { ToastContainer } from "react-toastify";
+import { Provider } from "react-redux";
+import { makeStore, store } from "./../store/store";
+import { useRef } from "react";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import { Toaster } from "react-hot-toast";
 
 function App({ Component, pageProps }) {
+  const storeRef = useRef();
+  let persistor;
+  if (!storeRef.current) {
+    // Create the store instance the first time this renders
+    storeRef.current = makeStore();
+    persistor = persistStore(storeRef.current);
+  }
+
   return (
     <>
       <Head>
@@ -35,17 +50,22 @@ function App({ Component, pageProps }) {
       <Script src="/js/lib/bech32.2.0.0.js"></Script>
       <Script src="/js/lib/qrcode.js"></Script>
 
-      <InscribeLiteMapContext>
-        <WalletContext>
-          <AudioContext>
-            <InscribeContext>
-              <NextNProgress color="#f0932b" />
-              <Component {...pageProps} />
-              <ToastContainer />
-            </InscribeContext>
-          </AudioContext>
-        </WalletContext>
-      </InscribeLiteMapContext>
+      <Provider store={storeRef.current}>
+        <PersistGate loading={null} persistor={persistor}>
+          <InscribeLiteMapContext>
+            <WalletContext>
+              <AudioContext>
+                <InscribeContext>
+                  <NextNProgress color="#f0932b" />
+                  <Component {...pageProps} />
+                  <ToastContainer />
+                </InscribeContext>
+              </AudioContext>
+            </WalletContext>
+          </InscribeLiteMapContext>
+        </PersistGate>
+      </Provider>
+      <Toaster position="top-center" reverseOrder={false}/>
     </>
   );
 }

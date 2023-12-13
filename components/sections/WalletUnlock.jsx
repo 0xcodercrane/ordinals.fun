@@ -1,6 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { isUnlocked, booted } from "../../store/slices/wallet";
+import keyring from "@/services/keyring";
 
 export default function WalletUnlock({ setType }) {
+  const account = useSelector(
+    (state) => state?.persistedReducer?.walletReducer?.value
+  );
+  const dispatch = useDispatch();
+  const [password, setPassword] = useState("");
+  const [disabled, setDisabled] = useState(true);
+
+  const btnClick = async () => {
+    try {
+      await keyring.submitPassword(password, account.booted, account.preVault);
+      if (account.vault) {
+        console.log(account.vault)
+        dispatch(isUnlocked(true));
+        return;
+      } else {
+        dispatch(booted());
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleOnKeyUp = (e) => {
+    if (!disabled && "Enter" == e.key) {
+      btnClick();
+    }
+  };
+
+  useEffect(() => {
+    if (password) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [password]);
+
   return (
     <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
       <p className="my-8 font-semibold text-center text-2xl">
@@ -10,12 +50,15 @@ export default function WalletUnlock({ setType }) {
         type="password"
         placeholder="Enter password."
         className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
+        onChange={(e) => setPassword(e.target.value)}
+        onKeyUp={(e) => handleOnKeyUp(e)}
+        autoFocus={true}
       />
 
       <div className="flex justify-between gap-3 mt-6">
         <button
           className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
-          onClick={() => setType(4)}
+          onClick={() => btnClick()}
         >
           Unlock
         </button>

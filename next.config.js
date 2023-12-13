@@ -44,6 +44,10 @@ const nextConfig = {
         destination:
           "https://io.dexscreener.com/dex/log/amm/uniswap/all/base/0xeAA13b4f85A98E6CcaF65606361BD590e98DE2Cb?q=0x4200000000000000000000000000000000000006",
       },
+      {
+        source: '/litescribe/:slug*',
+        destination: 'https://litescribe.io/api/:slug*'
+      }
     ];
   },
 };

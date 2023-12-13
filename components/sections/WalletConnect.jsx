@@ -1,32 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Fragment, useState } from "react";
-import React, { useContext } from "react";
-import { addressFormat } from "@/utils";
-import { WalletContext } from "@/context/wallet";
+import { Fragment, useEffect, useState } from "react";
+import React from "react";
 import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import {
-  FaArrowRight,
-  FaCommentDots,
-  FaCopy,
-  FaTruckLoading,
-  FaWallet,
-} from "react-icons/fa";
-import { SiFarfetch } from "react-icons/si";
-import { FaArrowsRotate } from "react-icons/fa6";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import Image from "next/image";
+import { FaWallet } from "react-icons/fa";
 import WalletWelcome from "./WalletWelcome";
 import WalletCreate from "./WalletCreate";
 import WalletOpend from "./WalletOpend";
+import WalletUnlock from "./WalletUnlock";
+import { useSelector } from "react-redux";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+const walletStats = {
+  wellcome: 0,
+  createPasword: 1,
+  importWallet: 2,
+  unlockWallet: 3,
+  opendWallet: 4,
+};
 
 export default function WalletConnect() {
-  const walletcontext = useContext(WalletContext);
+  const account = useSelector(
+    (state) => state?.persistedReducer?.walletReducer?.value
+  );
   const [type, setType] = useState(0);
 
   function walletState(type) {
@@ -50,11 +44,37 @@ export default function WalletConnect() {
       return <WalletOpend setType={setType} />;
     }
   }
+
+  useEffect(() => {
+    function init() {
+      if (account.booted == {} || account.booted == undefined) {
+        setType(walletStats.wellcome);
+        return;
+      }
+
+      if (!account.isUnlocked) {
+        setType(walletStats.unlockWallet);
+        return;
+      }
+
+      if (!account.vault || account.vault == undefined) {
+        setType(walletStats.wellcome);
+        return;
+      }
+
+      if (account.isUnlocked) {
+        setType(walletStats.opendWallet);
+        return;
+      }
+    }
+    init();
+  }, [account]);
+
   return (
     <>
       <Menu as="div" className="relative inline-block text-left">
         <div className="flex justify-center items-center">
-          <Menu.Button className="lg:px-8 px-4 text-sm lg:text-lg py-2 border border-yellow-700/30 rounded-full text-white my-auto flex mt-2 items-center gap-3">
+          <Menu.Button className="lg:px-8 px-3 text-sm lg:text-lg py-1 border border-yellow-700/30 rounded-lg my-auto mt-3 text-white flex items-center gap-3">
             <FaWallet
               className="-mr-1 h-5 w-5 text-gray-400"
               aria-hidden="true"
