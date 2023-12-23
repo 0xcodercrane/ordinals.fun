@@ -1,8 +1,9 @@
+import { Inscription } from "./../../shared/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   value: {
-    booted: {},
+    booted: undefined,
     isUnlocked: false,
     keyrings: {},
     vault: {},
@@ -19,6 +20,17 @@ const initialState = {
       pending_btc_amount: "0.00",
       pending_inscription_amount: 0,
       usd_value: 0,
+    },
+    bitcoinTx: {
+      txId: "",
+      toAddress: "",
+      toSatoshis: "",
+      autoAdjust: "",
+      feeRate: "",
+    },
+    inscriptions: {
+      total: 0,
+      list: [],
     },
   },
 };
@@ -45,8 +57,31 @@ export const wallet = createSlice({
     balance: (state, action) => {
       state.value.balance = action.payload;
     },
+    bitcoinTx: (state, action) => {
+      state.value.bitcoinTx = action.payload;
+    },
+    setCurrentKeyRing: (state, action) => {
+      state.value.keyrings = action.payload;
+    },
+    updateBitcoinTx: (state, action) => {
+      state.value.bitcoinTx.txId = action.payload;
+    },
+    updateInscriptions: (state, action) => {
+      state.value.inscriptions = action.payload;
+    },
   },
 });
 
-export const { booted, isUnlocked, vault, preVault, account, balance } = wallet.actions;
+export const {
+  booted,
+  isUnlocked,
+  vault,
+  preVault,
+  account,
+  balance,
+  bitcoinTx,
+  setCurrentKeyRing,
+  updateBitcoinTx,
+  updateInscriptions,
+} = wallet.actions;
 export default wallet.reducer;

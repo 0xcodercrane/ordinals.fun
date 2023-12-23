@@ -1,155 +1,99 @@
-import { useRef, useState, useEffect, useContext } from "react";
-import Head from "next/head";
 import React from "react";
-import { FaPlay, FaPause, FaBackward, FaForward } from "react-icons/fa";
-import { SiBitcoinsv } from "react-icons/si";
-import MenuBar from "@/components/sections/Menu";
-import Wave from "@/components/UI/Wave";
-import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
-import { db } from "@/services/firebase";
-import "@/styles/Home.module.css";
-import { AudioContext } from "@/context/audio";
-import Link from "next/link";
 import Layout from "@/components/sections/Layout";
+import InscriptionCard from "../components/UI/InscriptionCard";
+import { FaFilter } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { FaBroom } from "react-icons/fa";
+import { useState } from "react";
 
 export default function Home() {
-  const audioContext = useContext(AudioContext);
-  const [inscription, setInscription] = useState();
-  const [latestBlock, setLatestBlock] = useState(0);
-  const [currentBlock, setCurrentBlock] = useState(0);
-  const [state, setState] = useState({
-    loading: false,
-    playing: false,
-    currentTime: 0,
-    duration: 0,
-    repeat: false,
-  });
-  const audioPlayer = useRef(null);
-  const [typingTimer, setTypingTimer] = useState(0);
-
-  const handlePlay = () => {
-    audioPlayer.current?.play();
-    setState({ ...state, playing: true });
-  };
-
-  const handlePause = () => {
-    audioPlayer.current?.pause();
-    setState({ ...state, playing: false });
-  };
-
-  const prevBlock = () => {
-    audioPlayer.current?.pause();
-    getAudio(Number(currentBlock) - 1);
-    setCurrentBlock(Number(currentBlock) - 1);
-    setState({ ...state, playing: false });
-  };
-
-  const nextBlock = () => {
-    audioPlayer.current?.pause();
-    getAudio(Number(currentBlock) + 1);
-    setCurrentBlock(Number(currentBlock) + 1);
-    setState({ ...state, playing: false });
-  };
-
-  const changeBlock = (e) => {
-    if (
-      Number(e.target.value) < 0 ||
-      e.target.value === "" ||
-      e.target.value > latestBlock
-    )
-      return false;
-    setCurrentBlock(e.target.value);
-    setTimer(e.target.value);
-  };
-
-  const handleTimeUpdate = () => {
-    if (audioPlayer.current?.ended) {
-      setState({
-        ...state,
-        currentTime: 0,
-        playing: false,
-      });
-    } else if (audioPlayer.current)
-      setState({
-        ...state,
-        currentTime: audioPlayer.current?.currentTime,
-        duration: audioPlayer.current?.duration,
-      });
-  };
-
-  const getLatestBlockInfo = async () => {
-    try {
-      const response = await fetch(`/blocks/latestblock`);
-      const result = await response.json();
-      if (result) setLatestBlock(result.height);
-    } catch (error) {
-      console.log("Backend API error");
-    }
-  };
-
-  const getAudio = async (currentBlock) => {
-    setState({
-      ...state,
-      loading: true,
-    });
-    audioContext.setState({ ...state, isPlay: false });
-
-    const dbQuery = query(
-      ref(db, "inscriptions"),
-      orderByChild("block_no"),
-      equalTo(Number(currentBlock))
-    );
-
-    await onValue(dbQuery, (snapshot) => {
-      const data = snapshot.val();
-      if (snapshot.exists() && data) {
-        setInscription(Object.values(data)[0]);
-        audioContext.setState({ ...data, isPlay: true });
-      } else {
-        setInscription(null);
-      }
-    });
-    setState({
-      ...state,
-      loading: false,
-    });
-  };
-
-  const clearTimer = () => {
-    clearTimeout(typingTimer);
-  };
-
-  const setTimer = (currentBlock) => {
-    setState({
-      ...state,
-      loading: true,
-    });
-    clearTimeout(typingTimer);
-    const timer = setTimeout(() => {
-      getAudio(currentBlock);
-    }, 1000);
-    setTypingTimer(timer);
-  };
-
-  const handleAudio = () => {
-    if (state.playing) {
-      handlePause();
-    } else {
-      handlePlay();
-    }
-  };
-
-  useEffect(() => {
-    getLatestBlockInfo();
-    if (audioContext.currentBlock) {
-      setCurrentBlock(Number(audioContext.currentBlock));
-      getAudio(Number(audioContext.currentBlock));
-    }
-  }, []);
+  const [buyTip, setBuyTip] = useState(false);
 
   return (
     <Layout>
-      <div className="my-auto flex flex-col justify-center items-center">
+      <div className="text-4xl font-bold my-16 text-center sm:text-left">
+        Litemaps
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+        <div>
+          <p> 34 LTC</p> <p className="text-sm text-gray-300">Floor price</p>
+        </div>
+        <div>
+          <p> 6,763,242 LTC</p>{" "}
+          <p className="text-sm text-gray-300">Total volume</p>
+        </div>
+        <div>
+          <p> 924,901 LTC</p>{" "}
+          <p className="text-sm text-gray-300">Volume (24h)</p>
+        </div>
+        <div>
+          <p> 41,930</p> <p className="text-sm text-gray-300">Trades (24h)</p>
+        </div>
+        <div>
+          <p> 20,274</p> <p className="text-sm text-gray-300">Owners</p>
+        </div>
+        <div>
+          <p> 5,014,267</p> <p className="text-sm text-gray-300">Suppl</p>
+        </div>
+        <div>
+          <p> 102,200</p> <p className="text-sm text-gray-300">Listed</p>
+        </div>
+      </div>
+
+      <div className="w-full my-8">
+        <div className="main_btn px-3 py-2 rounded-md w-fit">
+          🔥 3737 buys in last hour
+        </div>
+      </div>
+
+      <div className="w-full grid grid-cols-2 sm:grid-cols-2 gap-3 justify-between mb-6">
+        <div className="flex gap-2">
+          <button className="main_btn rounded-lg px-4 py-2 bg-primary">
+            Listings
+          </button>
+          <button className="main_btn rounded-lg px-4 py-2">Activity</button>
+        </div>
+
+        <div className="flex gap-2 justify-end">
+          <button className=" focus:outline-none">
+            <FaBroom
+              onClick={() => setBuyTip(true)}
+              className="sm:text-2xl text-xl cursor-pointer"
+            />
+          </button>
+          <button className=" focus:outline-none">
+            <FaShoppingCart
+              onClick={() => setBuyTip(true)}
+              className="sm:text-2xl text-xl cursor-pointer"
+            />
+          </button>
+          <button className=" focus:outline-none">
+            <FaFilter className="sm:text-2xl text-xl cursor-pointer" />
+          </button>
+          <button className=" focus:outline-none">
+            <BsThreeDotsVertical className="sm:text-2xl text-xl cursor-pointer" />
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
+        {Array.from({ length: 18 }, (_, index) => {
+          return (
+            <InscriptionCard
+              inscription={{
+                inscriptionID:
+                  "062f32e21aa04246b8873b5d9a929576addd0339881e1ea478b406795d6b6c47i0",
+              }}
+              key={index}
+              index={index}
+            />
+          );
+        })}
+      </div>
+      {/* <div className="my-auto flex flex-col justify-center items-center">
         <h1 className="text-5xl text-white font-bold mb-8 animate-pulse">
           Coming Soon
         </h1>
@@ -157,7 +101,24 @@ export default function Home() {
           We are working hard to give you something cool. <br /> Please wait a
           little bit.
         </p>
-      </div>
+      </div> */}
+
+      {buyTip && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 p-3 px-6 rounded-lg bg-white/10 backdrop-blur-3xl items-center  gap-2 grid sm:grid-cols-2 grid-cols-1">
+          <p>2 litemap selected. 1864786 LTC</p>
+          <div className="flex gap-3 sm:justify-end justify-center">
+            <button className="main_btn py-2 px-3 rounded-lg flex items-center gap-2">
+              <FaShoppingCart /> Buy
+            </button>
+            <button
+              className="main_btn py-2 px-3 rounded-lg flex items-center gap-2"
+              onClick={() => setBuyTip(false)}
+            >
+              <MdCancel /> Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

@@ -6,7 +6,7 @@ export default class BroadcastChannelMessage extends Message {
   constructor(name?: string) {
     super();
     if (!name) {
-      throw new Error('the broadcastChannel name is missing');
+      console.log('the broadcastChannel name is missing');
     }
 
     this._channel = new BroadcastChannel(name);

@@ -8,7 +8,7 @@ import {
   preVault,
 } from "./../../store/slices/wallet";
 
-export default function WalletCreate({ setType }) {
+export default function WalletCreate({ setType, isImport }) {
   const dispatch = useDispatch();
   const walletContext = useContext(WalletContext);
 
@@ -16,6 +16,8 @@ export default function WalletCreate({ setType }) {
   const [password2, setPassword2] = useState("");
   const [disabled, setDisabled] = useState(true);
   const [wanning, setWanning] = useState("");
+  const [created, setCreated] = useState(false);
+  const [seedPhrase, setSeedPhrase] = useState("");
 
   const [contextData, setConntextData] = useState({
     mnemonics: "",
@@ -34,15 +36,15 @@ export default function WalletCreate({ setType }) {
     hdPath: "m/84'/2'/0'/0",
   });
 
-  const btnClick = async () => {
+  console.log(isImport, '----------isIMport--')
+
+  const importWallet = async () => {
     try {
       const encryptBooted = await walletContext.Boot(password);
-      const mnemonic = await walletContext.generateMnemonic(
-        contextData.entropy
-      );
+      const mnemonic = seedPhrase;
       const preMnemonics = await walletContext.encrypt(password, mnemonic);
-      setConntextData((data) => ({ ...data, mnemonics: mnemonic }));
-      walletContext.createAccount(
+
+      walletContext.importWallet(
         mnemonic,
         contextData.hdPath,
         contextData.passphrase,
@@ -53,7 +55,34 @@ export default function WalletCreate({ setType }) {
       dispatch(booted(encryptBooted));
       dispatch(isUnlocked(true));
       dispatch(preVault(preMnemonics));
-      // setType(4);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const btnClick = async () => {
+    try {
+      if (isImport) {
+        setCreated(true);
+      } else {
+        const encryptBooted = await walletContext.Boot(password);
+        const mnemonic = await walletContext.generateMnemonic(
+          contextData.entropy
+        );
+        const preMnemonics = await walletContext.encrypt(password, mnemonic);
+        setConntextData((data) => ({ ...data, mnemonics: mnemonic }));
+        walletContext.createAccount(
+          mnemonic,
+          contextData.hdPath,
+          contextData.passphrase,
+          contextData.addressType,
+          1
+        );
+        dispatch(vault(mnemonic));
+        dispatch(booted(encryptBooted));
+        dispatch(isUnlocked(true));
+        dispatch(preVault(preMnemonics));
+      }
     } catch (error) {
       console.log("create wallet:", error);
     }
@@ -93,50 +122,126 @@ export default function WalletCreate({ setType }) {
     }
   };
 
-  return (
-    <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
-      <p className="my-8 font-semibold text-center text-2xl">
-        Set Your wallet password
-      </p>
-      <input
-        type="password"
-        placeholder="Enter password."
-        className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
-        onBlur={(e) => {
-          setPassword(e.target.value);
-        }}
-        autoFocus={true}
-      />
-      <input
-        type="password2"
-        placeholder="Confirm password."
-        className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
-        onChange={(e) => {
-          setPassword2(e.target.value);
-        }}
-        onBlur={(e) => {
-          verify(e.target.value);
-        }}
-        onKeyUp={(e) => handleOnKeyUp(e)}
-      />
+  if (isImport) {
+    return (
+      <>
+        {created ? (
+          <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur-xl">
+            <p className="my-8 font-semibold text-center text-2xl">
+              Secret Recovery Phrase
+            </p>
+            <p className="text-sm text-gray-400 text-center mb-2">
+              Import an existing wallet with your secret recovery phrase.
+            </p>
+            <textarea
+              rows="3"
+              className="p-3 rounded-md bg-primary/20 w-full mt-2"
+              onChange={(e) => setSeedPhrase(e.target.value)}
+            ></textarea>
 
-      {wanning && <p className="text-red-500 mt-2 text-sm">{wanning}</p>}
+            <div className="flex justify-between gap-3 mt-6">
+              <button
+                className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
+                onClick={() => importWallet()}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+            <p className="my-8 font-semibold text-center text-2xl">
+              Set Your wallet password
+            </p>
+            <input
+              type="password"
+              placeholder="Enter password."
+              className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
+              onBlur={(e) => {
+                setPassword(e.target.value);
+              }}
+              autoFocus={true}
+            />
+            <input
+              type="password2"
+              placeholder="Confirm password."
+              className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
+              onChange={(e) => {
+                setPassword2(e.target.value);
+              }}
+              onBlur={(e) => {
+                verify(e.target.value);
+              }}
+              onKeyUp={(e) => handleOnKeyUp(e)}
+            />
 
-      <div className="flex justify-between gap-3 mt-6">
-        <button
-          className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
-          onClick={() => setType(0)}
-        >
-          Go Back
-        </button>
-        <button
-          disabled={disabled}
-          className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
-          onClick={btnClick}
-        >
-          Set password
-        </button>
+            {wanning && <p className="text-red-500 mt-2 text-sm">{wanning}</p>}
+
+            <div className="flex justify-between gap-3 mt-6">
+              <button
+                className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
+                onClick={() => setType(0)}
+              >
+                Go Back
+              </button>
+              <button
+                disabled={disabled}
+                className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
+                onClick={btnClick}
+              >
+                Set password
+              </button>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  } else {
+    return (
+      <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+        <p className="my-8 font-semibold text-center text-2xl">
+          Set Your wallet password
+        </p>
+        <input
+          type="password"
+          placeholder="Enter password."
+          className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
+          onBlur={(e) => {
+            setPassword(e.target.value);
+          }}
+          autoFocus={true}
+        />
+        <input
+          type="password2"
+          placeholder="Confirm password."
+          className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
+          onChange={(e) => {
+            setPassword2(e.target.value);
+          }}
+          onBlur={(e) => {
+            verify(e.target.value);
+          }}
+          onKeyUp={(e) => handleOnKeyUp(e)}
+        />
+
+        {wanning && <p className="text-red-500 mt-2 text-sm">{wanning}</p>}
+
+        <div className="flex justify-between gap-3 mt-6">
+          <button
+            className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
+            onClick={() => setType(0)}
+          >
+            Go Back
+          </button>
+          <button
+            disabled={disabled}
+            className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-6"
+            onClick={btnClick}
+          >
+            Set password
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function WalletImport({ setType }) {
   return (
-    <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+    <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur-xl">
       <p className="my-8 font-semibold text-center text-2xl">Import wallet</p>
 
       <textarea

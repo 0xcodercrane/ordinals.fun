@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: ["ordinalslite.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ordinalslite.com",
+      },
+    ],
+  },
   webpack: function (config, options) {
     config.experiments = { asyncWebAssembly: true };
     return config;
@@ -47,6 +56,10 @@ const nextConfig = {
       {
         source: '/litescribe/:slug*',
         destination: 'https://litescribe.io/api/:slug*'
+      },
+      {
+        source: '/ordinalslite/:slug*',
+        destination: 'https://ordinalslite.com/:slug*'
       }
     ];
   },

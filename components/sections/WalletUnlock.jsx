@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isUnlocked, booted } from "../../store/slices/wallet";
 import keyring from "@/services/keyring";
+import { toast } from "react-hot-toast";
 
-export default function WalletUnlock({ setType }) {
+export default function WalletUnlock({ isImport = false }) {
   const account = useSelector(
     (state) => state?.persistedReducer?.walletReducer?.value
   );
@@ -15,15 +16,12 @@ export default function WalletUnlock({ setType }) {
     try {
       await keyring.submitPassword(password, account.booted, account.preVault);
       if (account.vault) {
-        console.log(account.vault)
         dispatch(isUnlocked(true));
-        return;
       } else {
         dispatch(booted());
-        return;
       }
     } catch (e) {
-      console.log(e);
+      toast.error("Incorrect password");
     }
   };
 
@@ -42,7 +40,7 @@ export default function WalletUnlock({ setType }) {
   }, [password]);
 
   return (
-    <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+    <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur">
       <p className="my-8 font-semibold text-center text-2xl">
         Enter your wallet password
       </p>

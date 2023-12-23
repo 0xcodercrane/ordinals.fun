@@ -95,151 +95,156 @@ class OpenApiService {
     return data;
   };
 
-  async getWalletConfig() {
+  getWalletConfig = async () => {
     const data = await this.httpGet("/default/config", {});
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAddressBalance(address) {
+  getAddressBalance = async (address) => {
     const data = await this.httpGet("/address/balance", {
       address,
     });
     if (data) {
       if (data.status == API_STATUS.FAILED) {
-        throw new Error(data.message);
+        console.log(data.message);
       }
       return data.result;
     }
-  }
+  };
 
-  async getMultiAddressAssets(addresses) {
+  getMultiAddressAssets = async (addresses) => {
     const data = await this.httpGet("/address/multi-assets", {
       addresses,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async findGroupAssets(groups) {
+  findGroupAssets = async (groups) => {
     const data = await this.httpPost("/address/find-group-assets", {
       groups,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAddressUtxo(address) {
-    const data = await this.httpGet("/address/btc-utxo", {
-      address,
-    });
-    if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+  getAddressUtxo = async (address) => {
+    try {
+      const data = await this.httpGet("/address/btc-utxo", {
+        address,
+      });
+      if (data.status == API_STATUS.FAILED) {
+        console.log(data.message);
+      }
+      return data.result;
+    } catch (error) {
+      console.log(error);
     }
-    return data.result;
-  }
+  };
 
-  async getInscriptionUtxo(inscriptionId) {
+  getInscriptionUtxo = async (inscriptionId) => {
     const data = await this.httpGet("/inscription/utxo", {
       inscriptionId,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getInscriptionUtxoDetail(inscriptionId) {
+  getInscriptionUtxoDetail = async (inscriptionId) => {
     const data = await this.httpGet("/inscription/utxo-detail", {
       inscriptionId,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getInscriptionUtxos(inscriptionIds) {
+  getInscriptionUtxos = async (inscriptionIds) => {
     const data = await this.httpPost("/inscription/utxos", {
       inscriptionIds,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAddressInscriptions(address, cursor, size) {
+  getAddressInscriptions = async (address, cursor, size) => {
     const data = await this.httpGet("/address/inscriptions", {
       address,
       cursor,
       size,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAddressRecentHistory(address) {
+  getAddressRecentHistory = async (address) => {
     const data = await this.httpGet("/address/recent-history", {
       address,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getInscriptionSummary() {
+  getInscriptionSummary = async () => {
     const data = await this.httpGet("/default/inscription-summary", {});
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAppSummary() {
+  getAppSummary = async () => {
     const data = await this.httpGet("/default/app-summary", {});
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async pushTx(rawtx) {
+  pushTx = async (rawtx) => {
+    console.log(rawtx);
     const data = await this.httpPost("/tx/broadcast", {
       rawtx,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getFeeSummary() {
+  getFeeSummary = async () => {
     const data = await this.httpGet("/default/fee-summary", {});
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getDomainInfo(domain) {
+  getDomainInfo = async (domain) => {
     const data = await this.httpGet("/address/search", { domain });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async inscribeBRC20Transfer(address, tick, amount, feeRate) {
+  inscribeBRC20Transfer = async (address, tick, amount, feeRate) => {
     const data = await this.httpPost("/brc20/inscribe-transfer", {
       address,
       tick,
@@ -247,39 +252,39 @@ class OpenApiService {
       feeRate,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getInscribeResult(orderId) {
+  getInscribeResult = async (orderId) => {
     const data = await this.httpGet("/brc20/order-result", { orderId });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAddressTokenBalances(address, cursor, size) {
+  getAddressTokenBalances = async (address, cursor, size) => {
     const data = await this.httpGet("/brc20/tokens", { address, cursor, size });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getAddressTokenSummary(address, ticker) {
+  getAddressTokenSummary = async (address, ticker) => {
     const data = await this.httpGet("/brc20/token-summary", {
       address,
       ticker: encodeURIComponent(ticker),
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async getTokenTransferableList(address, ticker, cursor, size) {
+  getTokenTransferableList = async (address, ticker, cursor, size) => {
     const data = await this.httpGet("/brc20/transferable-list", {
       address,
       ticker: encodeURIComponent(ticker),
@@ -287,34 +292,42 @@ class OpenApiService {
       size,
     });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async decodePsbt(psbtHex) {
+  decodePsbt = async (psbtHex) => {
     const data = await this.httpPost("/tx/decode", { psbtHex });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async createMoonpayUrl(address) {
+  createMoonpayUrl = async (address) => {
     const data = await this.httpPost("/moonpay/create", { address });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
 
-  async checkWebsite(website) {
+  checkWebsite = async (website) => {
     const data = await this.httpPost("/default/check-website", { website });
     if (data.status == API_STATUS.FAILED) {
-      throw new Error(data.message);
+      console.log(data.message);
     }
     return data.result;
-  }
+  };
+
+  createOrder = async () => {
+    const data = await this.httpPost("/order/create");
+    if (data.status == API_STATUS.FAILED) {
+      console.log(data.message);
+    }
+    return data.result;
+  };
 }
 
 export default new OpenApiService();

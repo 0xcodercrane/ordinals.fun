@@ -1,578 +1,177 @@
-import React, {
-  useLayoutEffect,
-  useRef,
-  useState,
-  useEffect,
-  useContext,
-} from "react";
-import { WalletContext } from "@/context/wallet";
-import Spinner from "react-bootstrap/Spinner";
-import styles from "@/styles/inscribe.module.css";
-import { validate } from "bitcoin-address-validation";
-import { db } from "@/services/firebase";
-import {
-  onValue,
-  ref,
-  query,
-  orderByChild,
-  startAt,
-  endAt,
-} from "firebase/database";
-import {
-  FaArrowRight,
-  FaCheckCircle,
-  FaExclamationCircle,
-  FaAngleDoubleLeft,
-  FaAngleDoubleRight,
-  FaAngleLeft,
-  FaAngleRight,
-} from "react-icons/fa";
+import React from "react";
 import Block from "@/components/UI/Block";
-import { InscribeContext } from "@/context/inscribe";
-import RangeSlider from "react-range-slider-input";
-import Loading from "@/components/UI/Loading";
+import Banner from "@/components/UI/Banner";
 import Layout from "@/components/sections/Layout";
-
-function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
-  useLayoutEffect(() => {
-    function updateSize() {
-      setSize([window.innerWidth, window.innerHeight]);
-    }
-    window.addEventListener("resize", updateSize);
-    updateSize();
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-  return size;
-}
+import ReactPaginate from "react-paginate";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { initialize, setBulkMintBlocks } from "@/store/slices/inscribe";
+import { FaArrowRight, FaShoppingCart } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
+import ControlPanel from "../components/ControlPanel";
 
 const Inscribe = () => {
-  const walletContext = useContext(WalletContext);
-  const inscribeContext = useContext(InscribeContext);
-  const uploadRef = useRef(null);
-  const [width] = useWindowSize();
-  const [receiveAddress, setReceiveAddress] = useState("");
-  const [isValidAddress, setIsvalidAddress] = useState(false);
-  const [loading, setLoading] = useState({
-    calculating: false,
-    uploading: false,
-    address: false,
-    block: false,
-    orderProcessing: false,
-    blockAvailable: false,
-    fetchBlock: false,
-  });
-  const [blockData, setBlockData] = useState([]);
-  const [selectedBlock, setSelectedBlock] = useState([]);
-  const [uploadKey, setUploadKey] = useState(0);
-  const [step, setStep] = useState(209);
-  const [blockRange, setBlockRange] = useState();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [modal, setModal] = useState(false);
-  const [latestblock, setLatestBlock] = useState(800000);
-  const [rangeSliderData, setRangeSliderData] = useState();
-  const [currentPageNumber, setCurrentPageNumber] = useState(0);
+  const dispatch = useDispatch();
+  const pageCount = Math.ceil(8000 / 300);
+  const router = useRouter();
+  const inscribe = useSelector(
+    (state) => state?.persistedReducer?.inscribeReducer?.value
+  );
+  const [pageStep, setPageStep] = useState(1);
+  const [setBulkMintAmount, setsetBulkMintAmount] = useState(0);
 
-  const checkAddress = () => {
-    setIsvalidAddress(validate(receiveAddress));
-    setLoading({
-      ...loading,
-      address: false,
-    });
-  };
-
-  const calculatePrice = async () => {
-    setLoading({
-      ...loading,
-      calculating: true,
-    });
-
-    try {
-      const APIUrl = `/mempool/api/v1/fees/recommended`;
-      const response = await fetch(APIUrl);
-      const result = await response.json();
-      if (result) {
-        inscribeContext.setServiceFee(result);
-        inscribeContext.setSelectedBlock(selectedBlock);
-        inscribeContext.setReceiveAddress(receiveAddress);
-        localStorage.setItem("receiveAddress", receiveAddress);
-        localStorage.setItem("serviceFee", JSON.stringify(result));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    setLoading({
-      ...loading,
-      calculating: false,
-    });
-  };
-
-  const cancelBlock = (key) => {
-    const tempData = [...blockData];
-    tempData[key] = {
-      ...tempData[key],
-      taken: false,
-      selected: false,
-      uploaded: false,
-      file: "",
-    };
-
-    setBlockData(tempData);
-    setSelectedBlock((data) =>
-      data.filter((block) => block.blockNumber != tempData[key].blockNumber)
-    );
-  };
-
-  const selectBlock = (key) => {
-    const tempData = blockData;
-    tempData[key].selected = true;
-    setBlockData(tempData);
-    setSelectedBlock((data) => [...data, tempData[key]]);
-    setUploadKey(key);
-  };
-
-  const LastPage = () => {
-    if (latestblock % (step + 1) === 0) {
-      setCurrentPage(Math.ceil(latestblock / (step + 1)) - 1);
-    } else {
-      setCurrentPage(Number(String(latestblock / (step + 1)).split(".")[0]));
-    }
-  };
+  const mintedBlocks = [
+    { blockNumber: 100 },
+    { blockNumber: 200 },
+    { blockNumber: 300 },
+    { blockNumber: 400 },
+  ];
 
   const nextPage = () => {
-    setCurrentPage(currentPage + 1);
+    router.push("/createOrder");
   };
 
-  const prePage = () => {
-    setCurrentPage(currentPage - 1);
-  };
+  function binarySearch(target) {
+    let left = 0;
+    let right = mintedBlocks.length - 1;
 
-  const firstPage = () => {
-    setCurrentPage(0);
-  };
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
 
-  const uploadAudio = (key) => {
-    uploadRef.current.click();
-    setUploadKey(key);
-  };
+      if (mintedBlocks[mid].blockNumber === target) {
+        return false; // Block number found
+      }
 
-  const handleUpload = async (val) => {
-    setModal(true);
-    const tempData = [...blockData];
-    const selectBlock = [...selectedBlock];
-    const tempSelectedBlock = [];
-    tempData[uploadKey] = {
-      ...tempData[uploadKey],
-      uploaded: true,
-      file: val,
-    };
-    selectBlock.map((item) => {
-      if (item.blockNumber === tempData[uploadKey].blockNumber) {
-        tempSelectedBlock.push({
-          ...tempData[uploadKey],
-          uploaded: true,
-          file: val,
-        });
+      if (mintedBlocks[mid].blockNumber < target) {
+        left = mid + 1; // Continue searching in the right half
       } else {
-        tempSelectedBlock.push(item);
-      }
-    });
-    setBlockData(tempData);
-    setSelectedBlock(tempSelectedBlock);
-    uploadRef.current.value = "";
-    setTimeout(() => {
-      setModal(false);
-    }, 1500);
-  };
-
-  const checkTaken = (indexBlock, exist) => {
-    for (let key in exist) {
-      const element = exist[key];
-      if (element.block_no === indexBlock) {
-        return {
-          blockNumber: indexBlock,
-          taken: true,
-          selected: false,
-          uploaded: false,
-          file: "",
-          ipfs_cid: element.ipfs_cid,
-        };
+        right = mid - 1; // Continue searching in the left half
       }
     }
 
-    return {
-      blockNumber: indexBlock,
-      taken: false,
-      selected: false,
-      uploaded: false,
-      file: "",
-      ipfs_cid: "",
-    };
-  };
+    return true; // Block number not found
+  }
 
-  const getBlockRange = (callback) => {
-    try {
-      const dbQuery = query(
-        ref(db, "inscriptions"),
-        orderByChild("block_no"),
-        startAt(blockRange.from),
-        endAt(blockRange.to + 1)
+  const bulkMint = () => {
+    if (!setBulkMintAmount) {
+      toast.error("Please input the amount of Blocks");
+      return;
+    }
+    console.log("dd", setBulkMintAmount);
+
+    let bulkMintArray = [];
+    for (let index = 0; index < Number(setBulkMintAmount); index++) {
+      if (binarySearch(index + pageStep)) {
+        bulkMintArray.push({ blockNumber: index + pageStep });
+      }
+    }
+
+    if (bulkMintArray.length > 0) {
+      dispatch(setBulkMintBlocks(bulkMintArray));
+    } else {
+      toast.error(
+        "There is no blocks to mint in this page. please find on the next page."
       );
-
-      onValue(dbQuery, (snapshot) => {
-        const data = snapshot.val();
-        callback(data);
-      });
-    } catch (error) {
-      console.log(error);
     }
   };
 
-  const getBlockData = async () => {
-    if (blockRange?.to) {
-      getBlockRange(async (exist) => {
-        let blockData = [];
-        for (
-          let index = blockRange.from + 1;
-          index <= blockRange.to + 1;
-          index++
-        ) {
-          if (exist) {
-            const data = await checkTaken(index, exist);
-            blockData.push(data);
-          } else {
-            blockData.push({
-              blockNumber: index,
-              taken: false,
-              selected: false,
-              uploaded: false,
-              file: "",
-              ipfs_cid: "",
-            });
-          }
-        }
-        setBlockData(blockData);
-      });
-    }
+  const cancelBlocks = () => {
+    dispatch(initialize());
   };
 
-  const getLatestBlockInfo = async () => {
-    try {
-      const response = await fetch(`/blocks/latestblock`);
-      const result = await response.json();
-      if (result) setLatestBlock(result.height);
-    } catch (error) {
-      console.log("Backend API error");
-    }
-  };
-
-  const handleRangeDrag = () => {
-    setCurrentPage(rangeSliderData[0]);
-  };
-
-  const handleSetCurrentPage = (e) => {
-    if (e.key === "Enter") {
-      if (
-        Number(currentPageNumber) > -1 &&
-        Number(currentPageNumber) <= latestblock / (step + 1)
-      )
-        setCurrentPage(currentPageNumber);
-    }
-  };
-
-  const handleChangeCurrentPage = (e) => {
-    if (e.target.value) {
-      setCurrentPageNumber(Number(e.target.value) - 1);
-    } else {
-      setCurrentPageNumber(null);
-    }
+  const handlePageClick = (e) => {
+    const step = Number(e.selected) * 300 + 1;
+    setPageStep(step);
   };
 
   useEffect(() => {
-    if (receiveAddress) {
-      setLoading({
-        ...loading,
-        address: true,
-      });
-      setIsvalidAddress(false);
-      const delayDebounceFn = setTimeout(() => {
-        checkAddress();
-      }, 1000);
-
-      return () => clearTimeout(delayDebounceFn);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [receiveAddress]);
-
-  useEffect(() => {
-    if (walletContext.account) setReceiveAddress(walletContext.account);
-  }, [walletContext.account]);
-
-  useEffect(() => {
-    setCurrentPageNumber(currentPage);
-    if (currentPage * (step + 1) + step > latestblock) {
-      setBlockRange({
-        from: currentPage * (step + 1),
-        to: latestblock - 1,
-      });
-    } else {
-      setBlockRange({
-        from: currentPage * (step + 1),
-        to: currentPage * (step + 1) + step,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, step]);
-
-  useEffect(() => {
-    getBlockData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blockRange]);
-
-  useEffect(() => {
-    getLatestBlockInfo();
+    dispatch(initialize());
   }, []);
 
-  if (!blockData.length) {
-    return (
-      <Layout>
-        <Loading />
-      </Layout>
-    );
-  } else {
-    return (
-      <Layout>
-        <div className="lg:my-8 mt-0">
-          <div className="w-full relative">
-            <div className="text-4xl text-center py-4">
-              <h2>Inscribe LiteMap</h2>
-              <p className="text-sm text-center w-full max-w-[900px] my-3 mx-auto lg:px-[150px]">
-                LiteMap only charges the service fee for the first 25
-                inscriptions in a single inscribing batch order, up to a maximum
-                of 1000 inscriptions.
-              </p>
-            </div>
+  // console.log(inscribe)
 
-            <div className="py-2 w-full max-auto max-w-[900px] mx-auto">
-              <div className={styles.inscribeForm}>
-                <input
-                  type="text"
-                  name="address"
-                  id="address"
-                  className="text-gray-700 px-3 py-2 bg-transparent rounded-lg "
-                  placeholder="Enter a bitcoin wallet address"
-                  value={receiveAddress}
-                  onChange={(e) => setReceiveAddress(e.target.value)}
-                />
-                {loading.address ? (
-                  <Spinner size="sm" className={styles.inscribeAdressStatus} />
-                ) : (
-                  <>
-                    {receiveAddress && isValidAddress && (
-                      <FaCheckCircle
-                        className={styles.inscribeAdressStatus}
-                        aria-hidden="true"
-                      />
-                    )}
-                    {receiveAddress && !isValidAddress && (
-                      <FaExclamationCircle
-                        className={styles.inscribeAdressStatus}
-                        aria-hidden="true"
-                      />
-                    )}
-                  </>
-                )}
-              </div>
-              <div className="grid grid-cols-1 lg:gap-6 gap:2">
-                <div>
-                  <>
-                    <div className="flex gap-0.5 justify-end w-100 mt-4">
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={firstPage}
-                        disabled={currentPage === 0}
-                      >
-                        <FaAngleDoubleLeft />
-                      </button>
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={prePage}
-                        disabled={currentPage === 0}
-                      >
-                        <FaAngleLeft />
-                      </button>
-                      <div className="flex border border-[#00bbff0f] rounded px-2 w-[150px] text-center outline-none justify-between">
-                        <div className="flex w-full">
-                          <input
-                            max={latestblock / (step + 1)}
-                            type="number"
-                            value={
-                              currentPageNumber || currentPageNumber === 0
-                                ? currentPageNumber + 1
-                                : null
-                            }
-                            className="bg-transparent w-[60px] text-center outline-none"
-                            onChange={(e) => handleChangeCurrentPage(e)}
-                            onKeyDown={(e) => handleSetCurrentPage(e)}
-                          />
-                          <span className="mt-1">/</span>
-                          <input
-                            type="text"
-                            value={`${(latestblock / (step + 1)).toFixed(0)}`}
-                            className="bg-transparent w-[60px] outline-none text-center"
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={nextPage}
-                        disabled={
-                          currentPage + 1 ===
-                          Math.ceil(latestblock / (step + 1))
-                        }
-                      >
-                        <FaAngleRight />
-                      </button>
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={LastPage}
-                        disabled={
-                          currentPage + 1 ===
-                          Math.ceil(latestblock / (step + 1))
-                        }
-                      >
-                        <FaAngleDoubleRight />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-6 lg:grid-cols-10 gap-1 py-4">
-                      <>
-                        {blockData.map((item, key) => {
-                          return (
-                            <Block
-                              index={key}
-                              blockNumber={item.blockNumber}
-                              selected={item.selected}
-                              taken={item.taken}
-                              uploaded={item.uploaded}
-                              key={key}
-                              file={item.file}
-                              ipfs_cid={item.ipfs_cid}
-                              uploadRef={uploadRef}
-                              selectBlock={selectBlock}
-                              cancelBlock={cancelBlock}
-                              uploadAudio={uploadAudio}
-                            />
-                          );
-                        })}
-                      </>
-                    </div>
-                    <div className="flex gap-0.5 justify-end w-100">
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={firstPage}
-                        disabled={currentPage === 0}
-                      >
-                        <FaAngleDoubleLeft />
-                      </button>
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={prePage}
-                        disabled={currentPage === 0}
-                      >
-                        <FaAngleLeft />
-                      </button>
-                      <div className="flex border border-[#00bbff0f] rounded px-2 w-[150px] text-center outline-none justify-between">
-                        <div className="flex w-full">
-                          <input
-                            max={latestblock / (step + 1)}
-                            type="number"
-                            value={
-                              currentPageNumber || currentPageNumber === 0
-                                ? currentPageNumber + 1
-                                : null
-                            }
-                            className="bg-transparent w-[60px] text-center outline-none"
-                            onChange={(e) => handleChangeCurrentPage(e)}
-                            onKeyDown={(e) => handleSetCurrentPage(e)}
-                          />
-                          <span className="mt-1">/</span>
-                          <input
-                            type="text"
-                            value={`${(latestblock / (step + 1)).toFixed(0)}`}
-                            className="bg-transparent w-[60px] outline-none text-center"
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={nextPage}
-                        disabled={
-                          currentPage + 1 ===
-                          Math.ceil(latestblock / (step + 1))
-                        }
-                      >
-                        <FaAngleRight />
-                      </button>
-                      <button
-                        className="border border-[#00bbff0f] cursor-pointer rounded p-2 hover:bg-[#0e3a59] hover:text-white"
-                        onClick={LastPage}
-                        disabled={
-                          currentPage + 1 ===
-                          Math.ceil(latestblock / (step + 1))
-                        }
-                      >
-                        <FaAngleDoubleRight />
-                      </button>
-                    </div>
-                  </>
-                </div>
-              </div>
+  return (
+    <Layout>
+      <Banner />
 
-              <button
-                className="w-full flex items-center mt-8 text-center px-4 py-2.5 rounded-lg justify-center bg-[#00bbff0f] text-lg"
-                onClick={calculatePrice}
-                disabled={
-                  !selectedBlock.length && !receiveAddress && !isValidAddress
-                }
-              >
-                {loading.uploading || loading.calculating ? (
-                  <span className="flex items-center h-full">
-                    <Spinner className="my-auto mr-2" size="sm" color="white" />
-                    Pleae wait...
-                  </span>
-                ) : (
-                  <>
-                    Next <FaArrowRight className="ml-2 mt-0.5" />
-                  </>
-                )}
-              </button>
-            </div>
+      <ControlPanel
+        setsetBulkMintAmount={setsetBulkMintAmount}
+        from={pageStep}
+        to={pageStep + 299}
+      />
 
-            <input
-              accept="audio/*"
-              type="file"
-              ref={uploadRef}
-              onChange={(e) => handleUpload(e.target.files[0])}
-              className="hidden"
-            />
-          </div>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={2}
+        marginPagesDisplayed={1}
+        pageCount={pageCount}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        className="pagination"
+      />
 
-          {modal && (
-            <div className="fixed h-full w-full bg-gray-500 top-0 left-0 bg-opacity-40 flex justify-center items-center z-[1000] ">
-              <div className="px-3">
-                <div className="bg-white p-8 rounded-lg relative">
-                  <p className="text-xl">Uploading...</p>
-                </div>
-              </div>
-            </div>
-          )}
+      <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
+        {Array.from({ length: 300 }, (_, index) => {
+          return (
+            <Block index={index} key={index} blockNumber={index + pageStep} />
+          );
+        })}
+      </div>
+
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={2}
+        marginPagesDisplayed={1}
+        pageCount={pageCount}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        className="pagination"
+      />
+
+      <div
+        className={`fixed z-50  left-1/2 border border-transparent ${
+          inscribe?.selectedBlock.length <= 0
+            ? "-bottom-64 border-[#ffffff1a]"
+            : "bottom-6 sm:bottom-6"
+        }   -translate-x-1/2 px-6 py-3 rounded-lg bg-white/10 backdrop-blur-2xl duration-200 flex items-center gap-3 flex-wrap shadow-black shadow-lg`}
+      >
+        <p>{inscribe?.selectedBlock.length} litemap selected.</p>
+        <input
+          placeholder="80"
+          type="Number"
+          onChange={(e) => setsetBulkMintAmount(e.target.value)}
+          className="py-2 px-3 bg-primary/20 w-[80px]  rounded-lg focus:outline-none duration-200 border border-white/50 focus:border-white/60"
+        />
+        <button
+          className="main_btn py-2 px-3 rounded-lg flex items-center gap-2"
+          onClick={bulkMint}
+        >
+          BlukMint
+        </button>
+        <div className="flex gap-3 sm:justify-end justify-center">
+          <button
+            className="main_btn py-2 px-4 rounded-lg flex items-center gap-2 bg-transparent"
+            onClick={() => cancelBlocks()}
+          >
+            <MdCancel /> Cancel
+          </button>
+          <button
+            className="main_btn py-2 px-4 rounded-lg flex items-center gap-2 bg-sky-600"
+            onClick={nextPage}
+          >
+            Next <FaArrowRight />
+          </button>
         </div>
-      </Layout>
-    );
-  }
+      </div>
+    </Layout>
+  );
 };
 
 export default Inscribe;

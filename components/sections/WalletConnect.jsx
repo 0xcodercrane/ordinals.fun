@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import React from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { FaWallet } from "react-icons/fa";
@@ -7,7 +7,9 @@ import WalletWelcome from "./WalletWelcome";
 import WalletCreate from "./WalletCreate";
 import WalletOpend from "./WalletOpend";
 import WalletUnlock from "./WalletUnlock";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { isUnlocked } from "@/store/slices/wallet";
+import { addressFormat } from "@/utils";
 
 const walletStats = {
   wellcome: 0,
@@ -22,6 +24,8 @@ export default function WalletConnect() {
     (state) => state?.persistedReducer?.walletReducer?.value
   );
   const [type, setType] = useState(0);
+  const [address, setAddress] = useState("");
+  const dispatch = useDispatch();
 
   function walletState(type) {
     if (type === 0) {
@@ -43,11 +47,19 @@ export default function WalletConnect() {
     if (type === 4) {
       return <WalletOpend setType={setType} />;
     }
+
+    if (type === 5) {
+      return <WalletCreate setType={setType} isImport={true} />;
+    }
   }
 
   useEffect(() => {
     function init() {
-      if (account.booted == {} || account.booted == undefined) {
+      if (
+        account.booted == {} ||
+        account.booted == undefined ||
+        !account.booted
+      ) {
         setType(walletStats.wellcome);
         return;
       }
@@ -70,16 +82,22 @@ export default function WalletConnect() {
     init();
   }, [account]);
 
+  useEffect(() => {
+    dispatch(isUnlocked(false));
+  }, []);
+
   return (
     <>
       <Menu as="div" className="relative inline-block text-left">
         <div className="flex justify-center items-center">
-          <Menu.Button className="lg:px-8 px-3 text-sm lg:text-lg py-1 border border-yellow-700/30 rounded-lg my-auto mt-3 text-white flex items-center gap-3">
+          <Menu.Button className="px-3 py-1 border text-lg border-yellow-700/30 rounded-lg my-3 text-white flex items-center gap-3">
             <FaWallet
               className="-mr-1 h-5 w-5 text-gray-400"
               aria-hidden="true"
             />
-            Connect Wallet
+            {account?.isUnlocked
+              ? addressFormat(account?.account?.accounts[0]?.address, 6)
+              : " Connect Wallet"}
           </Menu.Button>
         </div>
 
@@ -92,7 +110,7 @@ export default function WalletConnect() {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-20 mt-2 lg:w-[400px] w-[300px]  origin-top-right divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 z-20 mt-2 sm:w-[400px] w-[360px]  origin-top-right divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             {walletState(type)}
           </Menu.Items>
         </Transition>

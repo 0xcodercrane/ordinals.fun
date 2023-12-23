@@ -1,71 +1,108 @@
-// @flow
-import React from 'react'
+import { useEffect, useState } from "react";
+import React, { useContext } from "react";
+import { WalletContext } from "../../context/wallet";
 
-const FeeRecommend = ({ feeRecommended, selectFeeOption, feeOption }) => {
+const FeeRateType = {
+  SLOW: 0,
+  AVG: 1,
+  FAST: 2,
+  CUSTOM: 3,
+};
+
+export default function FeeRecommend({ onChange }) {
+  const wallet = useContext(WalletContext);
+
+  const [feeOptions, setFeeOptions] = useState([]);
+
+  useEffect(() => {
+    wallet.getFeeSummary().then((v) => {
+      setFeeOptions([...v.list, { title: "Custom", feeRate: 0 }]);
+    });
+  }, []);
+
+  const [feeOptionIndex, setFeeOptionIndex] = useState(FeeRateType.AVG);
+  const [feeRateInputVal, setFeeRateInputVal] = useState("");
+
+  useEffect(() => {
+    const defaultOption = feeOptions[1];
+    const defaultVal = defaultOption ? defaultOption.feeRate : 1;
+
+    let val = defaultVal;
+    if (feeOptionIndex === FeeRateType.CUSTOM) {
+      val = parseInt(feeRateInputVal) || 0;
+    } else if (feeOptions.length > 0) {
+      val = feeOptions[feeOptionIndex].feeRate;
+    }
+    onChange(val);
+  }, [feeOptions, feeOptionIndex, feeRateInputVal]);
+
+  const adjustFeeRateInput = (inputVal) => {
+    let val = parseInt(inputVal);
+    if (!val) {
+      setFeeRateInputVal("");
+      return;
+    }
+    const defaultOption = feeOptions[1];
+    const defaultVal = defaultOption ? defaultOption.feeRate : 1;
+    if (val <= 0) {
+      val = defaultVal;
+    }
+    setFeeRateInputVal(val.toString());
+  };
+
   return (
-    <>
-      {feeRecommended ? (
-        <div className='text-center grid grid-cols-1 sm:grid-cols-3 gap-2'>
-          <div
-            className={`cursor-pointer rounded p-2 sm:p-3 hover:bg-[#c4bfbb] ${
-              feeOption === 'economy' ? 'bg-[#c4bfbb]' : 'bg-gray-200'
-            }`}
-            onClick={() => selectFeeOption('economy')}
-          >
-            <div className='my-2 text-gray-700'>Economy</div>
-            <div className='text-gray-700'>
-              <span className='font-semibold text-orange-600'>
-                {feeRecommended.economyFee}
-              </span>{' '}
-              sats/vB
-            </div>
-          </div>
-          <div
-            className={`cursor-pointer rounded p-2 sm:p-3 hover:bg-[#c4bfbb] ${
-              feeOption === 'normal' ? 'bg-[#c4bfbb]' : 'bg-gray-200'
-            }`}
-            onClick={() => selectFeeOption('normal')}
-          >
-            <div className='my-2 text-gray-700'>Normal</div>
-            <div className='text-gray-700'>
-              <span className='font-semibold text-orange-600'>
-                {feeRecommended.halfHourFee}
-              </span>{' '}
-              sats/vB
-            </div>
-          </div>
-          <div
-            className={`cursor-pointer rounded p-2 sm:p-3 hover:bg-[#c4bfbb] ${
-              feeOption === 'custom' ? 'bg-[#c4bfbb]' : 'bg-gray-200'
-            }`}
-            onClick={() => selectFeeOption('custom')}
-          >
-            <div className='my-2 text-gray-700'>Custom</div>
-            <div className='text-gray-700'>
-              <span className='font-semibold text-orange-600'>
-                {feeRecommended.fastestFee}
-              </span>{' '}
-              sats/vB
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className='grid grid-cols-1 sm:grid-cols-3 text-center'>
-          <div className='fex animate-pulse  p-3 bg-gray-300'>
-            <div className='my-2 text-gray-700'>Economy</div>
-            <div className='bg-[#c4bfbb]'></div>
-          </div>
-          <div className='fex animate-pulse bg-gray-300 p-3'>
-            <div className='my-2 text-gray-700'>Normal</div>
-            <div className='bg-[#c4bfbb]'></div>
-          </div>
-          <div className='fex animate-pulse bg-gray-300  p-3'>
-            <div className='my-2 text-gray-700'>Custom</div>
-            <div className='bg-[#c4bfbb]'></div>
-          </div>
-        </div>
+    <div>
+      <div className="flex justify-between mt-3 gap-2">
+        <>
+          {feeOptions.length > 0 ? (
+            <>
+              {feeOptions.map((v, index) => {
+                const selected = index === feeOptionIndex;
+                return (
+                  <div
+                    key={v.title}
+                    onClick={() => {
+                      setFeeOptionIndex(index);
+                    }}
+                    className={`cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3 ${
+                      selected && "bg-primary/60"
+                    }`}
+                  >
+                    <p className="text-center text-sm font-semibold">
+                      {v.title}
+                    </p>
+                    {v.title !== "Custom" && (
+                      <p className="text-[9px] text-center">{`${v.feeRate} lit/vB`}</p>
+                    )}
+                    {v.title !== "Custom" && (
+                      <p className="text-center text-[9px]">{`${v.desc}`}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
+            </>
+          )}
+        </>
+      </div>
+      {feeOptionIndex === FeeRateType.CUSTOM && (
+        <input
+          className="w-full mt-3 bg-transparent py-2 px-2 rounded-lg  border border-[#dee2e682!important] focus:outline-none"
+          preset="amount"
+          placeholder={"lit/vB"}
+          value={feeRateInputVal}
+          onChange={async (e) => {
+            adjustFeeRateInput(e.target.value);
+          }}
+          autoFocus={true}
+        />
       )}
-    </>
-  )
+    </div>
+  );
 }
-export default FeeRecommend

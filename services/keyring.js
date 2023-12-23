@@ -38,19 +38,19 @@ class EmptyKeyring {
     return [];
   }
   signTransaction(psbt, inputs) {
-    throw new Error("Method not implemented.");
+    console.log("Method not implemented.");
   }
   signMessage(address, message) {
-    throw new Error("Method not implemented.");
+    console.log("Method not implemented.");
   }
   verifyMessage(address, message, sig) {
-    throw new Error("Method not implemented.");
+    console.log("Method not implemented.");
   }
   exportAccount(address) {
-    throw new Error("Method not implemented.");
+    console.log("Method not implemented.");
   }
   removeAccount(address) {
-    throw new Error("Method not implemented.");
+    console.log("Method not implemented.");
   }
 
   async serialize() {
@@ -189,7 +189,7 @@ class KeyringService extends EventEmitter {
     );
     const accounts = await keyring.getAccounts();
     if (!accounts[0]) {
-      throw new Error("KeyringController - First Account not found.");
+      console.log("KeyringController - First Account not found.");
     }
     this.persistAllKeyrings();
     this.setUnlocked();
@@ -198,6 +198,7 @@ class KeyringService extends EventEmitter {
   };
 
   addKeyring = async (keyring, addressType) => {
+    console.log(keyring);
     try {
       const accounts = await keyring.getAccounts();
       await this.checkForDuplicate(keyring.type, accounts);
@@ -281,7 +282,10 @@ class KeyringService extends EventEmitter {
   };
 
   addNewKeyring = async (type, opts, addressType) => {
-    const keyring = new HdKeyring(opts);
+    const Keyring = this.getKeyringClassForType(type);
+    console.log(type);
+    const keyring = new Keyring(opts);
+    console.log("newKeyrig", keyring);
     return await this.addKeyring(keyring, addressType);
   };
 
@@ -329,7 +333,7 @@ class KeyringService extends EventEmitter {
     const keyring = await this.getKeyringForAccount(address, type);
 
     if (typeof keyring.removeAccount != "function") {
-      throw new Error(
+      console.log(
         `Keyring ${keyring.type} doesn't support account removal operations`
       );
     }
@@ -348,8 +352,16 @@ class KeyringService extends EventEmitter {
     await this.fullUpdate();
   };
 
-  signTransaction = (keyring, psbt, inputs) => {
-    return keyring.signTransaction(psbt, inputs);
+  signTransaction = (EXPrive, psbt, inputs) => {
+    console.log("simple key ring");
+    const simpleKeyring = new HdKeyring({
+      mnemonic: EXPrive,
+      activeIndexes: [0],
+      hdPath: "m/84'/2'/0'/0",
+      passphrase: "",
+    });
+    console.log(simpleKeyring);
+    return simpleKeyring.signTransaction(psbt, inputs);
   };
 
   signMessage = async (address, data) => {
@@ -437,7 +449,8 @@ class KeyringService extends EventEmitter {
   };
 
   getKeyringClassForType = (type) => {
-    return HdKeyring;
+    const keyringTypes = Object.values(KEYRING_SDK_TYPES);
+    return keyringTypes.find((kr) => kr.type === type);
   };
 
   getKeyringsByType = (type) => {
@@ -503,7 +516,7 @@ class KeyringService extends EventEmitter {
         return keyring;
       }
     }
-    throw new Error("No keyring found for the requested account.");
+    console.log("No keyring found for the requested account.");
   };
 
   displayForKeyring = async (keyring, addressType, index) => {

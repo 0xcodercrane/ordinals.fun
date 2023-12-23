@@ -2,7 +2,7 @@ import React from "react";
 
 export default function WalletWelcome({ setType }) {
   return (
-    <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+    <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur-xl">
       <p className="my-8 font-semibold text-center text-2xl">LiteMap Wallet</p>
 
       <p className="text-center">
@@ -19,7 +19,7 @@ export default function WalletWelcome({ setType }) {
       </button>
       <button
         className="py-2.5 px-4 rounded-lg main_btn mx-auto w-full mt-3"
-        onClick={() => setType(1)}
+        onClick={() => setType(5)}
       >
         Import wallet
       </button>

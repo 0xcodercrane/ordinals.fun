@@ -1,78 +1,91 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext } from "react";
+import React, { Fragment } from "react";
 import Nav from "react-bootstrap/Nav";
 import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { WalletContext } from "@/context/wallet";
+import { Menu, Transition } from "@headlessui/react";
+import { FaWallet } from "react-icons/fa";
 
 export default function Navigation() {
   return (
     <Nav className="links-block">
-      <div className="lg:flex lg:justify-center lg:items-center hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
         <Link className="font-semibold text-white" href="/">
           LiteMap
         </Link>
       </div>
-      <div className="lg:flex lg:justify-center lg:items-center hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
         <Link className="font-semibold text-white" href="/market">
           Market
         </Link>
       </div>
-      <div className="lg:flex lg:justify-center lg:items-center hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
         <Link className="font-semibold text-white" href="/inscribe">
           Inscribe
         </Link>
       </div>
-      <div className="lg:flex lg:justify-center lg:items-center hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
         <Link className="font-semibold text-white" href="/wallet">
           Wallet
         </Link>
       </div>
 
-      <div className="cs-dropdown group relative inline-block lg:hidden">
-        <a
-          href="#"
-          className="bg-transparent rounded text-white shadow-sm  flex justify-center items-center hover:bg-[#b1630a] cursor-pointer transition ease-out h-full p-0"
-        >
-          <GiHamburgerMenu className="text-3xl p-0 m-0" />
-        </a>
-        <div className="pt-2 group-hover:block hidden transition ease-in-out absolute top-[50px] right-[-90px] sm:right-0 w-[180px] z-[1000!important]">
-          <ul className="bg-white border border-gray-500 rounded drop-shadow-md shadow-black py-1">
-            <li className="py-2 px-3 flex hover:bg-gray-400  hover:text-white transition ease-out cursor-pointer">
-              <Link
-                className="font-semibold text-white hover:text-white "
-                href="/"
-              >
-                LiteMap
-              </Link>
-            </li>
-            <li className="py-2 px-3 flex hover:bg-gray-400  hover:text-white transition ease-out cursor-pointer">
-              <Link
-                className="font-semibold text-white hover:text-white "
-                href="/market"
-              >
-                Market
-              </Link>
-            </li>
-            <li className="py-2 px-3 flex hover:bg-gray-400  hover:text-white transition ease-out cursor-pointer">
-              <Link
-                className="font-semibold text-white hover:text-white "
-                href="/inscribe"
-              >
-                Inscribe
-              </Link>
-            </li>
-            <li className="py-2 px-3 flex hover:bg-gray-400  hover:text-white transition ease-out cursor-pointer">
-              <Link
-                className="font-semibold text-white hover:text-white "
-                href="/wallet"
-              >
-                Wallet
-              </Link>
-            </li>
-          </ul>
+      <Menu as="div" className="relative inline-block text-left md:hidden">
+        <div className="flex justify-center items-center">
+          <Menu.Button className="bg-transparent rounded text-white focus:outline-none   shadow-sm my-auto  flex justify-center items-center cursor-pointer transition ease-out h-full p-0">
+            <GiHamburgerMenu className="text-3xl p-0 my-3" />
+          </Menu.Button>
         </div>
-      </div>
+
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          <Menu.Items className="fixed right-0  w-full px-3 mt-3 origin-top-right z-50  divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none backdrop-blur-xl">
+            <div className="transition ease-in-out bg-[#091b2bed] backdrop-blur-3xl rounded-lg">
+              <ul className="rounded drop-shadow-md shadow-black py-1">
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link
+                    className="font-semibold text-white hover:text-white "
+                    href="/"
+                  >
+                    LiteMap
+                  </Link>
+                </li>
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link
+                    className="font-semibold text-white hover:text-white "
+                    href="/market"
+                  >
+                    Market
+                  </Link>
+                </li>
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link
+                    className="font-semibold text-white hover:text-white "
+                    href="/inscribe"
+                  >
+                    Inscribe
+                  </Link>
+                </li>
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link
+                    className="font-semibold text-white hover:text-white "
+                    href="/wallet"
+                  >
+                    Wallet
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </Menu.Items>
+        </Transition>
+      </Menu>
     </Nav>
   );
 }
