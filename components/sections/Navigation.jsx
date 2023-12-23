@@ -46,7 +46,7 @@ export default function Navigation() {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="fixed right-0  w-full px-3 mt-3 origin-top-right z-50  divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none backdrop-blur-xl">
+          <Menu.Items className="fixed right-0  w-full px-3 mt-3 origin-top-right z-50  divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="transition ease-in-out bg-[#091b2bed] backdrop-blur-3xl rounded-lg">
               <ul className="rounded drop-shadow-md shadow-black py-1">
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">

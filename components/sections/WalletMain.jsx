@@ -145,7 +145,7 @@ export default function WalletMain({ setContentType }) {
                   <Image
                     src="/logo.png"
                     width={40}
-                    height={60}
+                    height={40}
                     className="rounded-md"
                     alt=""
                   />

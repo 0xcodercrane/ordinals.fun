@@ -83,10 +83,10 @@ export default function FeeRecommend({ onChange }) {
             </>
           ) : (
             <>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
             </>
           )}
         </>

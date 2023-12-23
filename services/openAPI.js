@@ -95,13 +95,13 @@ class OpenApiService {
     return data;
   };
 
-  getWalletConfig = async () => {
-    const data = await this.httpGet("/default/config", {});
-    if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
-    }
-    return data.result;
-  };
+  // getWalletConfig = async () => {
+  //   const data = await this.httpGet("/default/config", {});
+  //   if (data.status == API_STATUS.FAILED) {
+  //     console.log(data.message);
+  //   }
+  //   return data.result;
+  // };
 
   getAddressBalance = async (address) => {
     const data = await this.httpGet("/address/balance", {

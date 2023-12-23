@@ -1,4 +1,5 @@
 import Layout from "@/components/sections/Layout";
+import Link from "next/link";
 
 export default function Error() {
   return (
@@ -9,14 +10,14 @@ export default function Error() {
         </h1>
         <p className="text-white text-lg mb-8 text-center">
           Whoops, this is embarassing. <br /> Looks like the page you were
-          looking for wasn't found.
+          looking for wasn{"'"}t found.
         </p>
-        <a
+        <Link
           href="/"
           className="bg-symbol text-white px-6 py-2 rounded-full cursor-pointer hover:bg-symbolHover transition ease-in-out"
         >
           Back to Home
-        </a>
+        </Link>
       </div>
     </Layout>
   );

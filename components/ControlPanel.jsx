@@ -162,7 +162,7 @@ export default function ControlPanel({ from, to }) {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         contentLabel="Example Modal"
-        className="bg-primary/5 backdrop-blur-3xl border border-[#dee2e654!important]  rounded-lg w-full max-w-[500px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4"
+        className="bg-primary/5 backdrop-blur-3xl border border-[#dee2e654!important] rounded-lg sm:w-full sm:max-w-[500px] w-[] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4"
       >
         <h2 className="text-2xl text-center my-6 font-semibold mx-auto">
           Select the amount of blocks to inscribe.

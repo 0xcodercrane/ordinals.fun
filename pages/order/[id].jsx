@@ -13,6 +13,7 @@ import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import BillsOnPayment from "../../components/UI/BillsOnPayment";
+import LongSentence from "../../components/UI/LongSentence";
 
 const Payment = () => {
   const router = useRouter();
@@ -65,7 +66,7 @@ const Payment = () => {
             <div className="pb-3 w-full">
               <h4 className="text-3xl text-center">Inscribe Order</h4>
               <p className="mt-3 p-2 text-center break-words">Order ID: </p>
-              {/* <p className="break-words text-center mb-3">{data?.orderId}</p> */}
+              <LongSentence text={data?.orderId} />
               <hr />
             </div>
 
@@ -85,9 +86,7 @@ const Payment = () => {
                   <p className="text-center text-gray-300 text-sm">
                     or Copy address below
                   </p>
-                  <p className="text-center flex justify-center">
-                    {data?.order?.payment_address}
-                  </p>
+                  <LongSentence text={data?.order?.payment_address} />
                 </div>
 
                 <hr className="h-full" />

@@ -14,15 +14,23 @@ import { toast } from "react-hot-toast";
 import openApi from "@/services/openAPI";
 import { currentPrice } from "@/utils";
 import { v4 as uuidv4 } from "uuid";
-import { onValue, ref, query, orderByChild, equalTo, push } from "firebase/database";
+import {
+  onValue,
+  ref,
+  query,
+  orderByChild,
+  equalTo,
+  push,
+} from "firebase/database";
 import { db } from "@/services/firebase";
+import OrderHistory from "../components/UI/OrderHistory";
 
 const CreateOrder = () => {
   const router = useRouter();
-  const account = useSelector(
-    (state) => state?.persistedReducer?.walletReducer?.value
-  );
-  const wallet = useContext(WalletContext);
+  // const account = useSelector(
+  //   (state) => state?.persistedReducer?.walletReducer?.value
+  // );
+  // const wallet = useContext(WalletContext);
   const inscribe = useSelector(
     (state) => state?.persistedReducer?.inscribeReducer?.value
   );
@@ -71,7 +79,7 @@ const CreateOrder = () => {
       date: Date.now(),
       blocks: inscribe.selectedBlock,
       minted: false,
-      maker: ""
+      maker: "",
     };
 
     const dbRef = ref(db, "/orders");
@@ -121,6 +129,8 @@ const CreateOrder = () => {
           </button>
         </div>
       </div>
+
+      <OrderHistory />
     </Layout>
   );
 };

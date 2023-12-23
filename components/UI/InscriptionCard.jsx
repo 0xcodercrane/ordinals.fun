@@ -7,14 +7,15 @@ export default function InscriptionCard({ inscription, index }) {
   const [content, setContent] = useState("");
 
   const getContent = async () => {
-    try {
-      const url = "/ordinalslite/content/" + inscription.inscriptionId;
-      const data = await fetch(url);
-      const textData = await data.text();
-      setContent(textData);
-    } catch (error) {
-      console.log("content fetch", error);
-    }
+    if (inscription.inscriptionId)
+      try {
+        const url = "/ordinalslite/content/" + inscription.inscriptionId;
+        const data = await fetch(url);
+        const textData = await data.text();
+        setContent(textData);
+      } catch (error) {
+        console.log("content fetch", error);
+      }
   };
 
   useEffect(() => {
@@ -33,7 +34,9 @@ export default function InscriptionCard({ inscription, index }) {
         <p>Seller:</p> <p>#ltc1...48c5</p>
       </Link>
       <hr />
-      <p className="text-center text-gray-300 mb-3 mt-1 text-sm">0.00269 LTC ($ 0.19)</p>
+      <p className="text-center text-gray-300 mb-3 mt-1 text-sm">
+        0.00269 LTC ($ 0.19)
+      </p>
       <div className="grid grid-cols-1 sm:gird-cols-2 gap-2">
         <button className="main_btn py-1">Buy</button>
       </div>

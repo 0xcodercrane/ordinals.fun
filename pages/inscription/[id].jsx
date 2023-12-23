@@ -17,15 +17,17 @@ export default function Inscription(props) {
   const [content, setContent] = useState();
 
   const getContent = async (id) => {
-    try {
-      const url = "/ordinalslite/content/" + id;
-      const data = await fetch(url);
-      const textData = await data.text();
-      setContent(textData);
-      setLoading(false);
-    } catch (error) {
-      console.log("content fetch", error);
-      setLoading(false);
+    if (id) {
+      try {
+        const url = "/ordinalslite/content/" + id;
+        const data = await fetch(url);
+        const textData = await data.text();
+        setContent(textData);
+        setLoading(false);
+      } catch (error) {
+        console.log("content fetch", error);
+        setLoading(false);
+      }
     }
   };
 
@@ -54,7 +56,9 @@ export default function Inscription(props) {
 
   return (
     <Layout>
-      <p className="my-8 text-center text-3xl font-semibold">Inscription Detail</p>
+      <p className="my-8 text-center text-3xl font-semibold">
+        Inscription Detail
+      </p>
       {!loading ? (
         <div className="my-8 grid lg:grid-cols-2 grid-cols-1 gap-3 w-full">
           <InscriptionPreview id={id} />

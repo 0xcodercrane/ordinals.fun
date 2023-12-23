@@ -15,7 +15,7 @@ export default function NextBtn({
     >
       {loading.calculating ? (
         <span className="flex items-center h-full">
-          <Spinner className="my-auto mr-2" size="sm" color="white" />
+          {/* <Spinner className="my-auto mr-2" size="sm" color="white" /> */}
           Pleae wait...
         </span>
       ) : (
