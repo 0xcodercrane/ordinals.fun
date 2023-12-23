@@ -1,4 +1,4 @@
-"use client";
+/* eslint-disable indent */
 import React, { useEffect } from "react";
 import encryptor from "browser-passworder";
 import keyring from "@/services/keyring";
