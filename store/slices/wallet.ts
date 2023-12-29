@@ -1,4 +1,3 @@
-import { Inscription } from "./../../shared/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -32,6 +31,7 @@ const initialState = {
       total: 0,
       list: [],
     },
+    price: 71
   },
 };
 
@@ -69,6 +69,9 @@ export const wallet = createSlice({
     updateInscriptions: (state, action) => {
       state.value.inscriptions = action.payload;
     },
+    updatePrice: (state, action) => {
+      state.value.price = action.payload;
+    },
   },
 });
 
@@ -83,5 +86,6 @@ export const {
   setCurrentKeyRing,
   updateBitcoinTx,
   updateInscriptions,
+  updatePrice
 } = wallet.actions;
 export default wallet.reducer;

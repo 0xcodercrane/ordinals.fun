@@ -18,12 +18,12 @@ export default function Inscribe() {
 
   return (
     <Layout>
-      {!account?.inscriptions.total > 0  && account?.inscriptions?.list? (
+      {account?.inscriptions.total > 0  && account?.inscriptions?.list? (
         <>
           <h1 className="text-3xl text-white font-semibold mb-8 my-8 text-center">
             My inscriptions
           </h1>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:gr5id-cols-6 gap-3 mt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-8 w-full">
             {account?.inscriptions?.list && account?.inscriptions?.list.map((item, key) => {
               return <InscriptionCard inscription={item} key={key} />;
             })}

@@ -87,8 +87,6 @@ export default function WalletConnect() {
     dispatch(isUnlocked(false));
   }, []);
 
-  console.log(account)
-
   return (
     <>
       <Menu as="div" className="relative inline-block text-left">
@@ -98,7 +96,7 @@ export default function WalletConnect() {
               className="-mr-1 h-5 w-5 text-gray-400"
               aria-hidden="true"
             />
-            {account?.isUnlocked && account?.addressType === 1
+            {account?.isUnlocked && account?.account?.addressType === 1
               ? addressFormat(account?.account?.accounts[0]?.address, 6)
               : " Connect Wallet"}
           </Menu.Button>

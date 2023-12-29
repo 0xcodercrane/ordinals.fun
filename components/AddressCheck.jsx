@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "@/styles/inscribe.module.css";
 import { FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -20,13 +19,13 @@ export default function AddressCheck({
       <>
         {receiveAddress && isValidAddress && (
           <FaCheckCircle
-            className="text-white my-auto mr-2"
+            className="text-green-400 my-auto mr-2"
             aria-hidden="true"
           />
         )}
         {receiveAddress && !isValidAddress && (
           <FaExclamationCircle
-            className="text-white my-auto mr-2"
+            className="text-red-400 my-auto mr-2"
             aria-hidden="true"
           />
         )}

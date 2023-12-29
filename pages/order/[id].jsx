@@ -1,19 +1,14 @@
 import React from "react";
-import styles from "@/styles/inscribe.module.css";
-import QRCode from "react-qr-code";
-import { FaCopy, FaCheck } from "react-icons/fa";
-import Countdown from "react-countdown";
 import Spinner from "react-bootstrap/Spinner";
 import Moment from "react-moment";
-import { feeAmount } from "@/configs/constants";
 import Layout from "@/components/sections/Layout";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
-import BillsOnPayment from "../../components/UI/BillsOnPayment";
 import LongSentence from "../../components/UI/LongSentence";
+import PaymentData from "../../components/UI/paymentData";
 
 const Payment = () => {
   const router = useRouter();
@@ -70,57 +65,15 @@ const Payment = () => {
               <hr />
             </div>
 
-            <div className="w-full bg-primary/10 rounded-lg p-3">
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-center text-gray-300 text-sm py-2">
-                  Scan the QRCode to pay:
-                </p>
-                <div className="bg-gray-200 p-2.5 rounded drop-shadow-md shadow-sm shadow-black border-b border-t border-r border-l border-gray-300">
-                  <QRCode
-                    className="p-2 bg-gray-50"
-                    value={data?.order?.payment_address}
-                    size={180}
-                  />
-                </div>
-                <div className="pt-3 flex flex-col justify-center">
-                  <p className="text-center text-gray-300 text-sm">
-                    or Copy address below
-                  </p>
-                  <LongSentence text={data?.order?.payment_address} />
-                </div>
+            <PaymentData data={data}/>
 
-                <hr className="h-full" />
-
-                {data && (
-                  <BillsOnPayment
-                    length={data?.blocks?.length ? data?.blocks?.length : 0}
-                  />
-                )}
-
-                <p className="text-center text-gray-300 text-sm mt-4">
-                  After payment is made, you will receive the inscription within
-                  at least 20 minutes.
-                </p>
-                <a
-                  href="https://bitpay.com/buy-litecoin/"
-                  target="_blank"
-                  className="underline hover:text-orange-400 transition ease-linear"
-                >
-                  Need LTC? Click here to buy some LTC!
-                </a>
-              </div>
-            </div>
-
-            <button className="w-full rounded-md py-2 px-3 main_btn my-3">
-              Pay With Wallet.
-            </button>
             <div className="my-3 flex justify-center">
               <Spinner />
             </div>
             <p className="text-[12px] pt-2 text-center">
               Order created at &nbsp;
               <Moment>
-                {new Date(Number(data?.date) - 60000 * 60).toString()}
+                {new Date(Number(data?.createdAt) - 60000 * 60).toString()}
               </Moment>
             </p>
           </div>

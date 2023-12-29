@@ -5,7 +5,8 @@ const initialState = {
     selectedBlock: [],
     inscription: [],
     fee: {},
-    feeRate: 1
+    feeRate: 1,
+    receiveAddress: ""
   },
 };
 
@@ -30,9 +31,12 @@ export const wallet = createSlice({
     },
     updateFeeRate: (state, action) => {
       state.value.feeRate  = action.payload;
+    },
+    updateReceiveAddress: (state, action) => {
+      state.value.receiveAddress  = action.payload;
     }
   },
 });
 
-export const { selectedBlock, cancelBlock, initialize, setBulkMintBlocks, updateFee, updateFeeRate } = wallet.actions;
+export const { selectedBlock, cancelBlock, initialize, setBulkMintBlocks, updateFee, updateFeeRate, updateReceiveAddress } = wallet.actions;
 export default wallet.reducer;

@@ -233,15 +233,15 @@ export function publicKeyToAddress(publicKey, type) {
   }
 }
 
-
 export const currentPrice = async () => {
- try {
-  const data = await fetch('https://api.diadata.org/v1/assetInfo/Litecoin/0x0000000000000000000000000000000000000000');
-  const jsonData = await data.json();
-  const currentPrice = jsonData?.Price;
-  return currentPrice;
- } catch (error) {
-   console.log(error)
- }
-
-}
+  try {
+    const data = await fetch(
+      "https://api.diadata.org/v1/assetInfo/Litecoin/0x0000000000000000000000000000000000000000"
+    );
+    const jsonData = await data.json();
+    const currentPrice = jsonData?.Price;
+    return currentPrice;
+  } catch (error) {
+    console.log(error);
+  }
+};

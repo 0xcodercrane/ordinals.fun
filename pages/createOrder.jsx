@@ -8,54 +8,20 @@ import { useRouter } from "next/router";
 import InputAddress from "../components/UI/InputAddress";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFeeRate } from "@/store/slices/inscribe";
-import { useContext } from "react";
-import WalletContext from "../context/wallet";
 import { toast } from "react-hot-toast";
-import openApi from "@/services/openAPI";
-import { currentPrice } from "@/utils";
-import { v4 as uuidv4 } from "uuid";
-import {
-  onValue,
-  ref,
-  query,
-  orderByChild,
-  equalTo,
-  push,
-} from "firebase/database";
+import { ref, push } from "firebase/database";
 import { db } from "@/services/firebase";
 import OrderHistory from "../components/UI/OrderHistory";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const CreateOrder = () => {
   const router = useRouter();
-  // const account = useSelector(
-  //   (state) => state?.persistedReducer?.walletReducer?.value
-  // );
-  // const wallet = useContext(WalletContext);
   const inscribe = useSelector(
     (state) => state?.persistedReducer?.inscribeReducer?.value
   );
   const dispatch = useDispatch();
   const [feeOption, setFeeOption] = useState("economy");
-  const [price, setprice] = useState(71);
-
-  currentPrice().then((val) => {
-    setprice(val);
-  });
-
-  const calculateFee = () => {
-    const length = inscribe.selectedBlock.length;
-    const inFee = length * 12000;
-    const seFee = Number(length * (610000 + 10 ** 8 / price).toFixed(0));
-    const siFee = length * 19;
-    const toFee = Number((inFee + seFee + siFee).toFixed(0));
-
-    return {
-      inscribeFee: inFee,
-      serviceFee: seFee,
-      sizeFee: siFee,
-      totalFee: toFee - (toFee % 1000),
-    };
-  };
+  const [pendingOrder, setPendingOrder] = useState(false);
 
   const placeOrder = async () => {
     if (inscribe.selectedBlock <= 0) {
@@ -63,32 +29,57 @@ const CreateOrder = () => {
       return;
     }
 
-    const fee = calculateFee();
-    // const createOrder = await openApi.createOrder();
-    const order = {
-      order: "QYk8ro",
-      amount_to_pay: "1010000",
-      payment_address: "Lc5bWY7WtVXX7HuAURJdQgfqXzbohnVQgh",
-    };
-    const newOrderId = uuidv4();
+    if (!inscribe.receiveAddress) {
+      toast.error("Please input receive Address");
+      return;
+    }
+
+    let files = [];
+    inscribe.selectedBlock.map((item, key) => {
+      let dataURL =
+        "data:text/plain;base64," + btoa(item.blockNumber + ".litemap");
+      let size = (item.blockNumber + ".litemap").length;
+      files.push({
+        size: size,
+        type: "text/plain",
+        name: key + ".txt",
+        dataURL: dataURL,
+        url: "",
+      });
+    });
 
     const data = {
-      fee: fee,
-      order: order,
-      orderId: newOrderId,
-      date: Date.now(),
-      blocks: inscribe.selectedBlock,
-      minted: false,
-      maker: "",
+      files: files,
+      fee: "4",
+      receiveAddress: inscribe.receiveAddress,
+      referral: "",
     };
 
-    const dbRef = ref(db, "/orders");
-    push(dbRef, data)
-      .then(() => {
-        router.push("/order/" + newOrderId);
+    setPendingOrder(true);
+    fetch("/ordinalslite/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((order) => {
+        const dbRef = ref(db, "/orders");
+        push(dbRef, { ...order, orderId: order?.charge?.id })
+          .then(() => {
+            setPendingOrder(false);
+            router.push("/order/" + order?.charge?.id);
+          })
+          .catch((error) => {
+            console.error("Error saving transaction:", error);
+            setPendingOrder(false);
+          });
       })
       .catch((error) => {
-        console.error("Error saving transaction:", error);
+        toast.error(error);
+        setPendingOrder(false);
+        return;
       });
   };
 
@@ -122,10 +113,14 @@ const CreateOrder = () => {
           />
           <Bills />
           <button
-            className="main_btn py-2 px-3 w-full mt-6 rounded-md"
+            className="main_btn py-2 px-3 w-full mt-6 rounded-md flex justify-center h-[41px] items-center"
             onClick={placeOrder}
           >
-            Submit & Pay Invoice
+            {pendingOrder ? (
+              <AiOutlineLoading3Quarters className="text-xl animate-spin text-center" />
+            ) : (
+              "Submit & Pay Invoice"
+            )}
           </button>
         </div>
       </div>

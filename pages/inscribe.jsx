@@ -60,7 +60,6 @@ const Inscribe = () => {
       toast.error("Please input the amount of Blocks");
       return;
     }
-    console.log("dd", setBulkMintAmount);
 
     let bulkMintArray = [];
     for (let index = 0; index < Number(setBulkMintAmount); index++) {

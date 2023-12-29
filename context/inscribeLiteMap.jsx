@@ -362,6 +362,8 @@ const IncribeLiteMap = (props) => {
   const ec = new TextEncoder()
 
   async function inscribeOrder(data) {
+    console.log('running');
+
     if (!typeof window) return
     if (!window.tapscript) return
 
@@ -369,6 +371,7 @@ const IncribeLiteMap = (props) => {
     let privkey = bytesToHex(cryptoUtils.Noble.utils.randomPrivateKey())
 
     const { files, feerate, receiveAddress, orderId, apiBase } = data
+    console.log(data);
 
     // Create a keypair to use for testing.
     const KeyPair = cryptoUtils.KeyPair
@@ -384,6 +387,7 @@ const IncribeLiteMap = (props) => {
       target: init_leaf,
     })
 
+    // test if the generated keypair is valid
     const test_redeemtx = Tx.create({
       vin: [
         {
@@ -413,7 +417,9 @@ const IncribeLiteMap = (props) => {
       alert('Generated keys could not be validated. Please reload the app.')
       return
     }
+   // test if the generated keypair is valid
 
+   //create inscription List
     let inscriptions = []
     let total_fee = 0
 
@@ -474,7 +480,9 @@ const IncribeLiteMap = (props) => {
         script_orig: script,
       })
     }
+    //create inscription List
 
+    //calculate fee and create funding address to split fee
     let total_fees =
       total_fee +
       (69 + (inscriptions.length + 1) * 2 * 31 + 10) * feerate +
@@ -500,6 +508,8 @@ const IncribeLiteMap = (props) => {
       service_fee -
       api_fee
 
+   console.log(fundingAddress, inscriptions, api_fee, overhead)
+
     saveTransaction({
       keys: {
         seckey: seckey,
@@ -518,10 +528,14 @@ const IncribeLiteMap = (props) => {
       amount: total_fees,
       status: 'pending',
     })
+    //calculate fee and create funding address to split fee
 
+    //check if the funding address received money
     await loopTilAddressReceivesMoney(fundingAddress, true)
     await waitSomeSeconds(2)
+    //check if the funding address received money
 
+    //split fee & pay LTC for inscribe service and fee 
     let txinfo = await addressReceivedMoneyInThisTx(fundingAddress)
 
     let txid = txinfo[0]
@@ -579,6 +593,10 @@ const IncribeLiteMap = (props) => {
     let _txid = await pushBTCpmt(rawtx)
 
     let include_mempool = true
+
+    //split fee & pay LTC for inscribe service and fee 
+
+    //check inscription address received money 
 
     async function inscribe(inscription, vout) {
       // we are running into an issue with 25 child transactions for unconfirmed parents.
@@ -663,6 +681,7 @@ const IncribeLiteMap = (props) => {
       inscribe(inscriptions[i], i)
     }
     saveTransactionHistory(orderId)
+   //check inscription address received money
   }
 
   return (

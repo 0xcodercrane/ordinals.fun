@@ -1,22 +1,23 @@
 import React from "react";
 import { copyToClipboard } from "@/utils";
 import { toast } from "react-hot-toast";
+import { FaCopy } from "react-icons/fa";
 
-export default function LongSentence({ text }) {
+export default function CopyText({ text }) {
   const copied = () => {
     toast.success("copied!");
   };
 
   return (
     <p
-      className="break-words mb-3 text-center"
-      style={{ overflowWrap: "anywhere" }}
       onClick={() => {
         copyToClipboard(text);
         copied();
       }}
+      className="flex cursor-pointer"
     >
       {text}
+      <FaCopy />
     </p>
   );
 }

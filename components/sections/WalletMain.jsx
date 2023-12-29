@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { copyToClipboard } from "@/utils";
 import { toast } from "react-hot-toast";
 import { Fragment, useContext, useState } from "react";
-import { addressFormat, currentPrice } from "@/utils";
+import { addressFormat } from "@/utils";
 import Image from "next/image";
 import { useEffect } from "react";
 import Link from "next/link";
@@ -21,12 +21,6 @@ export default function WalletMain({ setContentType }) {
   const wallet = useContext(WalletContext);
   const [listType, setListType] = useState(true);
   const [pending, setPending] = useState(true);
-  const [LTCprice, setPrice] = useState(70);
-
-  const getPrice = async () => {
-    const price = await currentPrice();
-    setPrice(price);
-  };
 
   const copied = () => {
     toast.success("copied!");
@@ -118,7 +112,7 @@ export default function WalletMain({ setContentType }) {
       </div>
       <div className="mt-3">
         {Number(account?.balance?.amount).toFixed(5)} ( $
-        {(account?.balance?.amount * LTCprice).toFixed(2)} )
+        {(account?.balance?.amount * account.price).toFixed(2)} )
       </div>
 
       <div className="flex gap-3 mt-3">

@@ -39,11 +39,13 @@ function App({ Component, pageProps }) {
 
       <Provider store={storeRef.current}>
         <PersistGate loading={null} persistor={persistor}>
-          <WalletContext>
-            <NextNProgress color="#185380" />
-            <Component {...pageProps} />
-            <ToastContainer />
-          </WalletContext>
+          <InscribeLiteMapContext>
+            <WalletContext>
+              <NextNProgress color="#185380" />
+              <Component {...pageProps} />
+              <ToastContainer />
+            </WalletContext>
+          </InscribeLiteMapContext>
         </PersistGate>
       </Provider>
       <Toaster position="bottom-right" reverseOrder={false} />

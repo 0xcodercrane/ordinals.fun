@@ -11,11 +11,12 @@ import {
   vault,
   balance,
   setCurrentKeyRing,
-  updateInscriptions
+  updateInscriptions,
 } from "../store/slices/wallet";
 import { deviceId } from "../store/slices/openApi";
+import { updatePrice } from "../store/slices/wallet";
 import randomstring from "randomstring";
-import { satoshisToAmount } from "@/utils";
+import { satoshisToAmount, currentPrice } from "@/utils";
 import {
   createSendBTC,
   createSendMultiOrds,
@@ -132,7 +133,11 @@ const Wallet = (props) => {
         const newBalance = await openApi.getAddressBalance(
           accountInfo?.account?.accounts[0]?.address
         );
-        const inscriptions = await openApi.getAddressInscriptions(accountInfo?.account?.accounts[0]?.address, 0, 10);
+        const inscriptions = await openApi.getAddressInscriptions(
+          accountInfo?.account?.accounts[0]?.address,
+          0,
+          10
+        );
         dispatch(updateInscriptions(inscriptions));
         dispatch(balance(newBalance));
       }
@@ -140,10 +145,6 @@ const Wallet = (props) => {
       console.log(error);
     }
   };
-
-  const getInscriptionsById = async () => {
-    
-  }
 
   const getFeeSummary = async () => {
     const result = await openApi.getFeeSummary();
@@ -153,6 +154,12 @@ const Wallet = (props) => {
   const queryDomainInfo = async (domain) => {
     const data = await openApi.getDomainInfo(domain);
     return data;
+  };
+
+  const getAddress = () => {
+    if (accountInfo) {
+      return accountInfo?.account?.accounts[0]?.address;
+    }
   };
 
   const getInscriptionSummary = async () => {
@@ -221,8 +228,13 @@ const Wallet = (props) => {
     };
   };
 
+  const getPrice = async () => {
+    const price = await currentPrice();
+    dispatch(updatePrice(price));
+  };
+
   const signPsbt = async (psbt, options) => {
-    console.log("running sign psbt");
+    // console.log("running sign psbt");
     const mnemonic = getMnemonic();
 
     const account = await getCurrentAccount();
@@ -257,20 +269,20 @@ const Wallet = (props) => {
         }
       }
     });
-    console.log("before:", psbt);
+    // console.log("before:", psbt);
     psbt = await keyring.signTransaction(mnemonic, psbt, toSignInputs);
     // const validator =
     if (options && options.autoFinalized == false) {
       // do not finalize
     } else {
-      console.log(toSignInputs);
+      // console.log(toSignInputs);
       // await psbt.signInput(0, account, []);
       toSignInputs.forEach((v) => {
         //   // psbt.validateSignaturesOfInput(v.index, validator);
         psbt.finalizeInput(v.index);
       });
     }
-    console.log("after:", psbt);
+    // console.log("after:", psbt);
     return psbt;
   };
 
@@ -302,12 +314,12 @@ const Wallet = (props) => {
       feeRate,
       enableRBF: false,
     });
-    console.log("finialized3333");
+    // console.log("finialized3333");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
 
-    console.log(psbt.toHex());
+    // console.log(psbt.toHex());
     return psbt.toHex();
   };
 
@@ -340,7 +352,7 @@ const Wallet = (props) => {
       feeRate = summary.list[1].feeRate;
     }
 
-    console.log("finalized1");
+    // console.log("finalized1");
     const psbtHex = await sendBTC({
       to: toAddressInfo.address,
       amount: toAmount,
@@ -349,7 +361,7 @@ const Wallet = (props) => {
       feeRate,
     });
 
-    console.log("finalized2");
+    // console.log("finalized2");
     const psbt = Psbt.fromHex(psbtHex);
     const rawtx = psbt.extractTransaction().toHex();
     const fee = psbt.getFee();
@@ -359,7 +371,7 @@ const Wallet = (props) => {
       toAddressInfo,
       fee,
     };
-    console.log("rawTxInfo:", rawtx);
+    // console.log("rawTxInfo:", rawtx);
     return rawtx;
   };
 
@@ -388,6 +400,10 @@ const Wallet = (props) => {
     fetchbalance();
   }, []);
 
+  useEffect(() => {
+    getPrice();
+  }, []);
+
   return (
     <WalletContext.Provider
       value={{
@@ -407,6 +423,7 @@ const Wallet = (props) => {
         sendBTC,
         pushTx,
         importWallet,
+        getAddress,
       }}
     >
       {props.children}
