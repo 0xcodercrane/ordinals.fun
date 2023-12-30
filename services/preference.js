@@ -5,7 +5,7 @@ import cloneDeep from "lodash/cloneDeep";
 import { EVENTS } from "@/shared/constant";
 import eventBus from "@/shared/eventBus";
 
-import { i18n, sessionService } from "./keyring";
+// import {  sessionService } from "./keyring";
 
 const version = process.env.release || "0";
 
@@ -47,7 +47,7 @@ class PreferenceService {
     if (!this.store.locale || this.store.locale !== defaultLang) {
       this.store.locale = defaultLang;
     }
-    i18n.changeLanguage(this.store.locale);
+    // i18n.changeLanguage(this.store.locale);
 
     if (!this.store.currency) {
       this.store.currency = "USD";
@@ -121,7 +121,7 @@ class PreferenceService {
   setCurrentAccount = (account) => {
     this.store.currentAccount = account;
     if (account) {
-      sessionService.broadcastEvent("accountsChanged", [account.address]);
+      // sessionService.broadcastEvent("accountsChanged", [account.address]);
       eventBus.emit(EVENTS.broadcastToUI, {
         method: "accountsChanged",
         params: account,
@@ -200,7 +200,7 @@ class PreferenceService {
 
   setLocale = (locale) => {
     this.store.locale = locale;
-    i18n.changeLanguage(locale);
+    // i18n.changeLanguage(locale);
   };
 
   // currency
