@@ -4,9 +4,15 @@ export * from "./hooks";
 export * from "./WalletContext";
 
 export function addressFormat(address, length) {
-  const formattedAddress =
-    address.slice(0, length) + "..." + address.slice(-length);
-  return formattedAddress;
+  try {
+    if (address) {
+      const formattedAddress =
+        address.slice(0, length) + "..." + address.slice(-length);
+      return formattedAddress;
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const UI_TYPE = {

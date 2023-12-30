@@ -36,7 +36,6 @@ export default function WalletMain({ setContentType }) {
 
   useEffect(() => {
     wallet.fetchbalance();
-    getPrice();
     fetchData();
   }, []);
 

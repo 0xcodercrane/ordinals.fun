@@ -79,7 +79,6 @@ const WaitingPayment = () => {
   }
 
   useEffect(() => {
-    console.log(inscribeContext.selectedBlock)
     async function paymentInitialize() {
       try {
         const transactionsQuery = query(

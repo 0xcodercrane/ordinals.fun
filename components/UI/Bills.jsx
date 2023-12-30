@@ -9,7 +9,7 @@ export default function Bills() {
     (state) => state?.persistedReducer?.inscribeReducer?.value
   );
   const account = useSelector(
-    (state) => state?.persistedReducer?.inscribeReducer?.value
+    (state) => state?.persistedReducer?.walletReducer?.value
   );
   const [inscribeFee, setInscribeFee] = useState(0);
   const [serviceFee, setServceFee] = useState(0);
@@ -27,7 +27,7 @@ export default function Bills() {
     setServceFee(Number(seFee.toFixed(0)));
     setSizeFee(siFee);
     setToTalFee(Number(toFee.toFixed(0)));
-  }, [account.price, inscribe]);
+  }, [account, inscribe]);
 
   return (
     <>

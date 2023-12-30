@@ -6,7 +6,11 @@ const initialState = {
     inscription: [],
     fee: {},
     feeRate: 1,
-    receiveAddress: ""
+    receiveAddress: "",
+    confirmed1: false,
+    confirmed2: false,
+    confirmed3: false,
+    confirmed4: false,
   },
 };
 
@@ -18,7 +22,9 @@ export const wallet = createSlice({
       state.value.selectedBlock.push(action.payload);
     },
     cancelBlock: (state, action) => {
-      state.value.selectedBlock = state.value.selectedBlock.filter((block) => block.blockNumber !== action.payload);
+      state.value.selectedBlock = state.value.selectedBlock.filter(
+        (block) => block.blockNumber !== action.payload
+      );
     },
     initialize: (state, action) => {
       state.value.selectedBlock = [];
@@ -27,16 +33,50 @@ export const wallet = createSlice({
       state.value.selectedBlock = action.payload;
     },
     updateFee: (state, action) => {
-      state.value.fee = action.payload
+      state.value.fee = action.payload;
     },
     updateFeeRate: (state, action) => {
-      state.value.feeRate  = action.payload;
+      state.value.feeRate = action.payload;
     },
     updateReceiveAddress: (state, action) => {
-      state.value.receiveAddress  = action.payload;
-    }
+      state.value.receiveAddress = action.payload;
+    },
+    updateConfirmed1: (state, action) => {
+      state.value.confirmed1 = action.payload;
+    },
+    updateConfirmed2: (state, action) => {
+      state.value.confirmed2 = action.payload;
+    },
+    updateConfirmed3: (state, action) => {
+      state.value.confirmed3 = action.payload;
+    },
+    updateConfirmed4: (state, action) => {
+      state.value.confirmed4 = action.payload;
+    },
+    clearConfirms: (state, action) => {
+      state.value.confirmed1 = false;
+      state.value.confirmed2 = false;
+      state.value.confirmed3 = false;
+      state.value.confirmed4 = false;
+      state.value.selectedBlock = [];
+      state.value.receiveAddress = "";
+      
+    },
   },
 });
 
-export const { selectedBlock, cancelBlock, initialize, setBulkMintBlocks, updateFee, updateFeeRate, updateReceiveAddress } = wallet.actions;
+export const {
+  selectedBlock,
+  cancelBlock,
+  initialize,
+  setBulkMintBlocks,
+  updateFee,
+  updateFeeRate,
+  updateReceiveAddress,
+  updateConfirmed1,
+  updateConfirmed2,
+  updateConfirmed3,
+  updateConfirmed4,
+  clearConfirms
+} = wallet.actions;
 export default wallet.reducer;
