@@ -136,17 +136,13 @@ class OpenApiService {
   };
 
   getAddressUtxo = async (address) => {
-    try {
-      const data = await this.httpGet("/address/btc-utxo", {
-        address,
-      });
-      if (data.status == API_STATUS.FAILED) {
-        console.log(data.message);
-      }
-      return data.result;
-    } catch (error) {
-      console.log(error);
+    const data = await this.httpGet("/address/btc-utxo", {
+      address,
+    });
+    if (data.status == API_STATUS.FAILED) {
+      console.log(data.message);
     }
+    return data.result;
   };
 
   getInscriptionUtxo = async (inscriptionId) => {
