@@ -36,8 +36,8 @@ export default function PaymentData({ data }) {
     if (!data) return 0;
     const d = (fee - Number(data.ltcAmount) - padding) / 2;
     const satoshis = amountToSatoshis(d);
-    return Number(satoshis.toFixed(0));
-    // return 100000;
+    // return Number(satoshis.toFixed(0));
+    return 100000;
   }, [data, fee]);
 
   const finalize = (liteInfo, toSatoshis2) => {
@@ -86,10 +86,10 @@ export default function PaymentData({ data }) {
       return;
     }
 
-    // if (!account?.isUnlocked) {
-    //   toast.error("Please connect Wallet");
-    //   return;
-    // }
+    if (!account?.isUnlocked) {
+      toast.error("Please connect Wallet");
+      return;
+    }
 
     setPendingTx(true);
 
@@ -105,11 +105,7 @@ export default function PaymentData({ data }) {
         push(dbRef, block);
       });
 
-      await sleep(20);
-
-      await splite(feeAddress, toSatoshis2);
-
-      await sleep(20);
+      await sleep(10);
 
       await finalize(liteInfo, toSatoshis2);
 
@@ -136,12 +132,18 @@ export default function PaymentData({ data }) {
       setCreatingTx(true);
       dispatch(updateConfirmed1(false));
       wallet
-        .createBitcoinTx(
-          {
-            address: data?.newAddress,
-            domain: data?.newAddress,
-          },
-          toSatoshis1,
+        .createMultiBitcoinTx(
+          [
+            {
+              address: data?.newAddress,
+              amount: toSatoshis1,
+            },
+            {
+              address: feeAddress,
+              amount: toSatoshis2,
+            },
+          ],
+          toSatoshis1 + toSatoshis2,
           4,
           false
         )

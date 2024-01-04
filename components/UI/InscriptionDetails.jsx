@@ -3,53 +3,96 @@ import React from "react";
 export default function InscriptionDetails({ data, content }) {
   return (
     <div className="p-3 bg-primary/10 rounded-lg">
-      <div className="text-3xl font-bold px-3">{content}</div>
+      {content ? (
+        <div className="text-3xl font-bold px-3">{content}</div>
+      ) : (
+        <div className="animate-pulse bg-primary/20 rounded-sm h-8 w-32"></div>
+      )}
+
       <div className="rounded-lg p-3 divide-primary/40 divide-y">
         <div className="py-2">
           <p className="text-sm text-gray-300">Inscription ID</p>
-          <p className="break-words">{data?.inscriptionId}</p>
+          {data?.inscriptionId ? (
+            <p className="break-words">{data?.inscriptionId}</p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Owner</p>
-          <p className="break-words">{data?.address}</p>
+          {data?.address ? (
+            <p className="break-words">{data?.address}</p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Output value</p>
-          <p className="break-words">{data?.outputValue}</p>
+          {data?.outputValue ? (
+            <p className="break-words">{data?.outputValue}</p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Content Length</p>
-          <p className="break-words">{data?.contentLength}</p>
+          {data?.contentLength ? (
+            <p className="break-words">{data?.contentLength}</p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Content Type</p>
-          <p className="break-words">{data?.contentType}</p>
+          {data?.contentType ? (
+            <p className="break-words">{data?.contentType}</p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Inscription Number</p>
-          <p className="break-words">{data?.inscriptionNumber}</p>
+          {data?.inscriptionNumber ? (
+            <p className="break-words">{data?.inscriptionNumber}</p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Created</p>
-          <p className="break-words">
-            {new Date(data?.timestamp * 1000).toString()}
-          </p>
+          {data?.timestamp ? (
+            <p className="break-words">
+              {new Date(data?.timestamp * 1000).toString()}
+            </p>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Preview</p>
-          <a href={data?.preview} target="_blank" className="break-words">
-            {data?.preview}
-          </a>
+          {data?.preview ? (
+            <a href={data?.preview} target="_blank" className="break-words">
+              {data?.preview}
+            </a>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
         <div className="py-2">
           <p className="text-sm text-gray-300">Indexer</p>
-          <a
-            href={"https://ordinalslite.com/inscription/" + data?.inscriptionId}
-            target="_blank"
-            className="break-words"
-          >
-            {data?.inscriptionId}
-          </a>
+          {data?.inscriptionId ? (
+            <a
+              href={
+                "https://ordinalslite.com/inscription/" + data?.inscriptionId
+              }
+              target="_blank"
+              className="break-words"
+            >
+              {data?.inscriptionId}
+            </a>
+          ) : (
+            <div className="animate-pulse bg-primary/20 rounded-sm h-6"></div>
+          )}
         </div>
       </div>
     </div>

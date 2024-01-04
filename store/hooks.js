@@ -32,8 +32,9 @@ export const useWallet = () => {
   return useSelector((state) => state?.persistedReducer?.walletReducer?.value);
 };
 
-export const useRefreshBlocks = () => {
+export const useMintedBlocks = () => {
   const dispatch = useDispatch();
+  const { fastRefresh } = useRefresh();
   const { mintedBlocks } = useBlocks();
   const { selectedBlock } = useInscribe();
 
@@ -59,21 +60,6 @@ export const useRefreshBlocks = () => {
   };
 
   useEffect(() => {
-    if (mintedBlocks.length > 0) {
-      const refreshBlocks = selectedBlock.filter((block) =>
-        binarySearch(block.blockNumber)
-      );
-      dispatch(setBulkMintBlocks(refreshBlocks));
-    }
-  }, [mintedBlocks]);
-};
-
-export const useMintedBlocks = () => {
-  const dispatch = useDispatch();
-  const { fastRefresh } = useRefresh();
-  const { mintedBlocks } = useBlocks();
-
-  useEffect(() => {
     const dbQuery = query(ref(db, "mintedBlocks"), orderByChild("blockNumber"));
 
     onValue(dbQuery, async (snapshot) => {
@@ -84,15 +70,22 @@ export const useMintedBlocks = () => {
           (a, b) => a.blockNumber - b.blockNumber
         );
 
-        const differ = mintedBlocks.length - sortedBlocks.length;
+        const differ = sortedBlocks.length - mintedBlocks.length;
         if (differ > 0) {
-          toast.success(`${differ} blocks have just minted.`);
+          dispatch(setMintedBlocks(sortedBlocks));
         }
-
-        dispatch(setMintedBlocks(sortedBlocks));
       }
     });
   }, [fastRefresh, dispatch]);
+
+  useEffect(() => {
+    if (mintedBlocks.length > 0) {
+      const refreshBlocks = selectedBlock.filter((block) =>
+        binarySearch(block.blockNumber)
+      );
+      dispatch(setBulkMintBlocks(refreshBlocks));
+    }
+  }, [mintedBlocks]);
 };
 
 export const useLastBlock = () => {

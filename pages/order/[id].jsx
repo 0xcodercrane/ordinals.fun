@@ -26,6 +26,7 @@ import {
 } from "@/store/slices/inscribe";
 import { useDispatch, useSelector } from "react-redux";
 import Confirming from "../../components/UI/Confirming";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Payment = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,6 @@ const Payment = () => {
   const [finished, setFinished] = useState(false);
 
   const goToHome = () => {
-    dispatch(clearConfirms());
     router.push("/inscribe");
   };
 
@@ -208,12 +208,12 @@ const Payment = () => {
       {orderData ? (
         <div className="py-[70px] flex justify-center relative px-2">
           <div className="px-4 py-16 w-full max-w-[600px] rounded-lg bg-primary/20 relative">
-            <button
-              className="border rounded-md p-1 px-3 absolute top-3 right-3 focus:outline-none hover:bg-primary/20"
+            <div
+              className="absolute px-2 py-1 rounded top-2 left-2 z-10 text-sm cursor-pointer"
               onClick={goToHome}
             >
-              Close Order
-            </button>
+              <FaArrowLeft className="text-lg mt-3" />
+            </div>
 
             <div className="pb-3 w-full">
               <h4 className="text-3xl text-center">Inscribe Order</h4>

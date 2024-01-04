@@ -12,18 +12,11 @@ import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import ControlPanel from "../components/ControlPanel";
-import {
-  useBlocks,
-  useInscribe,
-  useLastBlock,
-  useMintedBlocks,
-  useRefreshBlocks,
-} from "../store/hooks";
+import { useBlocks, useInscribe, useLastBlock } from "../store/hooks";
 import { push, ref } from "firebase/database";
 import { db } from "@/services/firebase";
 
 const Inscribe = () => {
-  useRefreshBlocks();
   useLastBlock();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -136,7 +129,7 @@ const Inscribe = () => {
 
       <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
         {Array.from({ length: 300 }, (_, index) => {
-          if (index <= lastBlock)
+          if (index + pageStep <= lastBlock)
             return (
               <Block index={index} key={index} blockNumber={index + pageStep} />
             );

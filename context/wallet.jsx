@@ -22,6 +22,7 @@ import {
   createSendMultiOrds,
   createSendOrd,
   createSplitOrdUtxoV2,
+  createSendMultiBTC
 } from "@unisat/ord-utils";
 import { address as PsbtAddress } from "bitcoinjs-lib";
 import * as bitcoin from "bitcoinjs-lib";
@@ -326,6 +327,42 @@ const Wallet = (props) => {
     return psbt.toHex();
   };
 
+  const sendMultiBTC = async ({ receivers, utxos, receiverToPayFee, feeRate }) => {
+    const currentAccount = accountInfo?.account?.accounts[0];
+    if (!currentAccount) console.log("no current account");
+
+    const psbtNetwork = toPsbtNetwork();
+
+    const psbt = await createSendMultiBTC({
+      utxos: utxos.map((v) => {
+        return {
+          txId: v.txId,
+          outputIndex: v.outputIndex,
+          satoshis: v.satoshis,
+          scriptPk: v.scriptPk,
+          addressType: v.addressType,
+          address: currentAccount.address,
+          ords: v.inscriptions,
+        };
+      }),
+      receivers: receivers,
+      wallet: { signPsbt: signPsbt },
+      network: psbtNetwork,
+      changeAddress: currentAccount.address,
+      receiverToPayFee,
+      pubkey: currentAccount.pubkey,
+      feeRate,
+      enableRBF: false,
+    });
+    // console.log("finialized3333");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+
+    // console.log(psbt.toHex());
+    return psbt.toHex();
+  };
+
   const createBitcoinTx = async (
     toAddressInfo,
     toAmount,
@@ -374,6 +411,51 @@ const Wallet = (props) => {
       toAddressInfo,
       fee,
     };
+    // console.log("rawTxInfo:", rawtx);
+    return rawtx;
+  };
+
+  const createMultiBitcoinTx = async (
+    receivers,
+    toAmount,
+    feeRate,
+    receiverToPayFee
+  ) => {
+    const fromAddress = accountInfo?.account?.accounts[0]?.address;
+    const utxos = await getAddressUtxo(fromAddress);
+
+    if (utxos.length == 0) {
+      toast.error("utxos fetch issue");
+      return;
+    }
+    const safeBalance = utxos
+      .filter((v) => v.inscriptions.length == 0)
+      .reduce((pre, cur) => pre + cur.satoshis, 0);
+    if (safeBalance < toAmount) {
+      console.log(
+        `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
+          safeBalance
+        )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
+      );
+    }
+
+    if (!feeRate) {
+      const summary = await getFeeSummary();
+      feeRate = summary.list[1].feeRate;
+    }
+
+    // console.log("finalized1");
+    const psbtHex = await sendMultiBTC({
+      receivers: receivers,
+      utxos: utxos,
+      receiverToPayFee,
+      feeRate,
+    });
+
+    // console.log("finalized2");
+    const psbt = Psbt.fromHex(psbtHex);
+    const rawtx = psbt.extractTransaction().toHex();
+    const fee = psbt.getFee();
     // console.log("rawTxInfo:", rawtx);
     return rawtx;
   };
@@ -427,6 +509,7 @@ const Wallet = (props) => {
         pushTx,
         importWallet,
         getAddress,
+        createMultiBitcoinTx
       }}
     >
       {props.children}

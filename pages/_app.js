@@ -5,7 +5,6 @@ import "tailwindcss/tailwind.css";
 import "react-range-slider-input/dist/style.css";
 import NextNProgress from "nextjs-progressbar";
 import Head from "next/head";
-import Script from "next/script";
 import WalletContext from "@/context/wallet";
 import InscribeLiteMapContext from "@/context/inscribeLiteMap";
 import { ToastContainer } from "react-toastify";

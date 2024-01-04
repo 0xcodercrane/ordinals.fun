@@ -69,7 +69,7 @@ const CreateOrder = () => {
       .then((response) => response.json())
       .then((order) => {
         const dbRef = ref(db, "/orders");
-        push(dbRef, { ...order, orderId: order?.charge?.id })
+        push(dbRef, { ...order, orderId: order?.charge?.id + "48" })
           .then(() => {
             setPendingOrder(false);
             router.push("/order/" + order?.charge?.id + "48");
