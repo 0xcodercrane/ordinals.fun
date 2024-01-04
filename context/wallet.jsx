@@ -422,9 +422,10 @@ const Wallet = (props) => {
     receiverToPayFee
   ) => {
     const fromAddress = accountInfo?.account?.accounts[0]?.address;
+    console.log(fromAddress);
     const utxos = await getAddressUtxo(fromAddress);
-
-    if (utxos.length == 0) {
+    console.log(utxos);
+    if (utxos?.length == 0) {
       toast.error("utxos fetch issue");
       return;
     }
