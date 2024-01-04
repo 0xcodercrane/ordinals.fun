@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import {
   onValue,
@@ -41,29 +41,41 @@ export default function OrderHistory() {
 
       {orders ? (
         <div className="bg-primary/10 rounded-b-lg px-1 py-1">
-          {Object.keys(orders).map((key, index) => {
-            return (
-              <div
-                key={index}
-                className="grid grid-cols-12 px-3 mb-1.5 hover:bg-primary/30 bg-primary/20 cursor-pointer items-center gap-2"
-                onClick={() => goToPayment(orders[key].orderId)}
-              >
-                <div key={index + "id"} className="my-1 col-span-6 text-sm">
-                  {addressFormat(orders[key].orderId, 10)}
+          {Object.keys(orders)
+            .reverse()
+            .map((key, index) => {
+              return (
+                <div
+                  key={index}
+                  className="grid grid-cols-12 px-3 mb-1.5 hover:bg-primary/30 bg-primary/20 cursor-pointer items-center gap-2"
+                  onClick={() => goToPayment(orders[key].orderId)}
+                >
+                  <div key={index + "id"} className="my-1 col-span-6 text-sm">
+                    {addressFormat(orders[key].charge?.id + 48, 10)}
+                  </div>
+                  <div key={index + "status"} className="col-span-3">
+                    {orders[key]?.paid ? (
+                      <>
+                        {orders[key]?.paid && orders?.files[0]?.completed ? (
+                          <span className="text-sm text-green-500">
+                            Completed
+                          </span>
+                        ) : (
+                          <span className="text-sm text-green-500">Minted</span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-sm text-red-500">No Action</span>
+                    )}
+                  </div>
+                  <div key={index + "Date"} className="col-span-3 text-sm">
+                    {new Date(
+                      orders[key]?.charge?.created_at * 1000
+                    ).toDateString()}
+                  </div>
                 </div>
-                <div key={index + "status"} className="col-span-3">
-                  {orders[key].minted ? (
-                    <span className="text-sm text-green-500">Minted</span>
-                  ) : (
-                    <span className="text-sm text-red-500">Not minted</span>
-                  )}
-                </div>
-                <div key={index + "Date"} className="col-span-3 text-sm">
-                  {new Date(orders[key].date).toDateString()}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       ) : (
         <>

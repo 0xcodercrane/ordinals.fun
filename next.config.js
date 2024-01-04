@@ -24,6 +24,10 @@ const nextConfig = {
         source: "/ordinalslite/:slug*",
         destination: "https://ordinalslite.xyz/:slug*",
       },
+      {
+        source: "/chainz/:slug*",
+        destination: "https://chainz.cryptoid.info/:slug*",
+      },
     ];
   },
 };

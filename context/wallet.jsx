@@ -157,8 +157,11 @@ const Wallet = (props) => {
   };
 
   const getAddress = () => {
-    if (accountInfo) {
-      return accountInfo?.account?.accounts[0]?.address;
+    try {
+      const address = accountInfo?.account?.accounts[0]?.address;
+      return address;
+    } catch (error) {
+      return "";
     }
   };
 

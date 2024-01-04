@@ -2,29 +2,29 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { AiFillControl } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { initialize, setBulkMintBlocks } from "@/store/slices/inscribe";
 import { TfiPanel } from "react-icons/tfi";
 import Modal from "react-modal";
-
-const mintedBlocks = [
-  { blockNumber: 100 },
-  { blockNumber: 200 },
-  { blockNumber: 300 },
-  { blockNumber: 400 },
-];
+import { useBlocks, useInscribe } from "../store/hooks";
+import { push, ref } from "firebase/database";
+import { db } from "@/services/firebase";
+import LastMints from "./UI/LastMints";
 
 export default function ControlPanel({ from, to }) {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const { mintedBlocks } = useBlocks();
+  const { selectedBlock } = useInscribe();
+
   const [modalIsOpen, setIsOpen] = useState(false);
   const [fromNumber, setFromNumber] = useState(0);
   const [toNumber, setToNumber] = useState(0);
   const [amount, setAmount] = useState(0);
   const [availableBlocks, setAvailableBlocks] = useState([]);
-  const [selectedBlocks, setSelectedBlocks] = useState([]);
+  const [blocks, setBlocks] = useState([]);
 
   function openModal() {
     setIsOpen(true);
@@ -40,7 +40,11 @@ export default function ControlPanel({ from, to }) {
   }
 
   const goToCreatOrder = () => {
-    if (selectedBlocks.length > 0) {
+    if (blocks.length > 0) {
+      const dbRef = ref(db, "/mintedBlocks");
+      selectedBlock.map((block) => {
+        push(dbRef, block);
+      });
       router.push("/createOrder");
     } else {
       toast.error("Please select blocks to inscribe.");
@@ -72,7 +76,15 @@ export default function ControlPanel({ from, to }) {
     let blocks = [];
     for (let index = from; index <= to; index++) {
       if (binarySearch(index)) {
-        blocks.push({ blockNumber: index });
+        blocks.push({
+          blockNumber: index,
+          id: "",
+          date: Date.now(),
+          orderCreated: false,
+          paid: false,
+          orderId: "",
+          owner: "",
+        });
       }
     }
     setAvailableBlocks(blocks);
@@ -89,7 +101,7 @@ export default function ControlPanel({ from, to }) {
     const blocks = availableBlocks.slice(0, sliceAmount);
     if (blocks.length > 0) {
       dispatch(setBulkMintBlocks(blocks));
-      setSelectedBlocks(blocks);
+      setBlocks(blocks);
     } else {
       toast.error("There are no enough blocks on this page.");
     }
@@ -124,13 +136,21 @@ export default function ControlPanel({ from, to }) {
       index++
     ) {
       if (binarySearch(index)) {
-        blocks.push({ blockNumber: index });
+        blocks.push({
+          blockNumber: index,
+          id: "",
+          date: Date.now(),
+          orderCreated: false,
+          paid: false,
+          orderId: "",
+          owner: "",
+        });
       }
     }
 
     if (blocks.length > 0) {
       dispatch(setBulkMintBlocks(blocks));
-      setSelectedBlocks(blocks);
+      setBlocks(blocks);
     } else {
       toast.error("There are no enough blocks on this page.");
     }
@@ -138,7 +158,7 @@ export default function ControlPanel({ from, to }) {
 
   const clearBlocks = () => {
     dispatch(initialize());
-    setSelectedBlocks([]);
+    setBlocks([]);
   };
 
   useEffect(() => {
@@ -148,9 +168,7 @@ export default function ControlPanel({ from, to }) {
   return (
     <>
       <div className="flex justify-between w-full gap-3">
-        <div className="main_btn py-2 px-3 rounded-md w-fit">
-          🔥 256 mints in last hour
-        </div>
+        <LastMints/>
         <div className="flex gap-2 sm:justify-end justify-center">
           <button className=" focus:outline-none" onClick={openModal}>
             <TfiPanel className="text-3xl cursor-pointer" />
@@ -246,7 +264,7 @@ export default function ControlPanel({ from, to }) {
             <p> Available Blocks:</p> <p>{availableBlocks.length}</p>
           </div>
           <div className="flex gap-2 justify-between w-full">
-            <p> Selected Blocks:</p> <p>{selectedBlocks.length}</p>
+            <p> Selected Blocks:</p> <p>{blocks.length}</p>
           </div>
         </div>
 

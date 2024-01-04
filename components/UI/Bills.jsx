@@ -1,33 +1,16 @@
 import React from "react";
 import { AiFillWarning } from "react-icons/ai";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useInscribe, useWallet } from "../../store/hooks";
 
 export default function Bills() {
-  const inscribe = useSelector(
-    (state) => state?.persistedReducer?.inscribeReducer?.value
-  );
-  const account = useSelector(
-    (state) => state?.persistedReducer?.walletReducer?.value
-  );
-  const [inscribeFee, setInscribeFee] = useState(0);
-  const [serviceFee, setServceFee] = useState(0);
-  const [sizeFee, setSizeFee] = useState(0);
-  const [totalFee, setToTalFee] = useState(0);
+  const { selectedBlock } = useInscribe();
+  const { price } = useWallet();
 
-  useEffect(() => {
-    const length = inscribe.selectedBlock.length;
-    const inFee = length * 10000;
-    const seFee = length * (510000 + 10 ** 8 / account.price);
-    const siFee = length * 19;
-    const toFee = inFee + seFee + siFee;
-
-    setInscribeFee(inFee);
-    setServceFee(Number(seFee.toFixed(0)));
-    setSizeFee(siFee);
-    setToTalFee(Number(toFee.toFixed(0)));
-  }, [account, inscribe]);
+  const length = selectedBlock.length;
+  const inscribeFee = length * 10000;
+  const serviceFee = Number((length * (510000 + 10 ** 8 / price)).toFixed(0));
+  const sizeFee = length * 19;
+  const totalFee = Number((inscribeFee + serviceFee + sizeFee).toFixed(0));
 
   return (
     <>
@@ -36,10 +19,10 @@ export default function Bills() {
         <div className="grid grid-cols-2 font-light py-1 text-sm">
           <p className="text-right pr-2 ">Sats In Inscription:</p>
           <p className="text-left pl-2 ">
-            {inscribe.selectedBlock.length} * 10000 sats
+            {selectedBlock.length} * 10000 sats
             <span className="text-[11px] text-gray-300">
               &nbsp; ~$&nbsp;
-              {((inscribeFee / 10 ** 8) * account.price).toFixed(2)}
+              {((inscribeFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
         </div>
@@ -49,8 +32,7 @@ export default function Bills() {
           <p className="text-left pl-2">
             {serviceFee} sats
             <span className=" text-[11px] text-gray-300">
-              {" "}
-              &nbsp;~$ {((serviceFee / 10 ** 8) * account.price).toFixed(2)}
+              &nbsp;~$ {((serviceFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
         </div>
@@ -60,8 +42,7 @@ export default function Bills() {
           <p className="text-left pl-2">
             {sizeFee} sats
             <span className=" text-[11px] text-gray-300">
-              {" "}
-              &nbsp;~$ {((sizeFee / 10 ** 8) * account.price).toFixed(2)}
+              &nbsp;~$ {((sizeFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
         </div>
@@ -71,8 +52,7 @@ export default function Bills() {
           <p className="text-left pl-2">
             <span className="line-through"> {totalFee}</span> sats
             <span className=" text-[11px] text-gray-300">
-              {" "}
-              &nbsp;~$ {((totalFee / 10 ** 8) * account.price).toFixed(2)}
+              &nbsp;~$ {((totalFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
         </div>
@@ -82,12 +62,8 @@ export default function Bills() {
           <p className="text-left pl-2">
             {totalFee - (totalFee % 1000)} sats
             <span className=" text-[11px] text-gray-300">
-              {" "}
-              &nbsp;~${" "}
-              {(
-                ((totalFee - (totalFee % 1000)) / 10 ** 8) *
-                account.price
-              ).toFixed(2)}
+              &nbsp;~$
+              {(((totalFee - (totalFee % 1000)) / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
         </div>

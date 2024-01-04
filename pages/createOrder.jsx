@@ -13,29 +13,32 @@ import { ref, push } from "firebase/database";
 import { db } from "@/services/firebase";
 import OrderHistory from "../components/UI/OrderHistory";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useInscribe } from "../store/hooks";
+import { setMintedBlocks } from "@/store/slices/blocks";
+import { useEffect } from "react";
 
 const CreateOrder = () => {
-  const router = useRouter();
-  const inscribe = useSelector(
-    (state) => state?.persistedReducer?.inscribeReducer?.value
-  );
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const { selectedBlock, receiveAddress } = useInscribe();
+
   const [feeOption, setFeeOption] = useState("economy");
   const [pendingOrder, setPendingOrder] = useState(false);
 
   const placeOrder = async () => {
-    if (inscribe.selectedBlock <= 0) {
+    if (selectedBlock <= 0) {
       toast.error("Please select blocks to inscribe");
       return;
     }
 
-    if (!inscribe.receiveAddress) {
+    if (!receiveAddress) {
       toast.error("Please input receive Address");
       return;
     }
 
     let files = [];
-    inscribe.selectedBlock.map((item, key) => {
+    selectedBlock.map((item, key) => {
       let dataURL =
         "data:text/plain;base64," + btoa(item.blockNumber + ".litemap");
       let size = (item.blockNumber + ".litemap").length;
@@ -51,7 +54,7 @@ const CreateOrder = () => {
     const data = {
       files: files,
       fee: "4",
-      receiveAddress: inscribe.receiveAddress,
+      receiveAddress: receiveAddress,
       referral: "",
     };
 
@@ -69,7 +72,7 @@ const CreateOrder = () => {
         push(dbRef, { ...order, orderId: order?.charge?.id })
           .then(() => {
             setPendingOrder(false);
-            router.push("/order/" + order?.charge?.id);
+            router.push("/order/" + order?.charge?.id + "48");
           })
           .catch((error) => {
             console.error("Error saving transaction:", error);
@@ -125,7 +128,7 @@ const CreateOrder = () => {
         </div>
       </div>
 
-      <OrderHistory />
+      {/* <OrderHistory /> */}
     </Layout>
   );
 };

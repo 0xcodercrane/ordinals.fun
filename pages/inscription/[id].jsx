@@ -3,8 +3,9 @@ import Layout from "@/components/sections/Layout";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import Loading from "@/components/UI/Loading";
-import InscriptionPreview from "../../components/UI/InscriptionPreview";
+import InscriptionPreview from "@/components/UI/InscriptionPreview";
+import openAPI from "@/services/openAPI";
+import InscriptionDetails from "@/components/UI/InscriptionDetails";
 
 export default function Inscription(props) {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function Inscription(props) {
   const getContent = async (id) => {
     if (id) {
       try {
-        const url = "/ordinalslite/content/" + id;
+        const url = "https://ordinalslite.com/content/" + id;
         const data = await fetch(url);
         const textData = await data.text();
         setContent(textData);
@@ -31,13 +32,12 @@ export default function Inscription(props) {
     }
   };
 
-  const getData = (id) => {
+  const getData = async (id) => {
     setLoading(true);
-    const data = accountInfo?.inscriptions?.list?.filter(
-      (items) => items?.inscriptionId === id
-    );
+    const data = await openAPI.getInscriptionUtxoDetail(id);
+
     if (data) {
-      setData(data[0]);
+      setData(data?.inscriptions[0]);
     } else {
       router.push("/wallet");
     }
@@ -59,53 +59,11 @@ export default function Inscription(props) {
       <p className="my-8 text-center text-3xl font-semibold">
         Inscription Detail
       </p>
-      {!loading ? (
-        <div className="my-8 grid lg:grid-cols-2 grid-cols-1 gap-3 w-full">
-          <InscriptionPreview id={id} />
-          <div className="p-3 bg-primary/10">
-            <div className="text-3xl font-bold px-3">{content}</div>
-            <div className="rounded-lg p-3 divide-primary/40 divide-y">
-              <div className="py-2">
-                <p className="text-sm text-gray-300">Inscription ID</p>
-                <p className="break-words">{data?.inscriptionId}</p>
-              </div>
-              <div className="py-2">
-                <p className="text-sm text-gray-300">Owner</p>
-                <p className="break-words">{data?.address}</p>
-              </div>
-              <div className="py-2">
-                <p className="text-sm text-gray-300">Output value</p>
-                <p className="break-words">{data?.outputValue}</p>
-              </div>
-              <div className="py-2">
-                <p className="text-sm text-gray-300">Created</p>
-                <p className="break-words">{data?.timestamp}</p>
-              </div>
-              <div className="py-2">
-                <p className="text-sm text-gray-300">Preview</p>
-                <a href={data?.preview} target="_blank" className="break-words">
-                  {data?.preview}
-                </a>
-              </div>
-              <div className="py-2">
-                <p className="text-sm text-gray-300">Indexer</p>
-                <a
-                  href={
-                    "https://ordinalslite.com/inscription/" +
-                    data?.inscriptionId
-                  }
-                  target="_blank"
-                  className="break-words"
-                >
-                  {data?.inscriptionId}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <Loading />
-      )}
+
+      <div className="my-8 grid lg:grid-cols-2 grid-cols-1 gap-3 w-full">
+        <InscriptionPreview content={content} />
+        <InscriptionDetails data={data} content={content} />
+      </div>
     </Layout>
   );
 }

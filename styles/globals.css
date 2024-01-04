@@ -780,7 +780,7 @@ section > .marquee {
 }
 
 .pagination li {
-  @apply main_btn sm:w-[40px] sm:h-[40px] w-[35px] h-[35px];
+  @apply main_btn sm:w-[40px] sm:h-[40px] w-[35px] h-[35px] text-[10px];
   display: flex;
   justify-content: center;
   align-items: center;

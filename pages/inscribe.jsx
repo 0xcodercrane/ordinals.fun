@@ -7,28 +7,32 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { initialize, setBulkMintBlocks } from "@/store/slices/inscribe";
-import { FaArrowRight, FaShoppingCart } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import ControlPanel from "../components/ControlPanel";
+import {
+  useBlocks,
+  useInscribe,
+  useLastBlock,
+  useMintedBlocks,
+  useRefreshBlocks,
+} from "../store/hooks";
+import { push, ref } from "firebase/database";
+import { db } from "@/services/firebase";
 
 const Inscribe = () => {
+  useRefreshBlocks();
+  useLastBlock();
   const dispatch = useDispatch();
-  const pageCount = Math.ceil(8000 / 300);
   const router = useRouter();
-  const inscribe = useSelector(
-    (state) => state?.persistedReducer?.inscribeReducer?.value
-  );
+
+  const { mintedBlocks } = useBlocks();
+  const { selectedBlock, lastBlock } = useInscribe();
+
   const [pageStep, setPageStep] = useState(1);
   const [setBulkMintAmount, setsetBulkMintAmount] = useState(0);
-
-  const mintedBlocks = [
-    { blockNumber: 100 },
-    { blockNumber: 200 },
-    { blockNumber: 300 },
-    { blockNumber: 400 },
-  ];
 
   const nextPage = () => {
     router.push("/createOrder");
@@ -64,7 +68,15 @@ const Inscribe = () => {
     let bulkMintArray = [];
     for (let index = 0; index < Number(setBulkMintAmount); index++) {
       if (binarySearch(index + pageStep)) {
-        bulkMintArray.push({ blockNumber: index + pageStep });
+        bulkMintArray.push({
+          blockNumber: index + pageStep,
+          id: "",
+          date: Date.now(),
+          orderCreated: false,
+          paid: false,
+          orderId: "",
+          owner: "",
+        });
       }
     }
 
@@ -87,10 +99,18 @@ const Inscribe = () => {
   };
 
   useEffect(() => {
+    // const dbRef = ref(db, "/mintedBlocks");
+    // push(dbRef, {
+    //   id: "",
+    //   blockNumber: 8,
+    //   date: Date.now(),
+    //   orderCreated: "",
+    //   paid: "",
+    //   orderId: "",
+    //   owner: "",
+    // });
     dispatch(initialize());
   }, []);
-
-  // console.log(inscribe)
 
   return (
     <Layout>
@@ -108,7 +128,7 @@ const Inscribe = () => {
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={pageCount}
+        pageCount={lastBlock / 300}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"
@@ -116,9 +136,10 @@ const Inscribe = () => {
 
       <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
         {Array.from({ length: 300 }, (_, index) => {
-          return (
-            <Block index={index} key={index} blockNumber={index + pageStep} />
-          );
+          if (index <= lastBlock)
+            return (
+              <Block index={index} key={index} blockNumber={index + pageStep} />
+            );
         })}
       </div>
 
@@ -128,7 +149,7 @@ const Inscribe = () => {
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={pageCount}
+        pageCount={lastBlock / 300}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"
@@ -136,12 +157,12 @@ const Inscribe = () => {
 
       <div
         className={`fixed z-50  left-1/2 border border-transparent ${
-          inscribe?.selectedBlock.length <= 0
+          selectedBlock.length <= 0
             ? "-bottom-64 border-[#ffffff1a]"
             : "bottom-6 sm:bottom-6"
         }   -translate-x-1/2 px-6 py-3 rounded-lg bg-white/10 backdrop-blur-2xl duration-200 flex items-center gap-3 flex-wrap shadow-black shadow-lg`}
       >
-        <p>{inscribe?.selectedBlock.length} litemap selected.</p>
+        <p>{selectedBlock.length} litemap selected.</p>
         <input
           placeholder="80"
           type="Number"

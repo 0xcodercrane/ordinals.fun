@@ -60,7 +60,8 @@ const Payment = () => {
   const saveInscription = async () => {
     try {
       if (ID) {
-        const data = await fetch("https://ordinalslite.xyz/api/order?id=" + ID);
+        const url = "https://ordinalslite.xyz/api/order?id=" + ID.slice(0, -2);
+        const data = await fetch(url);
         const jsonData = await data.json();
         let inscriptions = [];
         jsonData.files.map((file, index) => {
@@ -73,7 +74,6 @@ const Payment = () => {
         });
 
         inscriptions.map((inscirption) => {
-          console.log(inscirption);
           const dbQuery = query(
             ref(db, "inscriptions"),
             orderByChild("id"),
@@ -112,17 +112,25 @@ const Payment = () => {
         );
         onValue(dbQuery, async (snapshot) => {
           const exist = snapshot.val();
-          const data = await fetch(
-            "https://ordinalslite.xyz/api/order?id=" + ID
-          );
-          const jsonData = await data.json();
-          if (exist) {
-            const dbRef = ref(db, `/orders/${Object.keys(exist)[0]}`);
-            update(dbRef, { ...jsonData, orderId: jsonData?.charge?.id });
-          } else {
-            const dbRef = ref(db, "/orders");
-            push(dbRef, { ...jsonData, orderId: jsonData?.charge?.id });
-          }
+          const url =
+            "https://ordinalslite.xyz/api/order?id=" + ID.slice(0, -2);
+          try {
+            const data = await fetch(url);
+            const jsonData = await data.json();
+            if (exist) {
+              const dbRef = ref(db, `/orders/${Object.keys(exist)[0]}`);
+              update(dbRef, {
+                ...jsonData,
+                orderId: jsonData?.charge?.id + "48",
+              });
+            } else {
+              const dbRef = ref(db, "/orders");
+              push(dbRef, {
+                ...jsonData,
+                orderId: jsonData?.charge?.id + "48",
+              });
+            }
+          } catch (error) {}
         });
       }
     } catch (error) {}
@@ -130,27 +138,29 @@ const Payment = () => {
 
   const checkConFirmed = async () => {
     if (ID) {
-      const data = await fetch("https://ordinalslite.xyz/api/order?id=" + ID);
-      const jsonData = await data.json();
+      try {
+        const url = "https://ordinalslite.xyz/api/order?id=" + ID.slice(0, -2);
+        const data = await fetch(url);
+        const jsonData = await data.json();
 
-      console.log(jsonData);
-
-      if (jsonData?.paid) {
-        dispatch(updateConfirmed2(true));
-      }
-
-      let confirm4 = true;
-      jsonData?.files.map((file) => {
-        if (file?.completed) {
-          dispatch(updateConfirmed3(true));
+        if (jsonData?.paid) {
+          dispatch(updateConfirmed1(true));
+          dispatch(updateConfirmed2(true));
         }
 
-        if (!file?.completed) {
-          confirm4 = false;
-        }
-      });
+        let confirm4 = true;
+        jsonData?.files.map((file) => {
+          if (file?.completed) {
+            dispatch(updateConfirmed3(true));
+          }
 
-      dispatch(updateConfirmed4(confirm4));
+          if (!file?.completed) {
+            confirm4 = false;
+          }
+        });
+
+        dispatch(updateConfirmed4(confirm4));
+      } catch (error) {}
     }
   };
 

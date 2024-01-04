@@ -30,6 +30,12 @@ export default function Navigation() {
         </Link>
       </div>
 
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+        <Link className="font-semibold text-white" href="/orders">
+          Orders
+        </Link>
+      </div>
+
       <Menu as="div" className="relative inline-block text-left md:hidden">
         <div className="flex justify-center items-center">
           <Menu.Button className="bg-transparent rounded text-white focus:outline-none   shadow-sm my-auto  flex justify-center items-center cursor-pointer transition ease-out h-full p-0">
@@ -79,6 +85,15 @@ export default function Navigation() {
                     href="/wallet"
                   >
                     Wallet
+                  </Link>
+                </li>
+
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link
+                    className="font-semibold text-white hover:text-white "
+                    href="/wallet"
+                  >
+                    Orders
                   </Link>
                 </li>
               </ul>

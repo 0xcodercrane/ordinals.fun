@@ -218,7 +218,6 @@ class OpenApiService {
   };
 
   pushTx = async (rawtx) => {
-    console.log(rawtx);
     const data = await this.httpPost("/tx/broadcast", {
       rawtx,
     });
@@ -229,11 +228,15 @@ class OpenApiService {
   };
 
   getFeeSummary = async () => {
-    const data = await this.httpGet("/default/fee-summary", {});
-    if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+    try {
+      const data = await this.httpGet("/default/fee-summary", {});
+      if (data.status == API_STATUS.FAILED) {
+        console.log(data.message);
+      }
+      return data.result;
+    } catch (error) {
+      console.log(error);
     }
-    return data.result;
   };
 
   getDomainInfo = async (domain) => {

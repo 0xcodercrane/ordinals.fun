@@ -15,6 +15,7 @@ import { useRef } from "react";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { Toaster } from "react-hot-toast";
+import { RefreshContextProvider } from "../context/RefreshContext";
 
 function App({ Component, pageProps }) {
   const storeRef = useRef();
@@ -39,13 +40,15 @@ function App({ Component, pageProps }) {
 
       <Provider store={storeRef.current}>
         <PersistGate loading={null} persistor={persistor}>
-          <InscribeLiteMapContext>
-            <WalletContext>
-              <NextNProgress color="#185380" />
-              <Component {...pageProps} />
-              <ToastContainer />
-            </WalletContext>
-          </InscribeLiteMapContext>
+          <RefreshContextProvider>
+            <InscribeLiteMapContext>
+              <WalletContext>
+                <NextNProgress color="#185380" />
+                <Component {...pageProps} />
+                <ToastContainer />
+              </WalletContext>
+            </InscribeLiteMapContext>
+          </RefreshContextProvider>
         </PersistGate>
       </Provider>
       <Toaster position="bottom-right" reverseOrder={false} />

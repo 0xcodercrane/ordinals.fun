@@ -1,27 +1,25 @@
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function InscriptionPreview({ id }) {
-  const [content, setContent] = useState("");
+export default function InscriptionPreview({ content }) {
+  const [transactions, setTransactions] = useState([]);
 
-  const getContent = async () => {
-    try {
-      const url = "/ordinalslite/content/" + id;
-      const data = await fetch(url);
-      const textData = await data.text();
-      setContent(textData);
-    } catch (error) {
-      console.log("content fetch", error);
-    }
+  const getData = async () => {
+    const data = await fetch(
+      "https://litecoinspace.org/api/v1/block/a0b929e62b3fe16130522826336b1a484f89bff3b22b6280bdcfedce080ef1f8/audit-summary"
+    );
+
+    const jsonData = await data.json();
+    const txs = jsonData.transactions.filter((tx) => tx.vsize > 1000);
+    console.log(txs);
+    setTransactions(txs);
   };
 
   useEffect(() => {
-    if (id) getContent();
-  }, [id]);
+    getData();
+  }, []);
 
   return (
-    <div className="w-full h-full text-4xl bg-primary/10 rounded-lg p-3 flex justify-center items-center font-bold min-h-[400px]">
+    <div className="w-full h-full text-4xl bg-primary/10 rounded-lg p-3 flex justify-center items-center font-bold min-h-[400px] gap-1">
       {content}
     </div>
   );

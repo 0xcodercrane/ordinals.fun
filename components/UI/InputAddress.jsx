@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import WAValidator from "multicoin-address-validator";
 import { useState } from "react";
 import { useEffect } from "react";
 import AddressCheck from "@/components/AddressCheck";
 import { updateReceiveAddress } from "@/store/slices/inscribe";
 import { useDispatch } from "react-redux";
+import { WalletContext } from "../../context/wallet";
 
 export default function InputAddress() {
   const dispatch = useDispatch();
+  const wallet = useContext(WalletContext);
   const [receiveAddress, setReceiveAddress] = useState("");
   const [isValidAddress, setIsvalidAddress] = useState(false);
   const [loading, setLoading] = useState({
@@ -45,6 +47,11 @@ export default function InputAddress() {
       dispatch(updateReceiveAddress(""));
     }
   }, [isValidAddress]);
+
+  useEffect(() => {
+    const address = wallet.getAddress();
+    setReceiveAddress(address);
+  }, []);
 
   return (
     <>

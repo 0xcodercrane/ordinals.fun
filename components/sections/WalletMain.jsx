@@ -21,6 +21,7 @@ export default function WalletMain({ setContentType }) {
   const wallet = useContext(WalletContext);
   const [listType, setListType] = useState(true);
   const [pending, setPending] = useState(true);
+  
 
   const copied = () => {
     toast.success("copied!");
@@ -35,7 +36,6 @@ export default function WalletMain({ setContentType }) {
   };
 
   useEffect(() => {
-    wallet.fetchbalance();
     fetchData();
   }, []);
 

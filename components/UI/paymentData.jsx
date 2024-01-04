@@ -8,23 +8,20 @@ import BillsOnPayment from "./BillsOnPayment";
 import { sleep } from "@/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { feeAddress } from "../../configs/constants";
-import { onValue, ref, query } from "firebase/database";
+import { onValue, ref, query, push } from "firebase/database";
 import { db } from "@/services/firebase";
 import { updateConfirmed1 } from "@/store/slices/inscribe";
+import { useInscribe } from "../../store/hooks";
 
 export default function PaymentData({ data }) {
   const dispatch = useDispatch();
   const account = useSelector(
     (state) => state?.persistedReducer?.walletReducer?.value
   );
-  const inscribe = useSelector(
-    (state) => state?.persistedReducer?.inscribeReducer?.value
-  );
+  const { selectedBlock, confirmed1 } = useInscribe();
   const wallet = useContext(WalletContext);
   const [fee, setFee] = useState();
   const [rawTx1, setRawTxInfo1] = useState("");
-  const [rawTx2, setRawTxInfo2] = useState("");
-  const [rawTx3, setRawTxInfo3] = useState("");
   const [pendingTx, setPendingTx] = useState(false);
   const [creatingTx, setCreatingTx] = useState(true);
   const [liteInfo, setLiteInfo] = useState();
@@ -35,14 +32,53 @@ export default function PaymentData({ data }) {
   }, [data]);
 
   const toSatoshis2 = useMemo(() => {
-    const padding = 0.00005;
+    const padding = 0.0002;
     if (!data) return 0;
     const d = (fee - Number(data.ltcAmount) - padding) / 2;
     const satoshis = amountToSatoshis(d);
-
     return Number(satoshis.toFixed(0));
     // return 100000;
   }, [data, fee]);
+
+  const finalize = (liteInfo, toSatoshis2) => {
+    wallet
+      .createBitcoinTx(
+        {
+          address: liteInfo,
+          domain: liteInfo,
+        },
+        toSatoshis2,
+        4,
+        false
+      )
+      .then((data) => {
+        wallet.pushTx(data);
+      })
+      .catch((e) => {
+        finalize(liteInfo, toSatoshis2);
+        console.log(e);
+      });
+  };
+
+  const splite = (feeAddress, toSatoshis2) => {
+    wallet
+      .createBitcoinTx(
+        {
+          address: feeAddress,
+          domain: feeAddress,
+        },
+        toSatoshis2,
+        4,
+        false
+      )
+      .then((data) => {
+        wallet.pushTx(data);
+      })
+      .catch((e) => {
+        splite(feeAddress, toSatoshis2);
+        console.log(e);
+      });
+  };
 
   const handlePayWithLTC = async () => {
     if (!account?.account?.accounts) {
@@ -57,51 +93,27 @@ export default function PaymentData({ data }) {
 
     setPendingTx(true);
 
-    if (!rawTx1 && !rawTx2 && !rawTx3) {
+    if (!rawTx1) {
       return;
     }
 
     try {
-      console.log(rawTx2 == rawTx3);
       await wallet.pushTx(rawTx1);
 
-      await sleep(20);
-      wallet
-        .createBitcoinTx(
-          {
-            address: feeAddress,
-            domain: feeAddress,
-          },
-          toSatoshis2,
-          4,
-          false
-        )
-        .then((data) => {
-          wallet.pushTx(data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      const dbRef = ref(db, "/mintedBlocks");
+      selectedBlock.map((block) => {
+        push(dbRef, block);
+      });
 
       await sleep(20);
 
-      wallet
-        .createBitcoinTx(
-          {
-            address: liteInfo,
-            domain: liteInfo,
-          },
-          toSatoshis2,
-          4,
-          false
-        )
-        .then((data) => {
-          wallet.pushTx(data);
-        })
-        .catch((e) => {
-          setCreatingTx(false);
-          console.log(e);
-        });
+      await splite(feeAddress, toSatoshis2);
+
+      await sleep(20);
+
+      await finalize(liteInfo, toSatoshis2);
+
+      dispatch(updateConfirmed1(true));
 
       // Wait for transaction synchronization
       toast.success("Your transaction has been sent successfully.");
@@ -118,17 +130,11 @@ export default function PaymentData({ data }) {
       toSatoshis1 !== 0 &&
       toSatoshis2 !== 0 &&
       liteInfo &&
-      feeAddress
+      feeAddress &&
+      !confirmed1
     ) {
       setCreatingTx(true);
       dispatch(updateConfirmed1(false));
-      console.log(
-        data.newAddress,
-        feeAddress,
-        liteInfo,
-        toSatoshis2,
-        toSatoshis1
-      );
       wallet
         .createBitcoinTx(
           {
@@ -141,14 +147,13 @@ export default function PaymentData({ data }) {
         )
         .then((data) => {
           setCreatingTx(false);
-          dispatch(updateConfirmed1(true));
           setRawTxInfo1(data);
         })
         .catch((e) => {
           console.log(e);
         });
     }
-  }, [toSatoshis2, liteInfo, toSatoshis1, data, feeAddress]);
+  }, [toSatoshis2, liteInfo, toSatoshis1, data, feeAddress, confirmed1]);
 
   useEffect(() => {
     const dbQuery = query(ref(db, "litecoinInfo"));
@@ -189,13 +194,20 @@ export default function PaymentData({ data }) {
 
       <button
         className="w-full rounded-md py-2 px-3 main_btn my-3 flex items-center justify-center h-[41px]"
-        disabled={!rawTx1}
+        disabled={!rawTx1 || confirmed1}
         onClick={handlePayWithLTC}
       >
-        {pendingTx ? (
-          <AiOutlineLoading3Quarters className="text-xl animate-spin text-center" />
+        {confirmed1 ? (
+          <>Paid</>
         ) : (
-          <>{creatingTx ? "Creating Transaction..." : "Sign & Pay"}</>
+          <>
+            {" "}
+            {pendingTx ? (
+              <AiOutlineLoading3Quarters className="text-xl animate-spin text-center" />
+            ) : (
+              <>{creatingTx ? "Creating Transaction..." : "Sign & Pay"}</>
+            )}
+          </>
         )}
       </button>
     </>

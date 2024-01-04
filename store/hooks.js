@@ -1,0 +1,115 @@
+import {
+  onValue,
+  query,
+  ref,
+  orderByValue,
+  orderByChild,
+  orderByKey,
+} from "firebase/database";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import useRefresh from "../hooks/useRefresh";
+import { db } from "@/services/firebase";
+import { setMintedBlocks } from "@/store/slices/blocks";
+import { setBulkMintBlocks, updateLastBlock } from "@/store/slices/inscribe";
+import { toast } from "react-hot-toast";
+
+export const useBlocks = () => {
+  return useSelector((state) => state?.persistedReducer?.blocksReducer?.value);
+};
+
+export const useInscribe = () => {
+  return useSelector(
+    (state) => state?.persistedReducer?.inscribeReducer?.value
+  );
+};
+
+export const useOpenApi = () => {
+  return useSelector((state) => state?.persistedReducer?.openAPIReducer?.value);
+};
+
+export const useWallet = () => {
+  return useSelector((state) => state?.persistedReducer?.walletReducer?.value);
+};
+
+export const useRefreshBlocks = () => {
+  const dispatch = useDispatch();
+  const { mintedBlocks } = useBlocks();
+  const { selectedBlock } = useInscribe();
+
+  const binarySearch = (target) => {
+    let left = 0;
+    let right = mintedBlocks.length - 1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+
+      if (mintedBlocks[mid].blockNumber === target) {
+        return false; // Block number found
+      }
+
+      if (mintedBlocks[mid].blockNumber < target) {
+        left = mid + 1; // Continue searching in the right half
+      } else {
+        right = mid - 1; // Continue searching in the left half
+      }
+    }
+
+    return true; // Block number not found
+  };
+
+  useEffect(() => {
+    if (mintedBlocks.length > 0) {
+      const refreshBlocks = selectedBlock.filter((block) =>
+        binarySearch(block.blockNumber)
+      );
+      dispatch(setBulkMintBlocks(refreshBlocks));
+    }
+  }, [mintedBlocks]);
+};
+
+export const useMintedBlocks = () => {
+  const dispatch = useDispatch();
+  const { fastRefresh } = useRefresh();
+  const { mintedBlocks } = useBlocks();
+
+  useEffect(() => {
+    const dbQuery = query(ref(db, "mintedBlocks"), orderByChild("blockNumber"));
+
+    onValue(dbQuery, async (snapshot) => {
+      const exist = snapshot.val();
+      if (exist) {
+        const newMintedBlocks = Object.values(exist);
+        const sortedBlocks = newMintedBlocks.sort(
+          (a, b) => a.blockNumber - b.blockNumber
+        );
+
+        const differ = mintedBlocks.length - sortedBlocks.length;
+        if (differ > 0) {
+          toast.success(`${differ} blocks have just minted.`);
+        }
+
+        dispatch(setMintedBlocks(sortedBlocks));
+      }
+    });
+  }, [fastRefresh, dispatch]);
+};
+
+export const useLastBlock = () => {
+  const dispatch = useDispatch();
+  const { slowRefresh } = useRefresh();
+
+  const fetchLastBlock = async () => {
+    try {
+      const data = await fetch(
+        "/chainz/explorer/index.data.dws?coin=ltc&v=1&n=1"
+      );
+      const jsonData = await data.json();
+      dispatch(updateLastBlock(jsonData?.blocks[0].height));
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchLastBlock();
+  }, [slowRefresh, dispatch]);
+};

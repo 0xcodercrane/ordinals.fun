@@ -83,10 +83,6 @@ export default function WalletConnect() {
     init();
   }, [account]);
 
-  useEffect(() => {
-    dispatch(isUnlocked(false));
-  }, []);
-
   return (
     <>
       <Menu as="div" className="relative inline-block text-left">

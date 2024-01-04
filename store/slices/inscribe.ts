@@ -11,6 +11,7 @@ const initialState = {
     confirmed2: false,
     confirmed3: false,
     confirmed4: false,
+    lastBlock: 2609098,
   },
 };
 
@@ -58,9 +59,10 @@ export const wallet = createSlice({
       state.value.confirmed2 = false;
       state.value.confirmed3 = false;
       state.value.confirmed4 = false;
-      state.value.selectedBlock = [];
       state.value.receiveAddress = "";
-      
+    },
+    updateLastBlock: (state, action) => {
+      state.value.lastBlock = action.payload;
     },
   },
 });
@@ -77,6 +79,7 @@ export const {
   updateConfirmed2,
   updateConfirmed3,
   updateConfirmed4,
-  clearConfirms
+  clearConfirms,
+  updateLastBlock,
 } = wallet.actions;
 export default wallet.reducer;
