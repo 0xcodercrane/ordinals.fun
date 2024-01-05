@@ -170,7 +170,7 @@ export default function PaymentData({ data }) {
 
   return (
     <>
-      <div className="w-full bg-primary/10 rounded-lg p-3">
+      <div className="w-full hover:bg-primary-dark/10 bg-primary-light/10 rounded-lg p-3">
         <div className="flex flex-col items-center justify-center">
           {data && (
             <BillsOnPayment
@@ -179,7 +179,7 @@ export default function PaymentData({ data }) {
             />
           )}
 
-          <p className="text-center text-gray-300 text-sm mt-4">
+          <p className="text-center dark:text-gray-300 text-gray-800 text-sm mt-4">
             After payment is made, you will receive the inscription within at
             least 20 minutes.
           </p>

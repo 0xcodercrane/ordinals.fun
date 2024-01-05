@@ -40,7 +40,7 @@ export default function WalletMain({ setContentType }) {
   }, []);
 
   return (
-    <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur-xl">
+    <div className="p-4 rounded-lg dark:bg-[#091b2bed] bg-[white]  backdrop-blur-xl">
       <div className="flex justify-between items-center">
         <div
           className="flex items-center gap-2 cursor-pointer rounded-lg"
@@ -65,7 +65,7 @@ export default function WalletMain({ setContentType }) {
 
           <Menu as="div" className="relative inline-block text-left">
             <div className="flex justify-center items-center">
-              <Menu.Button className="text-lg  my-auto text-white cursor-pointer focus:outline-none hover:text-white/90 hover:bg-primary/50 rounded-lg p-1 transition ease-in-out">
+              <Menu.Button className="text-lg  my-auto cursor-pointer focus:outline-none hover:text-white/90 hover:bg-primary-dark/50 rounded-lg p-1 transition ease-in-out">
                 <BsThreeDotsVertical className="text-xl cursor-pointer" />
               </Menu.Button>
             </div>
@@ -79,28 +79,28 @@ export default function WalletMain({ setContentType }) {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 z-20 mt-2 w-[200px!important] p-3 bg-[#102c43] shadow shadow-black  origin-top-right rounded-md focus:outline-none">
+              <Menu.Items className="absolute right-0 z-20 mt-2 w-[200px!important] p-3 dark:bg-[#102c43] bg-[#ffffff] shadow shadow-black  origin-top-right rounded-md focus:outline-none">
                 <button
                   onClick={() => wallet.unlockWallet()}
-                  className="hover:bg-primary/30 transition ease-in-out rounded-md focus:outline-none text-left w-full p-1"
+                  className="hover:bg-primary-dark/30 transition ease-in-out rounded-md focus:outline-none text-left w-full p-1"
                 >
                   Unlock wallet
                 </button>
                 <button
                   onClick={() => setContentType("send")}
-                  className="hover:bg-primary/30 transition ease-in-out rounded-md focus:outline-none text-left w-full p-1"
+                  className="hover:bg-primary-dark/30 transition ease-in-out rounded-md focus:outline-none text-left w-full p-1"
                 >
                   Send LTC
                 </button>
                 <button
                   onClick={() => setContentType("secrets")}
-                  className="hover:bg-primary/30 transition ease-in-out rounded-md focus:outline-none text-left w-full p-1"
+                  className="hover:bg-primary-dark/30 transition ease-in-out rounded-md focus:outline-none text-left w-full p-1"
                 >
                   Show secrets
                 </button>
                 <button
                   onClick={() => wallet.removeWallet()}
-                  className="hover:bg-primary/30 transition ease-in-out rounded-md focus:outline-none text-left w-full text-red-600 p-1"
+                  className="hover:bg-primary-dark/30 transition ease-in-out rounded-md focus:outline-none text-left w-full text-red-600 p-1"
                 >
                   Remove wallet
                 </button>
@@ -133,7 +133,7 @@ export default function WalletMain({ setContentType }) {
           {account?.inscriptions?.total > 0 ? (
             <Link href={'/wallet'} className="hover:text-white">
               <div className="mt-3">LiteMaps</div>
-              <div className="rounded-lg bg-primary/20 py-2 px-3 flex justify-between items-center hover:bg-primary/30 transition ease-in-out cursor-pointer mt-2 mb-3">
+              <div className="rounded-lg dark:bg-primary-dark/20 bg-primary-light/20 py-2 px-3 flex justify-between items-center dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 transition ease-in-out cursor-pointer mt-2 mb-3">
                 <div className="flex gap-2 items-center">
                   <Image
                     src="/logo.png"
@@ -159,7 +159,7 @@ export default function WalletMain({ setContentType }) {
       ) : (
         <>
           {account?.balance?.confirm_inscription_amount > 0 ? (
-            <div className="rounded-lg bg-primary/20 py-2 px-3 flex justify-between items-center hover:bg-primary/30 transition ease-in-out cursor-pointer mt-2 mb-3">
+            <div className="rounded-lg dark:bg-primary-dark/20 bg-primary-light/20 py-2 px-3 flex justify-between items-center dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 transition ease-in-out cursor-pointer mt-2 mb-3">
               <div className="flex gap-2 items-center">
                 <Image
                   src="/loading.png"

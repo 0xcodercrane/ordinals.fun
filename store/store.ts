@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import walletReducer from "./slices/wallet";
 import openAPIReducer from "./slices/openApi";
 import inscribeReducer from "./slices/inscribe";
+import themeReducer from "./slices/theme";
 import blocksReducer from "./slices/blocks";
 import storage from "redux-persist/lib/storage";
 import {
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   openAPIReducer,
   inscribeReducer,
   blocksReducer,
+  themeReducer,
 });
 
 const persistedReducer = persistReducer(persisConfig, rootReducer);

@@ -126,7 +126,7 @@ export default function WalletCreate({ setType, isImport }) {
     return (
       <>
         {created ? (
-          <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur-xl">
+          <div className="p-4 rounded-lg dark:bg-[#091b2bed] bg-[white]   backdrop-blur-xl">
             <p className="my-8 font-semibold text-center text-2xl">
               Secret Recovery Phrase
             </p>
@@ -135,7 +135,7 @@ export default function WalletCreate({ setType, isImport }) {
             </p>
             <textarea
               rows="3"
-              className="p-3 rounded-md bg-primary/20 w-full mt-2"
+              className="p-3 rounded-md dark:bg-primary-dark/20 bg-primary-light/20 w-full mt-2"
               onChange={(e) => setSeedPhrase(e.target.value)}
             ></textarea>
 
@@ -149,7 +149,7 @@ export default function WalletCreate({ setType, isImport }) {
             </div>
           </div>
         ) : (
-          <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+          <div className="p-4 rounded-lg bg-white/5 backdrop-blur-xl">
             <p className="my-8 font-semibold text-center text-2xl">
               Set Your wallet password
             </p>
@@ -198,7 +198,7 @@ export default function WalletCreate({ setType, isImport }) {
     );
   } else {
     return (
-      <div className="p-4 rounded-lg bg-white/5 text-white backdrop-blur-xl">
+      <div className="p-4 rounded-lg bg-white/5 backdrop-blur-xl">
         <p className="my-8 font-semibold text-center text-2xl">
           Set Your wallet password
         </p>

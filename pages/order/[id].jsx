@@ -68,7 +68,8 @@ const Payment = () => {
           if (file?.tx) {
             inscriptions.push({
               id: file.tx.inscription,
-              blockNumber: inscribe.selectedBlock[index].blockNumber,
+              blockNumber:
+                inscribe?.selectedBlock[index]?.blockNumber || "125725",
             });
           }
         });
@@ -99,7 +100,9 @@ const Payment = () => {
           });
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("----save inscription--", error);
+    }
   };
 
   const saveOrder = async () => {
@@ -185,6 +188,7 @@ const Payment = () => {
 
   useEffect(() => {
     if (ID) {
+      checkConFirmed();
       saveOrder();
       getData();
     }
@@ -207,7 +211,7 @@ const Payment = () => {
     <Layout>
       {orderData ? (
         <div className="py-[70px] flex justify-center relative px-2">
-          <div className="px-4 py-16 w-full max-w-[600px] rounded-lg bg-primary/20 relative">
+          <div className="px-4 py-16 w-full max-w-[600px] rounded-lg dark:bg-primary-dark/20 bg-primary-light/20 relative">
             <div
               className="absolute px-2 py-1 rounded top-2 left-2 z-10 text-sm cursor-pointer"
               onClick={goToHome}

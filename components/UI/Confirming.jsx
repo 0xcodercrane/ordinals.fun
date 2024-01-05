@@ -44,11 +44,11 @@ export default function Confirming({
             )}
           </>
         ) : (
-          <FaRegCircle className="text-2xl font-extrabold " />
+          <FaRegCircle className="text-2xl font-extrabold text-white" />
         )}
         <p
           className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm ${
-            confirmed2 ? "text-green-500" : "text-white"
+            confirmed2 ? "text-green-500" : "dark:text-white text-black"
           }`}
         >
           Confirming
@@ -75,11 +75,11 @@ export default function Confirming({
             )}
           </>
         ) : (
-          <FaRegCircle className="text-2xl font-extrabold " />
+          <FaRegCircle className="text-2xl font-extrabold text-white" />
         )}
         <p
           className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm ${
-            confirmed3 ? "text-green-500" : "text-white"
+            confirmed3 ? "text-green-500" : "dark:text-white text-black"
           }`}
         >
           Inscribing
@@ -106,11 +106,11 @@ export default function Confirming({
             )}
           </>
         ) : (
-          <FaRegCircle className="text-2xl font-extrabold " />
+          <FaRegCircle className="text-2xl font-extrabold text-white" />
         )}
         <p
           className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm ${
-            confirmed4 ? "text-green-500" : "text-white"
+            confirmed4 ? "text-green-500" : "dark:text-white text-black"
           }`}
         >
           Delivering

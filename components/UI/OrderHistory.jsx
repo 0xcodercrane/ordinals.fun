@@ -33,21 +33,21 @@ export default function OrderHistory() {
 
   return (
     <div className="w-full max-w-[600px] rounded-lg shadow-sm shadow-black">
-      <div className="grid grid-cols-12 px-3 py-2 bg-primary/20 rounded-t-lg">
+      <div className="grid grid-cols-12 px-3 py-2 dark:bg-primary-dark/20 bg-primary-light/20 rounded-t-lg">
         <div className="col-span-6">Order ID</div>
         <div className="col-span-3">Status</div>
         <div className="col-span-3">Date</div>
       </div>
 
       {orders ? (
-        <div className="bg-primary/10 rounded-b-lg px-1 py-1">
+        <div className="bg-primary-dark/10 rounded-b-lg px-1 py-1">
           {Object.keys(orders)
             .reverse()
             .map((key, index) => {
               return (
                 <div
                   key={index}
-                  className="grid grid-cols-12 px-3 mb-1.5 hover:bg-primary/30 bg-primary/20 cursor-pointer items-center gap-2"
+                  className="grid grid-cols-12 px-3 mb-1.5 dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 dark:bg-primary-dark/20 bg-primary-light/20 cursor-pointer items-center gap-2"
                   onClick={() => goToPayment(orders[key].orderId)}
                 >
                   <div key={index + "id"} className="my-1 col-span-6 text-sm">

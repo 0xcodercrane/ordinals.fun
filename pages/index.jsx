@@ -19,27 +19,27 @@ export default function Home() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
         <div>
-          <p> 34 LTC</p> <p className="text-sm text-gray-300">Floor price</p>
+          <p> 34 LTC</p> <p className="text-sm dark:text-gray-300 text-gray-800">Floor price</p>
         </div>
         <div>
           <p> 6,763,242 LTC</p>{" "}
-          <p className="text-sm text-gray-300">Total volume</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">Total volume</p>
         </div>
         <div>
           <p> 924,901 LTC</p>{" "}
-          <p className="text-sm text-gray-300">Volume (24h)</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">Volume (24h)</p>
         </div>
         <div>
-          <p> 41,930</p> <p className="text-sm text-gray-300">Trades (24h)</p>
+          <p> 41,930</p> <p className="text-sm dark:text-gray-300 text-gray-800">Trades (24h)</p>
         </div>
         <div>
-          <p> 20,274</p> <p className="text-sm text-gray-300">Owners</p>
+          <p> 20,274</p> <p className="text-sm dark:text-gray-300 text-gray-800">Owners</p>
         </div>
         <div>
-          <p> 5,014,267</p> <p className="text-sm text-gray-300">Suppl</p>
+          <p> 5,014,267</p> <p className="text-sm dark:text-gray-300 text-gray-800">Supply</p>
         </div>
         <div>
-          <p> 102,200</p> <p className="text-sm text-gray-300">Listed</p>
+          <p> 102,200</p> <p className="text-sm dark:text-gray-300 text-gray-800">Listed</p>
         </div>
       </div>
 
@@ -51,7 +51,7 @@ export default function Home() {
 
       <div className="w-full grid grid-cols-2 sm:grid-cols-2 gap-3 justify-between mb-6">
         <div className="flex gap-2">
-          <button className="main_btn rounded-lg px-4 py-2 bg-primary">
+          <button className="main_btn rounded-lg px-4 py-2">
             Listings
           </button>
           <button className="main_btn rounded-lg px-4 py-2">Activity</button>
@@ -94,7 +94,7 @@ export default function Home() {
         })}
       </div>
       {/* <div className="my-auto flex flex-col justify-center items-center">
-        <h1 className="text-5xl text-white font-bold mb-8 animate-pulse">
+        <h1 className="text-5xl font-bold mb-8 animate-pulse">
           Coming Soon
         </h1>
         <p className="text-white text-lg mb-8 text-center">

@@ -12,7 +12,6 @@ import useRefresh from "../hooks/useRefresh";
 import { db } from "@/services/firebase";
 import { setMintedBlocks } from "@/store/slices/blocks";
 import { setBulkMintBlocks, updateLastBlock } from "@/store/slices/inscribe";
-import { toast } from "react-hot-toast";
 
 export const useBlocks = () => {
   return useSelector((state) => state?.persistedReducer?.blocksReducer?.value);
@@ -30,6 +29,10 @@ export const useOpenApi = () => {
 
 export const useWallet = () => {
   return useSelector((state) => state?.persistedReducer?.walletReducer?.value);
+};
+
+export const useThemeStore = () => {
+  return useSelector((state) => state?.persistedReducer?.themeReducer?.value);
 };
 
 export const useMintedBlocks = () => {

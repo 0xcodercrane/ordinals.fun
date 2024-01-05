@@ -49,7 +49,7 @@ export default function Inscribe() {
     <Layout>
       {inscriptions.total > 0 && inscriptions?.list ? (
         <>
-          <h1 className="text-3xl text-white font-semibold mb-8 my-8 text-center">
+          <h1 className="text-3xl font-semibold mb-8 my-8 text-center">
             My Inscriptions
           </h1>
 
@@ -83,7 +83,7 @@ export default function Inscribe() {
         </>
       ) : (
         <div className="my-auto flex flex-col justify-center items-center">
-          <h1 className="text-xl text-white font-bold mb-8 animate-pulse text-center">
+          <h1 className="text-xl font-bold mb-8 animate-pulse text-center">
             You don not have any inscriptions.
           </h1>
           <Link

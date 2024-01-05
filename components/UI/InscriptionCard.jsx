@@ -65,28 +65,28 @@ export default function InscriptionCard({ inscription }) {
   }, []);
 
   return (
-    <div className="rounded-lg p-3 bg-primary/20 backdrop-blur-md shadow shadow-black hover:bg-primary/30 duration-200 w-full">
+    <div className="rounded-lg p-3 dark:bg-primary-dark/20 bg-primary-light/40 backdrop-blur-md shadow shadow-black dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 duration-200 w-full">
       <p
         style={{ overflowWrap: "anywhere" }}
-        className="bg-primary/20  text-xl text-center  rounded-lg mb-3 flex items-center p-2 justify-center font-semibold w-full h-[180px] lg:h-[200px]"
+        className="dark:bg-primary-dark/20 bg-primary-light/20  text-xl text-center  rounded-lg mb-3 flex items-center p-2 justify-center font-semibold w-full h-[180px] lg:h-[200px]"
       >
         {content}
       </p>
       <Link
         href={"/inscription/" + inscription.inscriptionId}
-        className="text-sm text-center text-gray-300 flex justify-between"
+        className="text-sm text-center dark:text-gray-300 text-gray-800  flex justify-between"
       >
         <p>Seller:</p> <p>#ltc1...48c5</p>
       </Link>
       <hr />
-      <p className="text-center text-gray-300 mb-3 mt-1 text-sm">
+      <p className="text-center dark:text-gray-300 text-gray-800  mb-3 mt-1 text-sm">
         0.020 LTC ($ 1.5)
       </p>
       <div className="grid grid-cols-1 sm:gird-cols-2 gap-2">
         <button
           disabled={!exist}
-          className={`py-1 rounded-md disabled:bg-primary/10  ${
-            exist ? "main_btn text-white" : "text-gray-400/80"
+          className={`py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10  ${
+            exist ? "main_btn" : "dark:text-gray-400/80 text-gray-600"
           }`}
         >
           List

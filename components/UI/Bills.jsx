@@ -20,7 +20,7 @@ export default function Bills() {
           <p className="text-right pr-2 ">Sats In Inscription:</p>
           <p className="text-left pl-2 ">
             {selectedBlock.length} * 10000 sats
-            <span className="text-[11px] text-gray-300">
+            <span className="text-[11px] dark:text-gray-300 text-gray-800">
               &nbsp; ~$&nbsp;
               {((inscribeFee / 10 ** 8) * price).toFixed(2)}
             </span>
@@ -31,7 +31,7 @@ export default function Bills() {
           <p className="text-right pr-2">Service Fee:</p>
           <p className="text-left pl-2">
             {serviceFee} sats
-            <span className=" text-[11px] text-gray-300">
+            <span className=" text-[11px] dark:text-gray-300 text-gray-800">
               &nbsp;~$ {((serviceFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
@@ -41,7 +41,7 @@ export default function Bills() {
           <p className="text-right pr-2">Size Fee:</p>
           <p className="text-left pl-2">
             {sizeFee} sats
-            <span className=" text-[11px] text-gray-300">
+            <span className=" text-[11px] dark:text-gray-300 text-gray-800">
               &nbsp;~$ {((sizeFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
@@ -51,7 +51,7 @@ export default function Bills() {
           <p className="text-right pr-2">=</p>
           <p className="text-left pl-2">
             <span className="line-through"> {totalFee}</span> sats
-            <span className=" text-[11px] text-gray-300">
+            <span className=" text-[11px] dark:text-gray-300 text-gray-800">
               &nbsp;~$ {((totalFee / 10 ** 8) * price).toFixed(2)}
             </span>
           </p>
@@ -61,7 +61,7 @@ export default function Bills() {
           <p className="text-right pr-2">Total Fee:</p>
           <p className="text-left pl-2">
             {totalFee - (totalFee % 1000)} sats
-            <span className=" text-[11px] text-gray-300">
+            <span className=" text-[11px] dark:text-gray-300 text-gray-800">
               &nbsp;~$
               {(((totalFee - (totalFee % 1000)) / 10 ** 8) * price).toFixed(2)}
             </span>

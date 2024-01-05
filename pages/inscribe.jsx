@@ -160,7 +160,7 @@ const Inscribe = () => {
           placeholder="80"
           type="Number"
           onChange={(e) => setsetBulkMintAmount(e.target.value)}
-          className="py-2 px-3 bg-primary/20 w-[80px]  rounded-lg focus:outline-none duration-200 border border-white/50 focus:border-white/60"
+          className="py-2 px-3 dark:bg-primary-dark/20 bg-primary-light/20 w-[80px]  rounded-lg focus:outline-none duration-200 border border-white/50 focus:border-white/60"
         />
         <button
           className="main_btn py-2 px-3 rounded-lg flex items-center gap-2"

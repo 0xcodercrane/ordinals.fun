@@ -64,8 +64,8 @@ export default function FeeRecommend({ onChange }) {
                     onClick={() => {
                       setFeeOptionIndex(index);
                     }}
-                    className={`cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3 ${
-                      selected && "bg-primary/60"
+                    className={`cursor-pointer flex justify-center flex-col rounded-md border border-[black!important] dark:border-[white!important] px-2 w-full py-3 ${
+                      selected && "dark:bg-primary-dark/60 bg-primary-light/60"
                     }`}
                   >
                     <p className="text-center text-sm font-semibold">
@@ -83,17 +83,17 @@ export default function FeeRecommend({ onChange }) {
             </>
           ) : (
             <>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md border border-[#dee2e682!important] px-2 w-full py-3  h-[81px] bg-primary/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border dark:border-[#white!important] border-[black!important] px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border dark:border-[#white!important] border-[black!important] px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border dark:border-[#white!important] border-[black!important] px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md border dark:border-[#white!important] border-[black!important] px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
             </>
           )}
         </>
       </div>
       {feeOptionIndex === FeeRateType.CUSTOM && (
         <input
-          className="w-full mt-3 bg-transparent py-2 px-2 rounded-lg  border border-[#dee2e682!important] focus:outline-none"
+          className="w-full mt-3 bg-transparent py-2 px-2 rounded-lg  border border-[black!important] dark:border-[white!imporant] focus:outline-none"
           preset="amount"
           placeholder={"lit/vB"}
           value={feeRateInputVal}

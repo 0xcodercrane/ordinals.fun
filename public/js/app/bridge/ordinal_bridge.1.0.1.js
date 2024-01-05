@@ -81,7 +81,7 @@ async function initCluster()
 
     window.clusterSocket.on("connect_error", () => {
 
-        _chainAlert('<div class="text-center mb-3">The connection to our server interrupted. Please check your internet connection and reload the page to restore normal functionality.</div><div class="text-center"><button onclick="location.reload();" class="btn btn-outline-primary text-center">Reload</button></div>', '#message-main');
+        _chainAlert('<div class="text-center mb-3">The connection to our server interrupted. Please check your internet connection and reload the page to restore normal functionality.</div><div class="text-center"><button onclick="location.reload();" class="btn btn-outline-primary-dark text-center">Reload</button></div>', '#message-main');
     });
 
     window.clusterSocket.on('latest mints', async function(msg){

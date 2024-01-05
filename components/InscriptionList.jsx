@@ -17,23 +17,23 @@ const InscriptionList = () => {
       <p className="text-sm text-center">
         Please double check your block numbers below before continuing:
       </p>
-      <p className="text-[11px] text-gray-300 text-center">
+      <p className="text-[11px] dark:text-gray-300 text-gray-600 text-center">
         You are about to inscribe
-        <span className="text-white font-semibold"> {inscribe?.selectedBlock?.length} </span>
+        <span className="dark:text-white font-semibold text-sky-500"> {inscribe?.selectedBlock?.length} </span>
         litemap(s)
       </p>
-      <div className="flex flex-col mt-2 items-center rounded w-full max-h-[200px] bg-primary/20 px-3 py-2 cursor-pointer  overflow-y-auto overflow-x-hidden scroll-smooth	transition ease-in-out duration-150">
+      <div className="flex flex-col mt-2 items-center rounded w-full max-h-[200px] dark:bg-primary-dark/20 bg-primary-light/20 px-3 py-2 cursor-pointer  overflow-y-auto overflow-x-hidden scroll-smooth	transition ease-in-out duration-150">
         {inscribe.selectedBlock.map((item, index) => {
           return (
             <div
               key={index}
-              className="flex relative justify-between w-full rounded px-4 py-2 m-1 items-center bg-primary/30 drop-shadow hover:bg-primary/20 transition ease-in-out"
+              className="flex relative justify-between w-full rounded px-4 py-2 m-1 items-center dark:bg-primary-dark/30 bg-primary-light/30 drop-shadow dark:hover:bg-primary-dark/20 hover:bg-primary-light/20 transition ease-in-out"
             >
               <div className="font-extralight">{item.blockNumber}.LiteMap</div>
               <div className="flex items-center justify-center">
                 <FaTimes
                   onClick={(e) => removeBlock(item.blockNumber)}
-                  className="absolute top-2.5 right-1.5 z-20 cursor-pointer p-1 text-white rounded-full text-lg"
+                  className="absolute top-2.5 right-1.5 z-20 cursor-pointer p-1 rounded-full text-lg"
                 />
               </div>
             </div>

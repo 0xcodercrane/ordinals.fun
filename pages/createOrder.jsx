@@ -97,7 +97,7 @@ const CreateOrder = () => {
   return (
     <Layout>
       <div className="py-16 flex justify-center relative">
-        <div className="w-full max-w-[600px] bg-primary/20 px-4 py-8 rounded-lg relative">
+        <div className="w-full max-w-[600px] dark:bg-primary-dark/20 bg-primary-light/20 px-4 py-8 rounded-lg relative">
           <div
             className="absolute px-2 py-1 rounded top-2 left-2 z-10 text-sm cursor-pointer"
             onClick={backToInscribe}

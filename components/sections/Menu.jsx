@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navigation from "./Navigation";
 import WalletConnect from "./WalletConnect";
 import { useEffect } from "react";
+import DarkModeToggleBtn from "./DarkModeToggleBtn";
 
 export default function MenuBar() {
   const [scrollHeader, setScrollHeader] = useState(false);
@@ -22,17 +23,22 @@ export default function MenuBar() {
     <div
       className={`flex justify-between items-center fixed top-0 left-1/2 -translate-x-1/2 w-full border-b border-transparent sm:px-6 px-3 z-50  duration-200 ${
         scrollHeader
-          ? "bg-primary/5 backdrop-blur-2xl py-1 shadow shadow-black border-[#ffffff1a]"
+          ? "bg-primary-dark/5 backdrop-blur-2xl py-1 shadow shadow-black border-[#ffffff1a]"
           : "bg-transparent py-2"
       }`}
     >
       <Link href="/" className="hidden md:inline-block">
-        <div className="main-logo text-2xl font-extrabold p-3 hover:text-gray-200">
+        <div className="main-logo text-2xl font-extrabold p-3">
           LiteMap
         </div>
       </Link>
+
       <Navigation />
-      <WalletConnect />
+
+      <div className="flex gap-3 items-center">
+        <DarkModeToggleBtn />
+        <WalletConnect />
+      </div>
     </div>
   );
 }

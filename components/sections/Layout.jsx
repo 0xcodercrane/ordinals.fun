@@ -5,7 +5,7 @@ import Footer from "./Footer";
 
 export default function Layout(props) {
   return (
-    <main>
+    <main className="text-black dark:text-white">
       <Head>
         <title>LiteMap</title>
         <meta name="description" content="Ordinal audio inscriptions." />

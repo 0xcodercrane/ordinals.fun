@@ -56,7 +56,7 @@ export default function InputAddress() {
   return (
     <>
       <p className="mt-3">Input the receive address:</p>
-      <div className="mt-2 w-full border border-white/50 rounded-md flex gap-2">
+      <div className="mt-2 w-full border border-[black!important] dark:border-[white!important]  rounded-md flex gap-2">
         <input
           type="text"
           name="address"

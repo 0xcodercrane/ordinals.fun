@@ -211,7 +211,7 @@ export default function WalletSend({ setContentType }) {
 
   if (step === 0) {
     return (
-      <div className="p-4 rounded-lg bg-[#091b2bed] text-white backdrop-blur-xl relative">
+      <div className="p-4 rounded-lg dark:bg-[#091b2bed] bg-[white]   backdrop-blur-xl relative">
         <button
           className=" focus:outline-none"
           onClick={() => setContentType("main")}
@@ -222,7 +222,7 @@ export default function WalletSend({ setContentType }) {
           Address:
         </label>
         <input
-          className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border border-white/30"
+          className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border dark:border-[white!important]  border-[black!important]"
           type="text"
           placeholder="ltc1qdmy...0pqe5mzn"
           onChange={async (e) => {
@@ -248,7 +248,7 @@ export default function WalletSend({ setContentType }) {
 
         <div>
           <input
-            className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border border-white/30"
+            className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border dark:border-[white!important]  border-[black!important]"
             type="number"
             placeholder="0.00 (LTC)"
             onChange={(e) => {
@@ -281,7 +281,7 @@ export default function WalletSend({ setContentType }) {
         </button>
         {pendingTx && (
           <div className="absolute w-full h-full rounded-lg flex justify-center items-center bg-[#183e63ba] top-0 left-0">
-            <AiOutlineLoading className="text-3xl text-white animate-spin" />
+            <AiOutlineLoading className="text-3xl animate-spin" />
           </div>
         )}
       </div>

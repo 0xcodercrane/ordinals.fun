@@ -10,35 +10,35 @@ export default function Navigation() {
   return (
     <Nav className="links-block">
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
-        <Link className="font-semibold text-white" href="/">
+        <Link className="font-semibold" href="/">
           LiteMap
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
-        <Link className="font-semibold text-white" href="/market">
+        <Link className="font-semibold" href="/market">
           Market
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
-        <Link className="font-semibold text-white" href="/inscribe">
+        <Link className="font-semibold" href="/inscribe">
           Inscribe
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
-        <Link className="font-semibold text-white" href="/wallet">
+        <Link className="font-semibold" href="/wallet">
           Wallet
         </Link>
       </div>
 
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
-        <Link className="font-semibold text-white" href="/orders">
+        <Link className="font-semibold" href="/orders">
           Orders
         </Link>
       </div>
 
       <Menu as="div" className="relative inline-block text-left md:hidden">
         <div className="flex justify-center items-center">
-          <Menu.Button className="bg-transparent rounded text-white focus:outline-none   shadow-sm my-auto  flex justify-center items-center cursor-pointer transition ease-out h-full p-0">
+          <Menu.Button className="bg-transparent rounded focus:outline-none   shadow-sm my-auto  flex justify-center items-center cursor-pointer transition ease-out h-full p-0">
             <GiHamburgerMenu className="text-3xl p-0 my-3" />
           </Menu.Button>
         </div>
@@ -53,46 +53,31 @@ export default function Navigation() {
           leaveTo="transform opacity-0 scale-95"
         >
           <Menu.Items className="fixed right-0  w-full px-3 mt-3 origin-top-right z-50  divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="transition ease-in-out bg-[#091b2bed] backdrop-blur-3xl rounded-lg">
+            <div className="transition ease-in-out dark:bg-[#091b2bed] bg-primary-light backdrop-blur-3xl rounded-lg">
               <ul className="rounded drop-shadow-md shadow-black py-1">
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link
-                    className="font-semibold text-white hover:text-white "
-                    href="/"
-                  >
+                  <Link className="font-semibold" href="/">
                     LiteMap
                   </Link>
                 </li>
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link
-                    className="font-semibold text-white hover:text-white "
-                    href="/market"
-                  >
+                  <Link className="font-semibold" href="/market">
                     Market
                   </Link>
                 </li>
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link
-                    className="font-semibold text-white hover:text-white "
-                    href="/inscribe"
-                  >
+                  <Link className="font-semibold" href="/inscribe">
                     Inscribe
                   </Link>
                 </li>
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link
-                    className="font-semibold text-white hover:text-white "
-                    href="/wallet"
-                  >
+                  <Link className="font-semibold" href="/wallet">
                     Wallet
                   </Link>
                 </li>
 
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link
-                    className="font-semibold text-white hover:text-white "
-                    href="/wallet"
-                  >
+                  <Link className="font-semibold" href="/wallet">
                     Orders
                   </Link>
                 </li>

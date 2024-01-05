@@ -19,7 +19,7 @@ export default function InscriptionPreview({ content }) {
   }, []);
 
   return (
-    <div className="w-full h-full text-4xl bg-primary/10 rounded-lg p-3 flex justify-center items-center font-bold min-h-[400px] gap-1">
+    <div className="w-full h-full text-4xl dark:bg-primary-dark/20 bg-primary-light/10 rounded-lg p-3 flex justify-center items-center font-bold min-h-[400px] gap-1">
       {content}
     </div>
   );
