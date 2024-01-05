@@ -38,7 +38,7 @@ export default function Navigation() {
 
       <Menu as="div" className="relative inline-block text-left md:hidden">
         <div className="flex justify-center items-center">
-          <Menu.Button className="bg-transparent rounded focus:outline-none   shadow-sm my-auto  flex justify-center items-center cursor-pointer transition ease-out h-full p-0">
+          <Menu.Button className="bg-transparent rounded focus:outline-none  my-auto  flex justify-center items-center cursor-pointer transition ease-out h-full p-0">
             <GiHamburgerMenu className="text-3xl p-0 my-3" />
           </Menu.Button>
         </div>
