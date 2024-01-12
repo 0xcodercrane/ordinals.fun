@@ -6,12 +6,16 @@ import {
   orderByChild,
   orderByKey,
 } from "firebase/database";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useRefresh from "../hooks/useRefresh";
 import { db } from "@/services/firebase";
 import { setMintedBlocks } from "@/store/slices/blocks";
-import { setBulkMintBlocks, updateLastBlock } from "@/store/slices/inscribe";
+import {
+  setBulkMintBlocks,
+  updateLastBlock,
+  updateMintedBlockNumber,
+} from "@/store/slices/inscribe";
 
 export const useBlocks = () => {
   return useSelector((state) => state?.persistedReducer?.blocksReducer?.value);
@@ -33,6 +37,17 @@ export const useWallet = () => {
 
 export const useThemeStore = () => {
   return useSelector((state) => state?.persistedReducer?.themeReducer?.value);
+};
+
+export const useAddress = () => {
+  const wallet = useSelector(
+    (state) => state?.persistedReducer?.walletReducer?.value
+  );
+  try {
+    return { address: wallet?.account?.accounts[0]?.address };
+  } catch (error) {
+    return { address: "" };
+  }
 };
 
 export const useMintedBlocks = () => {
@@ -94,6 +109,7 @@ export const useMintedBlocks = () => {
 export const useLastBlock = () => {
   const dispatch = useDispatch();
   const { slowRefresh } = useRefresh();
+  const { lastBlock } = useInscribe();
 
   const fetchLastBlock = async () => {
     try {
@@ -102,10 +118,37 @@ export const useLastBlock = () => {
       );
       const jsonData = await data.json();
       dispatch(updateLastBlock(jsonData?.blocks[0].height));
+      setLastBlock(jsonData?.blocks[0].height);
     } catch (error) {}
   };
 
   useEffect(() => {
     fetchLastBlock();
   }, [slowRefresh, dispatch]);
+
+  return { lastBlock: lastBlock };
+};
+
+export const useMintedBlocksFromAPI = () => {
+  const dispatch = useDispatch();
+  const { slowRefresh } = useRefresh();
+  const { mintedBlockNumber } = useInscribe();
+
+  useEffect(() => {
+    async function searchBlocks() {
+      try {
+        const res = await fetch("http://217.76.63.90:3000/text?text=.litemap");
+        const resJson = await res.json();
+        if (resJson?.totalItems > 0) {
+          dispatch(updateMintedBlockNumber(resJson?.totalItems));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    searchBlocks();
+  }, [slowRefresh]);
+
+  return { mintedBlockNumber: mintedBlockNumber };
 };

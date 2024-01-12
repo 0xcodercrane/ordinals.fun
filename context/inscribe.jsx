@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import NFTStorageService from '@/services/nftStorage'
 import {
   ref,
-  push,
   query,
   orderByChild,
   equalTo,
@@ -201,8 +200,6 @@ const Inscribe = (props) => {
           fee: exist.fee,
           address: exist.address,
         }
-
-        console.log(receiveAddress)
 
         inscribeLiteMapContext.inscribeOrder({
           files: files,

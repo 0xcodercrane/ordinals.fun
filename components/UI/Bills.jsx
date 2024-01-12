@@ -69,11 +69,18 @@ export default function Bills() {
         </div>
       </div>
 
-      <div className="text-sm font-extralight flex justify-center w-full mt-3">
-        <p className="flex gap-1">
+      <div className="text-sm font-extralight flex justify-center w-full mt-3 text-yellow-500">
+        <p className="flex gap-1 text-center">
           <AiFillWarning className="text-lg ml-auto" />
           Please note the inscribing transaction delivers the inscription to the
           receiving address directly.
+        </p>
+      </div>
+
+      <div className="text-sm font-extralight flex justify-center w-full mt-3 text-red-500">
+        <p className="flex gap-1 text-center">
+          <AiFillWarning className="text-lg" />
+          We dont verify if these litemaps are minted or not.
         </p>
       </div>
     </>

@@ -27,7 +27,7 @@ const InscriptionList = () => {
           return (
             <div
               key={index}
-              className="flex relative justify-between w-full rounded px-4 py-2 m-1 items-center dark:bg-primary-dark/30 bg-primary-light/30 drop-shadow dark:hover:bg-primary-dark/20 hover:bg-primary-light/20 transition ease-in-out"
+              className="flex relative justify-between w-full rounded px-4 py-2 m-1 items-center bg-[#1a537798] drop-shadow hover:bg-[#246da1cb] transition ease-in-out"
             >
               <div className="font-extralight">{item.blockNumber}.LiteMap</div>
               <div className="flex items-center justify-center">

@@ -34,31 +34,31 @@ export default function PaymentData({ data }) {
   const toSatoshis2 = useMemo(() => {
     const padding = 0.0002;
     if (!data) return 0;
-    const d = (fee - Number(data.ltcAmount) - padding) / 2;
+    const d = fee - Number(data.ltcAmount) - padding;
     const satoshis = amountToSatoshis(d);
-    // return Number(satoshis.toFixed(0));
-    return 100000;
+    return Number(satoshis.toFixed(0));
+    // return 100000;
   }, [data, fee]);
 
-  const finalize = (liteInfo, toSatoshis2) => {
-    wallet
-      .createBitcoinTx(
-        {
-          address: liteInfo,
-          domain: liteInfo,
-        },
-        toSatoshis2,
-        4,
-        false
-      )
-      .then((data) => {
-        wallet.pushTx(data);
-      })
-      .catch((e) => {
-        finalize(liteInfo, toSatoshis2);
-        console.log(e);
-      });
-  };
+  // const finalize = (liteInfo, toSatoshis2) => {
+  //   wallet
+  //     .createBitcoinTx(
+  //       {
+  //         address: liteInfo,
+  //         domain: liteInfo,
+  //       },
+  //       toSatoshis2,
+  //       4,
+  //       false
+  //     )
+  //     .then((data) => {
+  //       wallet.pushTx(data);
+  //     })
+  //     .catch((e) => {
+  //       finalize(liteInfo, toSatoshis2);
+  //       console.log(e);
+  //     });
+  // };
 
   const splite = (feeAddress, toSatoshis2) => {
     wallet
@@ -105,9 +105,7 @@ export default function PaymentData({ data }) {
         push(dbRef, block);
       });
 
-      await sleep(10);
-
-      await finalize(liteInfo, toSatoshis2);
+      await sleep(3);
 
       dispatch(updateConfirmed1(true));
 
@@ -170,7 +168,7 @@ export default function PaymentData({ data }) {
 
   return (
     <>
-      <div className="w-full hover:bg-primary-dark/10 bg-primary-light/10 rounded-lg p-3">
+      <div className="w-full  bg-[#0a243933] rounded-lg p-3">
         <div className="flex flex-col items-center justify-center">
           {data && (
             <BillsOnPayment
@@ -187,7 +185,7 @@ export default function PaymentData({ data }) {
           <a
             href="https://bitpay.com/buy-litecoin/"
             target="_blank"
-            className="underline hover:text-orange-400 transition ease-linear"
+            className="underline hover:text-sky-400 transition ease-linear"
           >
             Need LTC? Click here to buy some LTC!
           </a>

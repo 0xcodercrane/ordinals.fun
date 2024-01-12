@@ -3,13 +3,8 @@ import WAValidator from "multicoin-address-validator";
 import { useState } from "react";
 import { useEffect } from "react";
 import AddressCheck from "@/components/AddressCheck";
-import { updateReceiveAddress } from "@/store/slices/inscribe";
-import { useDispatch } from "react-redux";
-import { WalletContext } from "../../context/wallet";
 
-export default function InputAddress() {
-  const dispatch = useDispatch();
-  const wallet = useContext(WalletContext);
+export default function SendAddress({ onChange }) {
   const [receiveAddress, setReceiveAddress] = useState("");
   const [isValidAddress, setIsvalidAddress] = useState(false);
   const [loading, setLoading] = useState({
@@ -42,27 +37,23 @@ export default function InputAddress() {
 
   useEffect(() => {
     if (isValidAddress && receiveAddress) {
-      dispatch(updateReceiveAddress(receiveAddress));
-    } else {
-      dispatch(updateReceiveAddress(""));
+      onChange({
+        address: receiveAddress,
+        domain: receiveAddress,
+      });
     }
   }, [isValidAddress]);
 
-  useEffect(() => {
-    const address = wallet.getAddress();
-    setReceiveAddress(address);
-  }, []);
-
   return (
     <>
-      <p className="mt-3">Input the receive address:</p>
-      <div className="mt-2 w-full cs-border rounded-md flex gap-2">
+      <p className="mt-2">Send To:</p>
+      <div className="input-address">
         <input
           type="text"
           name="address"
           id="address"
           className="px-3 py-2 bg-transparent rounded-lg w-full focus:outline-none"
-          placeholder="Provide the address to receive the inscription(s). (Optional)"
+          placeholder="Provide the address to receive this inscription."
           value={receiveAddress}
           onChange={(e) => setReceiveAddress(e.target.value)}
         />

@@ -8,7 +8,7 @@ import Layout from "@/components/sections/Layout";
 import { useContext } from "react";
 import { WalletContext } from "@/context/wallet";
 
-export default function OrderHistory() {
+export default function Orders() {
   const router = useRouter();
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -35,6 +35,8 @@ export default function OrderHistory() {
         }
         setFetchingData(false);
       });
+    } else {
+      fetchingData(false);
     }
   }, [address]);
 
@@ -42,7 +44,7 @@ export default function OrderHistory() {
     <Layout>
       <p className="my-8 text-center text-3xl font-semibold">My orders</p>
 
-      <div className="w-full max-w-[600px] rounded-lg shadow-sm shadow-black mt-6">
+      <div className="w-full max-w-[700px] max-h-[1200px] rounded-lg shadow-lg shadow-black/30 mt-6">
         <div className="grid grid-cols-12 px-3 py-2 dark:bg-primary-dark/20 bg-primary-light/20 rounded-t-lg">
           <div className="col-span-6">Order ID</div>
           <div className="col-span-3">Status</div>

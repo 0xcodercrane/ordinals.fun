@@ -5,6 +5,8 @@ const API_STATUS = {
   SUCCESS: "1",
 };
 
+const baseMempoolApiUrl = "https://litecoinspace.org/api";
+
 class OpenApiService {
   constructor() {
     this.store = {

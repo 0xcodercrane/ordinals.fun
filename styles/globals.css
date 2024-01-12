@@ -4,7 +4,7 @@
 
 @layer components {
   .bg-dark {
-    background: radial-gradient(ellipse at bottom, #13385ee0 0%, #000203 100%);
+    background: radial-gradient(ellipse at bottom, #164f88e0 0%, #000f18 100%);
   }
 
   .bg-white {
@@ -12,11 +12,7 @@
   }
 
   .btn_shadow_dark {
-    border: 1px solid #00364c6e;
-    box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.466),
-      /* highlight */ inset 0 0 6px #2785a2a9,
-      /* inner glow */ inset 0 80px 80px -40px #236aac9d,
-      /* gradient */ 1px 1px 3px rgba(0, 0, 0, 0.589); /* shadow */
+    border: 1px solid #eeeeee34;
   }
 
   .btn_shadow_light {
@@ -28,11 +24,7 @@
   }
 
   .btn_hover_dark {
-    background: #156ca6;
-    box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.25),
-      /* highlight */ inset 0 0 6px #2c94da,
-      /* inner glow */ inset 0 80px 80px -40px #309edd,
-      /* gradient */ 1px 1px 3px rgba(0, 0, 0, 0.75); /* shadow */
+    background: #139bf3a6;
   }
 
   .btn_hover_light {
@@ -45,8 +37,8 @@
 
   .btn_active_dark {
     box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.25),
-      /* highlight */ inset 0 0 6px #2c86da,
-      /* inner glow */ inset 0 80px 80px -40px #307bdd,
+      /* highlight */ inset 0 0 6px #1490e3,
+      /* inner glow */ inset 0 80px 80px -40px #1490e3,
       /* gradient */ 0px 1px 0px rgba(255, 255, 255, 0.25); /* shadow */
   }
 
@@ -328,7 +320,6 @@ a {
   background: #dadada78;
   /* box-shadow: -8px -8px 20px 0px #ffffff70, -8px -8px 20px 0px #ffffff70, -8px -8px 20px 0px #ffffff70, -8px -8px 20px 0px #ffffff70; */
   border-radius: 14px;
-  background-image: url("../public/assets/meter.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom;
@@ -698,7 +689,7 @@ section > .marquee {
 }
 
 .main_btn {
-  @apply backdrop-blur-xl bg-[#d1d0d0] dark:bg-[#0c525e6e] btn_shadow_light dark:btn_shadow_dark;
+  @apply  bg-[#358ec5a9] btn_shadow_dark;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -724,13 +715,13 @@ section > .marquee {
 }
 
 .main_btn:hover {
-  @apply btn_hover_light dark:btn_hover_dark;
+  @apply btn_hover_dark;
 }
 .main_btn:focus {
   outline: none; /*FF*/
 }
 .main_btn:active {
-  @apply btn_active_light dark:btn_active_dark;
+  @apply btn_active_dark;
 
   -webkit-transition: 50ms linear;
   -moz-transition: 50ms linear;
@@ -796,5 +787,40 @@ section > .marquee {
 }
 
 .border {
-  @apply border-[black!important] dark:border-[white!important];
+  @apply border-[black!important] dark:border-[white!important] border-[0.5px!important];
+}
+
+.cs-modal {
+  @apply dark:bg-primary-dark bg-primary-white  text-black dark:text-white  rounded-lg sm:w-full sm:max-w-[500px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black/60;
+}
+
+.in-card {
+  @apply rounded-lg p-3 dark:bg-primary-dark/30 bg-primary-light/40  backdrop-blur-md shadow shadow-black/30 dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 duration-200 w-full;
+}
+
+.in-content {
+  @apply dark:bg-primary-dark/60 relative bg-primary-light/60   text-xl text-center  mb-3 flex items-center p-2 justify-center font-semibold w-full h-[150px] lg:h-[180px] md:h-[170px] sm:h-[160px];
+  overflow-wrap: anywhere !important;
+}
+
+.in-transfer {
+  @apply absolute bg-primary-light dark:bg-primary-dark border px-2 top-1 right-1 font-extralight text-sm rounded-sm;
+}
+
+.in-link {
+  @apply text-sm dark:text-gray-300 text-gray-800 flex justify-center;
+}
+
+.input-address {
+  @apply mt-1 w-full rounded-md flex gap-2;
+  border: 0.1px solid rgba(209, 208, 208, 0.336) !important;
+}
+
+.output-item {
+  @apply cursor-pointer w-full p-3 rounded-md flex justify-center items-center flex-col;
+  border: 0.1px solid rgba(209, 208, 208, 0.336) !important;
+}
+
+.cs-border {
+  border: 0.1px solid rgba(209, 208, 208, 0.336) !important;
 }

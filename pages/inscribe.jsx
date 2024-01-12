@@ -4,7 +4,7 @@ import Banner from "@/components/UI/Banner";
 import Layout from "@/components/sections/Layout";
 import ReactPaginate from "react-paginate";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { initialize, setBulkMintBlocks } from "@/store/slices/inscribe";
 import { FaArrowRight } from "react-icons/fa";
@@ -17,15 +17,17 @@ import { push, ref } from "firebase/database";
 import { db } from "@/services/firebase";
 
 const Inscribe = () => {
-  useLastBlock();
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const { lastBlock } = useLastBlock();
   const { mintedBlocks } = useBlocks();
-  const { selectedBlock, lastBlock } = useInscribe();
+  const { selectedBlock } = useInscribe();
 
   const [pageStep, setPageStep] = useState(1);
-  const [setBulkMintAmount, setsetBulkMintAmount] = useState(0);
+  const [bulkMintAmount, setBulkMintAmount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(2013994);
 
   const nextPage = () => {
     router.push("/createOrder");
@@ -53,16 +55,16 @@ const Inscribe = () => {
   }
 
   const bulkMint = () => {
-    if (!setBulkMintAmount) {
+    if (!bulkMintAmount) {
       toast.error("Please input the amount of Blocks");
       return;
     }
 
     let bulkMintArray = [];
-    for (let index = 0; index < Number(setBulkMintAmount); index++) {
-      if (binarySearch(index + pageStep)) {
+    for (let index = 0; index < Number(bulkMintAmount); index++) {
+      if (binarySearch(lastBlock - (index + pageStep))) {
         bulkMintArray.push({
-          blockNumber: index + pageStep,
+          blockNumber: lastBlock - (index + pageStep),
           id: "",
           date: Date.now(),
           orderCreated: false,
@@ -92,27 +94,17 @@ const Inscribe = () => {
   };
 
   useEffect(() => {
-    // const dbRef = ref(db, "/mintedBlocks");
-    // push(dbRef, {
-    //   id: "",
-    //   blockNumber: 8,
-    //   date: Date.now(),
-    //   orderCreated: "",
-    //   paid: "",
-    //   orderId: "",
-    //   owner: "",
-    // });
     dispatch(initialize());
   }, []);
 
   return (
     <Layout>
-      <Banner />
+      <Banner lastBlock={lastBlock} />
 
       <ControlPanel
-        setsetBulkMintAmount={setsetBulkMintAmount}
-        from={pageStep}
-        to={pageStep + 299}
+        setBulkMintAmount={setBulkMintAmount}
+        from={lastBlock - pageStep}
+        to={lastBlock - (pageStep + 299)}
       />
 
       <ReactPaginate
@@ -129,9 +121,13 @@ const Inscribe = () => {
 
       <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
         {Array.from({ length: 300 }, (_, index) => {
-          if (index + pageStep <= lastBlock)
+          if (lastBlock - (index + pageStep) >= 1)
             return (
-              <Block index={index} key={index} blockNumber={index + pageStep} />
+              <Block
+                index={index}
+                key={index}
+                blockNumber={lastBlock - (index + pageStep)}
+              />
             );
         })}
       </div>
@@ -159,14 +155,14 @@ const Inscribe = () => {
         <input
           placeholder="80"
           type="Number"
-          onChange={(e) => setsetBulkMintAmount(e.target.value)}
+          onChange={(e) => setBulkMintAmount(e.target.value)}
           className="py-2 px-3 dark:bg-primary-dark/20 bg-primary-light/20 w-[80px]  rounded-lg focus:outline-none duration-200 border border-white/50 focus:border-white/60"
         />
         <button
           className="main_btn py-2 px-3 rounded-lg flex items-center gap-2"
           onClick={bulkMint}
         >
-          BlukMint
+          Select
         </button>
         <div className="flex gap-3 sm:justify-end justify-center">
           <button

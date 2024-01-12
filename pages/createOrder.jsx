@@ -6,16 +6,14 @@ import Layout from "@/components/sections/Layout";
 import Bills from "@/components/UI/Bills";
 import { useRouter } from "next/router";
 import InputAddress from "../components/UI/InputAddress";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateFeeRate } from "@/store/slices/inscribe";
 import { toast } from "react-hot-toast";
 import { ref, push } from "firebase/database";
 import { db } from "@/services/firebase";
-import OrderHistory from "../components/UI/OrderHistory";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useInscribe } from "../store/hooks";
-import { setMintedBlocks } from "@/store/slices/blocks";
-import { useEffect } from "react";
+import OrderHistory from "../components/UI/OrderHistory";
 
 const CreateOrder = () => {
   const dispatch = useDispatch();
@@ -97,7 +95,7 @@ const CreateOrder = () => {
   return (
     <Layout>
       <div className="py-16 flex justify-center relative">
-        <div className="w-full max-w-[600px] dark:bg-primary-dark/20 bg-primary-light/20 px-4 py-8 rounded-lg relative">
+        <div className="w-full max-w-[600px] bg-primary-dark/20 px-4 py-8 rounded-lg relative shadow-lg shadow-black/30">
           <div
             className="absolute px-2 py-1 rounded top-2 left-2 z-10 text-sm cursor-pointer"
             onClick={backToInscribe}
@@ -128,7 +126,7 @@ const CreateOrder = () => {
         </div>
       </div>
 
-      {/* <OrderHistory /> */}
+      <OrderHistory />
     </Layout>
   );
 };

@@ -251,3 +251,54 @@ export const currentPrice = async () => {
     console.log(error);
   }
 };
+
+export const calculateFee = (
+  vins,
+  vouts,
+  recommendedFeeRate,
+  includeChangeOutput = true
+) => {
+  const baseTxSize = 10;
+  const inSize = 180;
+  const outSize = 34;
+
+  const txSize =
+    baseTxSize +
+    vins * inSize +
+    vouts * outSize +
+    Number(includeChangeOutput) * outSize;
+  const fee = txSize * recommendedFeeRate;
+
+  return fee;
+};
+
+export const getTxHexById = async (txId) => {
+  const result = await fetch(
+    `https://litecoinspace.org/api/tx/${txId}/hex`
+  ).then((response) => response.text());
+
+  return result;
+};
+
+export const validateInscription = async (key, inscriptionid) => {
+  try {
+    const res = await fetch(`http://217.76.63.90:3000/text?text=${key}`);
+    const resJson = await res.json();
+    if (resJson?.totalItems > 0) {
+      const filter = resJson?.results.filter(
+        (inscription) => inscription?.contentstr === key
+      );
+
+      if (filter.length > 0) {
+        return filter[0].inscriptionid === inscriptionid;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    return true;
+  }
+};

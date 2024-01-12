@@ -37,6 +37,7 @@ const Payment = () => {
   const [ID, setID] = useState();
   const [orderData, setOrderData] = useState();
   const [finished, setFinished] = useState(false);
+  const [inscriptionId, setInscriptionID] = useState();
 
   const goToHome = () => {
     router.push("/inscribe");
@@ -67,7 +68,7 @@ const Payment = () => {
         jsonData.files.map((file, index) => {
           if (file?.tx) {
             inscriptions.push({
-              id: file.tx.inscription,
+              id: file.tx.inscriptions[0]?.id,
               blockNumber:
                 inscribe?.selectedBlock[index]?.blockNumber || "125725",
             });
@@ -83,6 +84,7 @@ const Payment = () => {
 
           onValue(dbQuery, async (snapshot) => {
             const exist = snapshot.val();
+            setInscriptionID(inscirption.id);
             setFinished(true);
             if (exist) {
               const dbRef = ref(db, `/inscriptions/${Object.keys(exist)[0]}`);
@@ -211,7 +213,7 @@ const Payment = () => {
     <Layout>
       {orderData ? (
         <div className="py-[70px] flex justify-center relative px-2">
-          <div className="px-4 py-16 w-full max-w-[600px] rounded-lg dark:bg-primary-dark/20 bg-primary-light/20 relative">
+          <div className="px-4 py-16 w-full max-w-[600px] rounded-lgn bg-primary-dark/20 relative shadow-lg shadow-black/30">
             <div
               className="absolute px-2 py-1 rounded top-2 left-2 z-10 text-sm cursor-pointer"
               onClick={goToHome}
@@ -234,6 +236,7 @@ const Payment = () => {
               confirmed3={inscribe.confirmed3}
               confirmed4={inscribe.confirmed4}
               finished={finished}
+              inscriptionId={inscriptionId}
             />
 
             <p className="text-[12px] pt-2 text-center">

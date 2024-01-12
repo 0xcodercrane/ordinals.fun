@@ -22,7 +22,7 @@ import {
   createSendMultiOrds,
   createSendOrd,
   createSplitOrdUtxoV2,
-  createSendMultiBTC
+  createSendMultiBTC,
 } from "@unisat/ord-utils";
 import { address as PsbtAddress } from "bitcoinjs-lib";
 import * as bitcoin from "bitcoinjs-lib";
@@ -137,7 +137,7 @@ const Wallet = (props) => {
         const inscriptions = await openApi.getAddressInscriptions(
           accountInfo?.account?.accounts[0]?.address,
           0,
-          10
+          10000
         );
         dispatch(updateInscriptions(inscriptions));
         dispatch(balance(newBalance));
@@ -327,7 +327,81 @@ const Wallet = (props) => {
     return psbt.toHex();
   };
 
-  const sendMultiBTC = async ({ receivers, utxos, receiverToPayFee, feeRate }) => {
+  const sendInscription = async ({
+    to,
+    inscriptionId,
+    feeRate,
+    outputValue,
+  }) => {
+    const currentAccount = accountInfo?.account?.accounts[0];
+    if (!currentAccount) console.log("no current account");
+
+    const psbtNetwork = toPsbtNetwork();
+    const utxo = await openApi.getInscriptionUtxo(inscriptionId);
+    if (!utxo) {
+      console.log("UTXO not found.");
+      return;
+    }
+
+    if (utxo.inscriptions.length > 1) {
+      console.log(
+        "Multiple inscriptions are mixed together. Please split them first."
+      );
+      return;
+    }
+
+    if (!currentAccount?.address) {
+      console.log("no Account");
+      return;
+    }
+
+    console.log(currentAccount);
+
+    const btc_utxos = await openApi.getAddressUtxo(currentAccount?.address);
+    const utxos = [utxo].concat(btc_utxos);
+
+    if (utxos.length < 0) {
+      console.log("No UTXOs");
+      return;
+    }
+
+    const ordUTXOs = utxos.map((v) => {
+      return {
+        txId: v.txId,
+        outputIndex: v.outputIndex,
+        satoshis: v.satoshis,
+        scriptPk: v.scriptPk,
+        addressType: v.addressType,
+        address: currentAccount.address,
+        ords: v.inscriptions,
+      };
+    });
+
+    const psbt = await createSendOrd({
+      utxos: ordUTXOs,
+      toAddress: to,
+      toOrdId: inscriptionId,
+      wallet: { signPsbt: signPsbt },
+      network: psbtNetwork,
+      changeAddress: currentAccount.address,
+      pubkey: currentAccount.pubkey,
+      feeRate,
+      outputValue,
+      enableRBF: false,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+    return psbt.toHex();
+  };
+
+  const sendMultiBTC = async ({
+    receivers,
+    utxos,
+    receiverToPayFee,
+    feeRate,
+  }) => {
     const currentAccount = accountInfo?.account?.accounts[0];
     if (!currentAccount) console.log("no current account");
 
@@ -404,13 +478,13 @@ const Wallet = (props) => {
     // console.log("finalized2");
     const psbt = Psbt.fromHex(psbtHex);
     const rawtx = psbt.extractTransaction().toHex();
-    const fee = psbt.getFee();
-    const rawTxInfo = {
-      psbtHex,
-      rawtx,
-      toAddressInfo,
-      fee,
-    };
+    // const fee = psbt.getFee();
+    // const rawTxInfo = {
+    //   psbtHex,
+    //   rawtx,
+    //   toAddressInfo,
+    //   fee,
+    // };
     // console.log("rawTxInfo:", rawtx);
     return rawtx;
   };
@@ -461,9 +535,28 @@ const Wallet = (props) => {
     return rawtx;
   };
 
+  const createOrdinalsTx = async (
+    toAddressInfo,
+    inscriptionId,
+    feeRate,
+    outputValue
+  ) => {
+    const psbtHex = await sendInscription({
+      to: toAddressInfo.address,
+      inscriptionId,
+      feeRate,
+      outputValue,
+    });
+
+    const psbt = Psbt.fromHex(psbtHex);
+    const rawtx = psbt.extractTransaction().toHex();
+    return rawtx;
+  };
+
   const pushTx = async (rawTxInfo) => {
-    await openApi.pushTx(rawTxInfo);
+    const txid = await openApi.pushTx(rawTxInfo);
     fetchbalance();
+    return txid;
   };
 
   // useEffect(() => {
@@ -510,7 +603,9 @@ const Wallet = (props) => {
         pushTx,
         importWallet,
         getAddress,
-        createMultiBitcoinTx
+        createMultiBitcoinTx,
+        createOrdinalsTx,
+        signPsbt,
       }}
     >
       {props.children}

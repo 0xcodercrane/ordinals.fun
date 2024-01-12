@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import {
@@ -10,13 +10,36 @@ import {
   equalTo,
   push,
   update,
+  remove,
+  get,
 } from "firebase/database";
 import { db } from "@/services/firebase";
+import ListModal from "../trade/ListModal";
+import TransferModal from "../trade/TransferModal";
+import { addressFormat, validateInscription } from "@/utils";
+import { toast } from "react-hot-toast";
+import { WalletContext } from "../../context/wallet";
+import { AiOutlineLoading } from "react-icons/ai";
+import { FaPlus } from "react-icons/fa";
+import { TbArticleOff } from "react-icons/tb";
+import { TbGiftOff } from "react-icons/tb";
 
-export default function InscriptionCard({ inscription }) {
+export default function InscriptionCard({
+  inscription,
+  inscriptionIndex,
+  bulkSelect,
+  tag,
+  setSelectedBlocks,
+  selectedBlocks,
+}) {
+  const wallet = useContext(WalletContext);
+  const address = wallet.getAddress();
   const [content, setContent] = useState("");
   const [inscriptionData, setInscriptionData] = useState();
-  const [exist, setExist] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isOpenTransfer, setIsOpenTransfer] = useState(false);
+  const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   const getContent = async () => {
     if (inscription.inscriptionId)
@@ -29,6 +52,125 @@ export default function InscriptionCard({ inscription }) {
       } catch (error) {
         console.log("content fetch", error);
       }
+  };
+
+  const handleCancelList = async (tag, inscriptionIndex) => {
+    if (!address) {
+      toast.error("Please connect your wallet.");
+      return;
+    }
+
+    let listedInscriptionData;
+    const dbRef = ref(db, "market/" + tag);
+    const dbQuery = query(
+      dbRef,
+      orderByChild("data/inscriptionId"),
+      equalTo(inscription.inscriptionId)
+    );
+
+    const snapshot = await get(dbQuery);
+    const exist = snapshot.val();
+
+    if (exist) {
+      const key = Object.keys(exist)[0];
+      listedInscriptionData = exist[key];
+
+      await remove(ref(db, `market/${tag}/${key}`));
+    }
+
+    const dbRefWallet = ref(db, "wallet/" + address);
+    const dbQueryForWallet = query(dbRefWallet);
+
+    const walletSnapshot = await get(dbQueryForWallet);
+    const walletData = walletSnapshot.val();
+
+    const key = Object.keys(walletData)[0];
+    const dbRefUpdate = ref(
+      db,
+      `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
+    );
+
+    await update(dbRefUpdate, { listed: false, tag: "" });
+
+    const dbRefStatus = ref(db, "status/" + tag);
+    const dbQueryForStatus = query(dbRefStatus);
+
+    const statusSnapshot = await get(dbQueryForStatus);
+    const statusData = statusSnapshot.val();
+
+    if (statusData) {
+      const key = Object.keys(statusData)[0];
+      const dbRefUpdate = ref(db, `status/${tag}/${key}`);
+
+      const updates = {};
+
+      updates[`TVL`] =
+        Number(statusData[key]?.TVL) - Number(listedInscriptionData?.price);
+      updates[`floor`] =
+        Number(statusData[key]?.listed) - 1 == 0
+          ? 0
+          : (Number(statusData[key]?.TVL) -
+              Number(listedInscriptionData?.price)) /
+            (Number(statusData[key]?.listed) - 1);
+      updates[`listed`] = Number(statusData[key]?.listed) - 1;
+
+      await update(dbRefUpdate, updates);
+    }
+  };
+
+  const AddList = async () => {
+    if (!content) {
+      toast.error("Please wait until feching content");
+      return;
+    }
+
+    if (!inscription?.inscriptionId) {
+      toast.error("Unknown inscription ID");
+      return;
+    }
+
+    if (content.indexOf(tag) <= -1) {
+      toast.error("Invalid Inscription");
+      return;
+    }
+
+    try {
+      setAdding(true);
+      const validation = await validateInscription(
+        content,
+        inscription.inscriptionId,
+        inscription
+      );
+      if (!validation) {
+        toast.error("Invalid Inscription");
+        setAdding(false);
+        return;
+      }
+      const newBlock = {
+        content: content,
+        output: inscription?.outputValue,
+        inscription: inscription,
+        inscriptionIndex: inscriptionIndex,
+        tag: tag,
+      };
+
+      const updatedBlocks = [...selectedBlocks, newBlock];
+
+      setSelectedBlocks(updatedBlocks);
+      setAdding(false);
+    } catch (error) {
+      toast.error("When validating:", error);
+      console.log(error);
+      setAdding(true);
+    }
+  };
+
+  const removeFromList = () => {
+    const filter = selectedBlocks.filter(
+      (block) => block.inscription.inscriptionId !== inscription.inscriptionId
+    );
+    setSelectedBlocks(filter);
+    setAdded(false);
   };
 
   useEffect(() => {
@@ -44,54 +186,113 @@ export default function InscriptionCard({ inscription }) {
   }, [content]);
 
   useEffect(() => {
-    if (inscriptionData) {
-      const dbQuery = query(
-        ref(db, "inscriptions"),
-        orderByChild("id"),
-        equalTo(inscriptionData.id)
-      );
-
-      onValue(dbQuery, async (snapshot) => {
-        const exist = snapshot.val();
-        if (exist) {
-          setExist(true);
-        }
-      });
-    }
-  }, [inscriptionData]);
+    getContent();
+  }, [inscription]);
 
   useEffect(() => {
-    getContent();
-  }, []);
+    const exist = selectedBlocks.filter(
+      (block) => block.inscription.inscriptionId == inscription.inscriptionId
+    );
+    if (exist.length > 0) {
+      setAdded(true);
+    } else {
+      setAdded(false);
+    }
+  }, [selectedBlocks]);
 
   return (
-    <div className="rounded-lg p-3 dark:bg-primary-dark/20 bg-primary-light/40 backdrop-blur-md shadow shadow-black dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 duration-200 w-full">
-      <p
-        style={{ overflowWrap: "anywhere" }}
-        className="dark:bg-primary-dark/20 bg-primary-light/20  text-xl text-center  rounded-lg mb-3 flex items-center p-2 justify-center font-semibold w-full h-[180px] lg:h-[200px]"
-      >
-        {content}
-      </p>
-      <Link
-        href={"/inscription/" + inscription.inscriptionId}
-        className="text-sm text-center dark:text-gray-300 text-gray-800  flex justify-between"
-      >
-        <p>Seller:</p> <p>#ltc1...48c5</p>
-      </Link>
-      <hr />
-      <p className="text-center dark:text-gray-300 text-gray-800  mb-3 mt-1 text-sm">
-        0.020 LTC ($ 1.5)
-      </p>
-      <div className="grid grid-cols-1 sm:gird-cols-2 gap-2">
-        <button
-          disabled={!exist}
-          className={`py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10  ${
-            exist ? "main_btn" : "dark:text-gray-400/80 text-gray-600"
-          }`}
+    <>
+      <div className={`${added && "cs-border"} in-card`}>
+        <div className="in-content">
+          {content && content}
+          <button
+            disabled={inscription?.listed}
+            onClick={() => setIsOpenTransfer(true)}
+            className="in-transfer"
+          >
+            Transfer
+          </button>
+        </div>
+
+        <Link
+          href={"/inscription/" + inscription.inscriptionId}
+          className="in-link"
         >
-          List
-        </button>
+          #{addressFormat(inscription?.inscriptionId, 4)}
+        </Link>
+
+        <hr className="mb-2" />
+
+        {inscription?.listed ? (
+          <>
+            <button
+              className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
+              onClick={() =>
+                handleCancelList(inscription?.tag, inscriptionIndex)
+              }
+            >
+              <TbGiftOff /> Listed
+            </button>
+          </>
+        ) : (
+          <>
+            {bulkSelect ? (
+              <>
+                {added ? (
+                  <button
+                    className="main_btn cs-border bg-transparent py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
+                    onClick={() => removeFromList()}
+                  >
+                    <TbArticleOff />
+                    Added
+                  </button>
+                ) : (
+                  <button
+                    disabled={adding || added}
+                    className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
+                    onClick={() => AddList()}
+                  >
+                    <>
+                      {adding ? (
+                        <AiOutlineLoading className="text-lg text-white font-semibold animate-spin" />
+                      ) : (
+                        <>
+                          <FaPlus />
+                          Add
+                        </>
+                      )}
+                    </>
+                  </button>
+                )}
+              </>
+            ) : (
+              <button
+                className="main_btn py-1 h-8  rounded-md w-full"
+                onClick={() => setIsOpen(true)}
+              >
+                List
+              </button>
+            )}
+          </>
+        )}
       </div>
-    </div>
+
+      <ListModal
+        modalIsOpen={modalIsOpen}
+        setIsOpen={setIsOpen}
+        tag={tag}
+        content={content}
+        output={inscription?.outputValue}
+        inscription={inscription}
+        inscriptionIndex={inscriptionIndex}
+      />
+
+      <TransferModal
+        modalIsOpen={isOpenTransfer}
+        setIsOpen={setIsOpenTransfer}
+        content={content}
+        id={inscription?.inscriptionId}
+      />
+    </>
   );
 }

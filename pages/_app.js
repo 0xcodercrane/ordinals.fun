@@ -2,7 +2,6 @@
 import "@/styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import "tailwindcss/tailwind.css";
-import "react-range-slider-input/dist/style.css";
 import NextNProgress from "nextjs-progressbar";
 import Head from "next/head";
 import WalletContext from "@/context/wallet";

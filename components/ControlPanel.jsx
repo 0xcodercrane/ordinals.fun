@@ -7,9 +7,7 @@ import { useDispatch } from "react-redux";
 import { initialize, setBulkMintBlocks } from "@/store/slices/inscribe";
 import { TfiPanel } from "react-icons/tfi";
 import Modal from "react-modal";
-import { useBlocks, useInscribe } from "../store/hooks";
-import { push, ref } from "firebase/database";
-import { db } from "@/services/firebase";
+import { useBlocks } from "../store/hooks";
 import LastMints from "./UI/LastMints";
 
 export default function ControlPanel({ from, to }) {
@@ -17,7 +15,6 @@ export default function ControlPanel({ from, to }) {
   const dispatch = useDispatch();
 
   const { mintedBlocks } = useBlocks();
-  const { selectedBlock } = useInscribe();
 
   const [modalIsOpen, setIsOpen] = useState(false);
   const [fromNumber, setFromNumber] = useState(0);
@@ -41,10 +38,6 @@ export default function ControlPanel({ from, to }) {
 
   const goToCreatOrder = () => {
     if (blocks.length > 0) {
-      const dbRef = ref(db, "/mintedBlocks");
-      selectedBlock.map((block) => {
-        push(dbRef, block);
-      });
       router.push("/createOrder");
     } else {
       toast.error("Please select blocks to inscribe.");
@@ -74,7 +67,7 @@ export default function ControlPanel({ from, to }) {
 
   function getAvailableBlocks() {
     let blocks = [];
-    for (let index = from; index <= to; index++) {
+    for (let index = from; index >= to; index--) {
       if (binarySearch(index)) {
         blocks.push({
           blockNumber: index,
@@ -87,6 +80,7 @@ export default function ControlPanel({ from, to }) {
         });
       }
     }
+    console.log(blocks);
     setAvailableBlocks(blocks);
   }
 
@@ -119,12 +113,12 @@ export default function ControlPanel({ from, to }) {
     }
 
     if (Number(fromNumber) < from) {
-      toast.error(`From block number should be greater than ${from}`);
+      toast.error(`From block number should be lower than ${from}`);
       return;
     }
 
     if (Number(toNumber) > to) {
-      toast.error(`To block number should be lower than ${to}`);
+      toast.error(`To block number should be greater than ${to}`);
       return;
     }
 
@@ -132,8 +126,8 @@ export default function ControlPanel({ from, to }) {
 
     for (
       let index = Number(fromNumber);
-      index <= Number(toNumber) + 1;
-      index++
+      index >= Number(toNumber) + 1;
+      index--
     ) {
       if (binarySearch(index)) {
         blocks.push({
@@ -149,7 +143,7 @@ export default function ControlPanel({ from, to }) {
     }
 
     if (blocks.length > 0) {
-      dispatch(setBulkMintBlocks(blocks));
+      dispatch(setBulkMintBlocks([]));
       setBlocks(blocks);
     } else {
       toast.error("There are no enough blocks on this page.");
@@ -168,7 +162,7 @@ export default function ControlPanel({ from, to }) {
   return (
     <>
       <div className="flex justify-between w-full gap-3">
-        <LastMints/>
+        <LastMints />
         <div className="flex gap-2 sm:justify-end justify-center">
           <button className=" focus:outline-none" onClick={openModal}>
             <TfiPanel className="text-3xl cursor-pointer" />
@@ -180,7 +174,7 @@ export default function ControlPanel({ from, to }) {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         contentLabel="Example Modal"
-        className="dark:bg-primary-dark backdrop-blur-3xl bg-white border text-black dark:text-white border-[#dee2e654!important] rounded-lg sm:w-full sm:max-w-[500px] w-[] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black drop-shadow-xl drop-sahdow-black"
+        className="bg-primary-dark dark:text-white border-[#dee2e654!important] rounded-lg sm:w-full sm:max-w-[500px] w-[] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black drop-shadow-xl drop-sahdow-black"
       >
         <h2 className="text-2xl text-center my-6 font-semibold mx-auto">
           Select the amount of blocks to inscribe.

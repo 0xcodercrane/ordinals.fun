@@ -1,6 +1,8 @@
 import React from "react";
 
 export default function InscriptionDetails({ data, content }) {
+
+  console.log(data)
   return (
     <div className="p-3 dark:bg-primary-dark/20 bg-primary-light/10 rounded-lg">
       {content ? (

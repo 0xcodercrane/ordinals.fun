@@ -19,6 +19,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 const persisConfig = {
   key: "litemap",
   storage,
+  blacklist: ["blocksReducer"],
 };
 
 const rootReducer = combineReducers({

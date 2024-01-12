@@ -4,7 +4,6 @@ import Link from "next/link";
 import Navigation from "./Navigation";
 import WalletConnect from "./WalletConnect";
 import { useEffect } from "react";
-import DarkModeToggleBtn from "./DarkModeToggleBtn";
 
 export default function MenuBar() {
   const [scrollHeader, setScrollHeader] = useState(false);
@@ -28,15 +27,12 @@ export default function MenuBar() {
       }`}
     >
       <Link href="/" className="hidden md:inline-block">
-        <div className="main-logo text-2xl font-extrabold p-3">
-          LiteMap
-        </div>
+        <img src="/logo1.png" alt="" className="w-[220px] my-auto" />
       </Link>
 
       <Navigation />
 
       <div className="flex gap-3 items-center">
-        <DarkModeToggleBtn />
         <WalletConnect />
       </div>
     </div>
