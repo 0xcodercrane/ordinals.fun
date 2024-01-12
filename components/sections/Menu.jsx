@@ -27,7 +27,7 @@ export default function MenuBar() {
       }`}
     >
       <Link href="/" className="hidden md:inline-block">
-        <img src="/logo1.png" alt="" className="w-[220px] my-auto" />
+        <img src="/logo.png" alt="" className="w-[220px] my-auto" />
       </Link>
 
       <Navigation />
