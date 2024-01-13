@@ -178,6 +178,7 @@ const Wallet = (props) => {
 
   const getAddressUtxo = async (address) => {
     const data = await openApi.getAddressUtxo(address);
+    console.log(data);
     return data;
   };
 
@@ -265,6 +266,7 @@ const Wallet = (props) => {
       if (script && !isSigned) {
         const address = PsbtAddress.fromOutputScript(script, psbtNetwork);
         if (account.address === address) {
+          console.log("siginPSBT");
           toSignInputs.push({
             index,
             publicKey: account.pubkey,
@@ -288,6 +290,11 @@ const Wallet = (props) => {
     }
     // console.log("after:", psbt);
     return psbt;
+  };
+
+  const decodePsbt = async (psbtHex) => {
+    console.log(psbtHex);
+    return openApi.decodePsbt(psbtHex);
   };
 
   const sendBTC = async ({ to, amount, utxos, receiverToPayFee, feeRate }) => {
@@ -323,6 +330,7 @@ const Wallet = (props) => {
     //@ts-ignore
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
 
+    console.log(psbt);
     // console.log(psbt.toHex());
     return psbt.toHex();
   };
@@ -393,6 +401,7 @@ const Wallet = (props) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+
     return psbt.toHex();
   };
 
@@ -606,6 +615,7 @@ const Wallet = (props) => {
         createMultiBitcoinTx,
         createOrdinalsTx,
         signPsbt,
+        decodePsbt,
       }}
     >
       {props.children}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import useTabVisibility from "hooks/useTabVisibility";
 
 const FAST_INTERVAL = 2000;
-const SLOW_INTERVAL = 20000;
+const SLOW_INTERVAL = 50000;
 
 const RefreshContext = React.createContext({ slow: 0, fast: 0 });
 

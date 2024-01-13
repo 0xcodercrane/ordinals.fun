@@ -21,6 +21,8 @@ import {
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { AiOutlineLoading } from "react-icons/ai";
+import { Psbt } from "bitcoinjs-lib";
+import useActivities from "../../hooks/useActivities";
 
 export default function ListModal({
   modalIsOpen,
@@ -33,7 +35,8 @@ export default function ListModal({
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const { price } = useWallet();
-  const { psbt } = usePSBT({ network: "litecoin" });
+  const { networks } = usePSBT({ network: "litecoin" });
+  const { addlistForSale } = useActivities();
   const [listingPrice, setListingPrice] = useState("");
   const [toInfo, setToInfo] = useState();
   const [pendingTx, setPendingTx] = useState(false);
@@ -92,6 +95,10 @@ export default function ListModal({
   };
 
   async function generatePSBTListingInscriptionForSale() {
+    const psbt = new Psbt({
+      network: networks["litecoin"],
+    });
+
     let listed = false;
     const dbQuery = query(
       ref(db, "market/" + tag),
@@ -136,20 +143,20 @@ export default function ListModal({
       return;
     }
 
-    if (content.indexOf(tag) <= -1) {
-      toast.error("Invalid Inscription");
-      return;
-    }
+    // if (content.indexOf(tag) <= -1) {
+    //   toast.error("Invalid Inscription");
+    //   return;
+    // }
 
-    const validation = await validateInscription(
-      content,
-      inscription.inscriptionId
-    );
+    // const validation = await validateInscription(
+    //   content,
+    //   inscription.inscriptionId
+    // );
 
-    if (!validation) {
-      toast.error("Invalid Inscription");
-      return;
-    }
+    // if (!validation) {
+    //   toast.error("Invalid Inscription");
+    //   return;
+    // }
 
     try {
       setPendingTx(true);
@@ -177,21 +184,53 @@ export default function ListModal({
       const singedPSBT = await wallet.signPsbt(psbt, {});
 
       if (singedPSBT) {
-        const dbRef = ref(db, "/market/" + tag);
-        push(dbRef, {
-          psbt: singedPSBT.toBase64(),
-          data: inscription,
-          date: Date.now(),
-          price: listingPrice,
-          seller: toInfo.address,
-          content: content,
-          paid: false,
-          txId: "",
-        }).then(async () => {
+        const dbQueryForInscriptions = query(
+          ref(db, `market/${tag}`),
+          orderByChild("data/inscriptionId"),
+          equalTo(inscription?.inscriptionId)
+        );
+
+        const inscriptionSnapshot = await get(dbQueryForInscriptions);
+        const inscriptionExist = inscriptionSnapshot.val();
+
+        if (inscriptionExist) {
+          const key = Object.keys(inscriptionExist)[0];
+          const updateInscriptionRef = ref(db, `market/${tag}/${key}`);
+          await update(updateInscriptionRef, {
+            psbt: singedPSBT.toBase64(),
+            data: inscription,
+            date: Date.now(),
+            price: listingPrice,
+            seller: toInfo.address,
+            content: content,
+            paid: false,
+            txId: "",
+            tag: tag,
+          });
           toast.success("Successfully listed");
-          closeModal();
-        });
+        } else {
+          const dbRef = ref(db, "/market/" + tag);
+          push(dbRef, {
+            psbt: singedPSBT.toBase64(),
+            data: inscription,
+            date: Date.now(),
+            price: listingPrice,
+            seller: toInfo.address,
+            content: content,
+            paid: false,
+            txId: "",
+            tag: tag,
+          }).then(async () => {
+            toast.success("Successfully listed");
+          });
+        }
         await handleUpdateStatus();
+        await addlistForSale(
+          tag,
+          inscription?.inscriptionId,
+          content,
+          listingPrice
+        );
       }
       setPendingTx(false);
     } catch (error) {

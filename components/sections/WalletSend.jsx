@@ -195,7 +195,12 @@ export default function WalletSend({ setContentType }) {
 
     try {
       const txid = await wallet.pushTx(rawTxInfo);
-      await sleep(3); // Wait for transaction synchronization
+      if (txid.indexOf("Broadcast") >= 0) {
+        toast.error(`Broadcast failed: ${txid}`);
+        setPendingTx(false);
+        return;
+      }
+      await sleep(1); // Wait for transaction synchronization
       dispatch(updateBitcoinTx(txid));
       ret.success = true;
       ret.txid = txid;

@@ -53,21 +53,31 @@ export default function Inscribe() {
         if (exist) {
           const existedInscriptions = snapshot.val()[key].inscriptions;
 
-          const updatedinscriptions = existedInscriptions.concat(
-            data.slice(
-              existedInscriptions.length - 1,
-              existedInscriptions.length
-            )
+          const listedInscriptions = existedInscriptions.filter(
+            (inscription) => inscription?.listed === true
           );
 
+          let updatedinscriptions = [];
+          data.map((inscription) => {
+            const filter = listedInscriptions?.filter(
+              (list) => list?.inscriptionId == inscription?.inscriptionId
+            );
+            if (filter.length > 0) {
+              updatedinscriptions.push({
+                ...inscription,
+                listed: true,
+                tag: filter[0]?.tag,
+              });
+            } else {
+              updatedinscriptions.push(inscription);
+            }
+          });
           await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
         }
         await fetchInscriptions();
       } else {
-        console.log("push");
         const dbRef = ref(db, `wallet/${address}`);
         await push(dbRef, { inscriptions: data });
-        console.log("Transaction saved successfully");
         await fetchInscriptions();
         pushing = false;
       }
@@ -80,7 +90,7 @@ export default function Inscribe() {
 
   async function fetchInscriptions() {
     const dbQuery = query(ref(db, `wallet/${address}`));
-
+    console.log("running");
     onValue(dbQuery, async (snapshot) => {
       const exist = snapshot.val();
       if (exist) {

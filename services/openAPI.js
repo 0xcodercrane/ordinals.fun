@@ -220,7 +220,7 @@ class OpenApiService {
       rawtx,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      return data.message;
     }
     return data.result;
   };

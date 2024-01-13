@@ -22,6 +22,8 @@ import {
 import { db } from "@/services/firebase";
 import { AiOutlineLoading } from "react-icons/ai";
 import { FaTimes } from "react-icons/fa";
+import { Psbt } from "bitcoinjs-lib";
+import useActivities from "../../hooks/useActivities";
 
 export default function BulkListModal({
   modalIsOpen,
@@ -34,7 +36,8 @@ export default function BulkListModal({
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const { price } = useWallet();
-  const { psbt } = usePSBT({ network: "litecoin" });
+  const { networks } = usePSBT({ network: "litecoin" });
+  const { addlistForSale } = useActivities();
   const [listingPrice, setListingPrice] = useState("");
   const [toInfo, setToInfo] = useState();
   const [pendingTx, setPendingTx] = useState(false);
@@ -53,33 +56,7 @@ export default function BulkListModal({
   };
 
   const handleUpdateStatus = async (inscriptionIndex) => {
-    const dbQuery = query(ref(db, `status/${tag}`));
-
-    const snapshot = await get(dbQuery);
-    const exist = snapshot.val();
-
-    if (!exist) {
-      const dbRefStatus = ref(db, `/status/${tag}`);
-      await push(dbRefStatus, {
-        TVL: Number(listingPrice),
-        floor: Number(listingPrice),
-        listed: 1,
-      });
-    } else {
-      const key = Object.keys(exist)[0];
-      const url = `/status/${tag}/${key}`;
-      const dbRefStatus = ref(db, url);
-
-      const updates = {};
-
-      updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice);
-      updates[`floor`] =
-        (Number(exist[key]?.TVL) + Number(listingPrice)) /
-        (Number(exist[key]?.listed) + 1);
-      updates[`listed`] = Number(exist[key]?.listed) + 1;
-
-      await update(dbRefStatus, updates);
-    }
+    console.log("running");
 
     const dbQueryForWallet = query(ref(db, `wallet/${address}`));
 
@@ -88,12 +65,12 @@ export default function BulkListModal({
 
     if (walletExist) {
       const key = Object.keys(walletExist)[0];
-      const dbQueryForWallet = ref(
+      const dbQueryForWalletUpdate = ref(
         db,
         `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
       );
 
-      await update(dbQueryForWallet, {
+      await update(dbQueryForWalletUpdate, {
         ...walletExist[key]["inscriptions"][inscriptionIndex],
         listed: true,
         tag: tag,
@@ -108,6 +85,9 @@ export default function BulkListModal({
     toInfoAddress,
     inscriptionIndex
   ) {
+    const psbt = new Psbt({
+      network: networks["litecoin"],
+    });
     let listed = false;
     const dbQuery = query(
       ref(db, "market/" + tag),
@@ -129,6 +109,11 @@ export default function BulkListModal({
 
     if (!inscription?.output) {
       toast.error("Unkown ordinal output ");
+      return;
+    }
+
+    if (!psbt) {
+      toast.error("PSBT is not generated yet.");
       return;
     }
 
@@ -158,20 +143,55 @@ export default function BulkListModal({
       const singedPSBT = await wallet.signPsbt(psbt, {});
 
       if (singedPSBT) {
-        const dbRef = ref(db, "/market/" + tag);
-        push(dbRef, {
-          psbt: singedPSBT.toBase64(),
-          data: inscription,
-          date: Date.now(),
-          price: listingPrice,
-          seller: toInfoAddress,
-          content: content,
-          paid: false,
-          txId: "",
-        }).then(async () => {
+        const dbQueryForInscriptions = query(
+          ref(db, `market/${tag}`),
+          orderByChild("data/inscriptionId"),
+          equalTo(inscription?.inscriptionId)
+        );
+
+        const inscriptionSnapshot = await get(dbQueryForInscriptions);
+        const inscriptionExist = inscriptionSnapshot.val();
+
+        if (inscriptionExist) {
+          const key = Object.keys(inscriptionExist)[0];
+          const updateInscriptionRef = ref(db, `market/${tag}/${key}`);
+          await update(updateInscriptionRef, {
+            psbt: singedPSBT.toBase64(),
+            data: inscription,
+            date: Date.now(),
+            price: listingPrice,
+            seller: toInfoAddress,
+            content: content,
+            paid: false,
+            txId: "",
+            tag: tag,
+          });
           toast.success("Successfully listed");
-        });
+        } else {
+          const dbRef = ref(db, "/market/" + tag);
+          push(dbRef, {
+            psbt: singedPSBT.toBase64(),
+            data: inscription,
+            date: Date.now(),
+            price: listingPrice,
+            seller: toInfoAddress,
+            content: content,
+            paid: false,
+            txId: "",
+            tag: tag,
+          }).then(async () => {
+            toast.success("Successfully listed");
+          });
+        }
+
+        await addlistForSale(
+          tag,
+          inscription?.inscriptionId,
+          content,
+          listingPrice
+        );
         await handleUpdateStatus(inscriptionIndex);
+        await sleep(0.2);
       }
       setPendingTx(false);
     } catch (error) {
@@ -186,11 +206,6 @@ export default function BulkListModal({
   async function generatePSBTsListingInscriptionForSale() {
     if (!address) {
       toast.error("Please connect your wallet");
-      return;
-    }
-
-    if (!psbt) {
-      toast.error("PSBT is not generated yet.");
       return;
     }
 
@@ -214,11 +229,41 @@ export default function BulkListModal({
             toInfo.address,
             block.inscriptionIndex
           );
-          await sleep(0.1);
         })
       );
+
+      const dbQuery = query(ref(db, `status/${tag}`));
+
+      const snapshot = await get(dbQuery);
+      const exist = snapshot.val();
+
+      if (!exist) {
+        const dbRefStatus = ref(db, `/status/${tag}`);
+        await push(dbRefStatus, {
+          TVL: Number(listingPrice),
+          floor: Number(listingPrice),
+          listed: 1,
+        });
+      } else {
+        const key = Object.keys(exist)[0];
+        const url = `/status/${tag}/${key}`;
+        const dbRefStatus = ref(db, url);
+
+        const updates = {};
+
+        updates[`TVL`] =
+          Number(exist[key]?.TVL) + Number(listingPrice) * blocks.length;
+        updates[`floor`] =
+          (Number(exist[key]?.TVL) + Number(listingPrice) * blocks.length) /
+          (Number(exist[key]?.listed) + blocks.length);
+        updates[`listed`] = Number(exist[key]?.listed) + blocks.length;
+
+        await update(dbRefStatus, updates);
+      }
       closeModal();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

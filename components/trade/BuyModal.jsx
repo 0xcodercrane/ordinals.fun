@@ -3,7 +3,12 @@ import { useState } from "react";
 import Modal from "react-modal";
 import * as bitcoin from "bitcoinjs-lib";
 import usePSBT from "../../hooks/usePSBT";
-import { getTxHexById, calculateFee, addressFormat, satToBtc } from "@/utils";
+import {
+  getTxHexById,
+  calculateFee,
+  addressFormat,
+  satoshisToBTC,
+} from "@/utils";
 import { toast } from "react-hot-toast";
 import { useContext } from "react";
 import { WalletContext } from "../../context/wallet";
@@ -19,6 +24,8 @@ import { db } from "@/services/firebase";
 import { AiFillCheckCircle, AiOutlineLoading } from "react-icons/ai";
 import BuyBills from "./BuyBills";
 import { feeAddress, service_fee_rate } from "../../configs/constants";
+import { Psbt } from "bitcoinjs-lib";
+import useActivities from "../../hooks/useActivities";
 
 export default function BuyModal({
   modalIsOpen,
@@ -28,11 +35,14 @@ export default function BuyModal({
   sortedUtxos,
   dummyUTXOs,
   refreshUTXOs,
+  selectUtxos,
+  tag,
 }) {
   const dummyUtxoValue = 3000;
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const { psbt, networks } = usePSBT({ network: "litecoin" });
+  const { addActiviyForBuy } = useActivities();
   const [pendingTx, setPendingTx] = useState(false);
   const [dummyTx, setDummyTx] = useState("");
   const [succeed, setSucceed] = useState(false);
@@ -40,7 +50,18 @@ export default function BuyModal({
 
   function closeModal() {
     setIsOpen(false);
+    setSucceed(false);
+    setBuyTx("");
+    setDummyTx("");
   }
+
+  const recommendedFeeRate = async () => {
+    const res = await fetch(
+      `https://litecoinspace.org/api/v1/fees/recommended`
+    );
+    const fee = await res.json();
+    return fee["hourFee"];
+  };
 
   function validateSellerPSBTAndExtractPrice(
     sellerSignedPsbtBase64,
@@ -56,18 +77,34 @@ export default function BuyModal({
         .toString("hex")}:${sellerInput.index}`;
 
       if (sellerSignedPsbtInput != utxo) {
-        throw `Seller signed PSBT does not match this inscription\n\n${sellerSignedPsbtInput}\n!=\n${utxo}`;
+        toast.error(
+          `Seller signed PSBT does not match this inscription\n\n${sellerSignedPsbtInput}\n!=\n${utxo}`
+        );
       }
+
+      console.log(
+        sellerSignedPsbt.txInputs.length,
+        sellerSignedPsbt.txOutputs.length
+      );
 
       if (
         sellerSignedPsbt.txInputs.length != 1 ||
-        sellerSignedPsbt.txInputs.length != 1
+        sellerSignedPsbt.txOutputs.length != 1
       ) {
         console.log(`Invalid seller signed PSBT`);
-        return;
+        return {
+          price: 0,
+          seller: "",
+          sellerSignedPsbt: {},
+        };
       }
 
       const sellerOutput = sellerSignedPsbt.txOutputs[0];
+      console.log(
+        Number(sellerOutput.value),
+        sellerOutput?.address,
+        sellerSignedPsbt
+      );
 
       return {
         price: Number(sellerOutput.value),
@@ -75,7 +112,12 @@ export default function BuyModal({
         sellerSignedPsbt: sellerSignedPsbt,
       };
     } catch (e) {
-      return;
+      console.log(e);
+      return {
+        price: 0,
+        seller: "",
+        sellerSignedPsbt: {},
+      };
     }
   }
 
@@ -144,8 +186,10 @@ export default function BuyModal({
   }
 
   async function generatePSBTBuyingInscription() {
+    const psbt = new Psbt({
+      network: networks["litecoin"],
+    });
     const payerAddress = address;
-    const paymentUtxos = sortedUtxos;
     const dummyUtxos = dummyUTXOs;
 
     if (!payerAddress) {
@@ -155,11 +199,6 @@ export default function BuyModal({
 
     if (dummyUtxos?.length < 2) {
       toast.error("Please create dummy UTXOs");
-      return;
-    }
-
-    if (paymentUtxos?.length <= 0) {
-      toast.error("You don't have enought balance");
       return;
     }
 
@@ -181,6 +220,30 @@ export default function BuyModal({
 
     try {
       setPendingTx(true);
+
+      let minimumValueRequired;
+      let vins;
+      let vouts;
+
+      minimumValueRequired = price + 2 * dummyUtxoValue;
+      vins = 1;
+      vouts = 2 + 2;
+
+      const feeRate = await recommendedFeeRate();
+
+      const paymentUtxos = await selectUtxos(
+        sortedUtxos,
+        minimumValueRequired,
+        vins,
+        vouts,
+        feeRate
+      );
+
+      if (paymentUtxos?.length <= 0) {
+        toast.error("You don't have enought balance");
+        return;
+      }
+
       // Add two dummy utxos inputs
       for (var i = 0; i < 2; i++) {
         const tx = bitcoin.Transaction.fromHex(
@@ -191,7 +254,6 @@ export default function BuyModal({
             tx.setWitness(parseInt(output), []);
           } catch {}
         }
-        console.log(dummyUtxos[i]);
 
         psbt.addInput({
           hash: dummyUtxos[i].txid,
@@ -223,6 +285,7 @@ export default function BuyModal({
         ...sellerSignedPsbt.data.globalMap.unsignedTx.tx.outs[0],
       });
 
+      console.log(paymentUtxos);
       // Add payment utxo inputs
       for (const utxo of paymentUtxos) {
         const tx = bitcoin.Transaction.fromHex(await getTxHexById(utxo.txid));
@@ -260,6 +323,7 @@ export default function BuyModal({
         address: payerAddress,
         value: dummyUtxoValue,
       });
+
       psbt.addOutput({
         address: payerAddress,
         value: dummyUtxoValue,
@@ -268,17 +332,17 @@ export default function BuyModal({
       const fee = calculateFee(psbt.txInputs.length, psbt.txOutputs.length, 1);
 
       const changeValue =
-        totalValue - dummyUtxoValue * 2 - price - market_fee - fee;
+        totalValue - dummyUtxoValue * 2 - price - market_fee - fee - 10000;
 
       if (changeValue < 0) {
-        throw `Your wallet address doesn't have enough funds to buy this inscription.
-              Price:          ${satToBtc(price)} ${coin}
-              Fees:       ${satToBtc(
+        toast.error(`Your wallet address doesn't have enough funds to buy this inscription.
+              Price:          ${satoshisToBTC(price)}
+              Fees:       ${satoshisToBTC(
                 fee + market_fee + dummyUtxoValue * 2
-              )} ${coin}
-              You have:   ${satToBtc(totalPaymentValue)} ${coin}
-              Required:   ${satToBtc(totalValue - changeValue)} ${coin}
-              Missing:     ${satToBtc(-changeValue)} ${coin}`;
+              )}
+              You have:   ${satoshisToBTC(totalPaymentValue)}
+              Required:   ${satoshisToBTC(totalValue - changeValue)}
+              Missing:     ${satoshisToBTC(-changeValue)}`);
       }
 
       // Change utxo
@@ -286,10 +350,29 @@ export default function BuyModal({
         address: payerAddress,
         value: changeValue,
       });
+
       const singedPSBT = await wallet.signPsbt(psbt, {});
-      const rawtx = singedPSBT.extractTransaction().toHex();
+
+      const psbtHEX = singedPSBT.toHex();
+
+      const decodedPsbt = await wallet.decodePsbt(psbtHEX);
+
+      if (decodedPsbt.warning) {
+        toast.error("RawTx decoding is failed");
+        return;
+      }
+
+      const newPSBT = Psbt.fromHex(psbtHEX);
+      const rawtx = newPSBT.extractTransaction().toHex();
+
       if (rawtx) {
         const txId = await wallet.pushTx(rawtx);
+        if (txId.indexOf("Broadcast") >= 0) {
+          toast.error(`Broadcast failed: ${txId}`);
+          setPendingTx(false);
+          return;
+        }
+
         setPendingTx(false);
         refreshUTXOs(payerAddress);
         if (txId) {
@@ -305,23 +388,32 @@ export default function BuyModal({
             equalTo(list?.data?.inscriptionId)
           );
 
-          onValue(dbQuery, async (snapshot) => {
-            const exist = snapshot.val();
-            if (exist) {
-              const dbRef = ref(db, `/market/litemap/${Object.keys(exist)[0]}`);
-              update(dbRef, {
-                ...list,
-                date: Date.now(),
-                payer: payerAddress,
-                txId: txId,
-                paid: true,
-              });
-            }
-          });
+          const inscriptionSnapshot = await get(dbQuery);
+          const existedInscription = inscriptionSnapshot.val();
+
+          if (existedInscription) {
+            const key = Object.keys(existedInscription)[0];
+            const dbRefForUpdate = ref(db, `/market/litemap/${key}`);
+
+            await update(dbRefForUpdate, {
+              ...list,
+              date: Date.now(),
+              payer: payerAddress,
+              txId: txId,
+              paid: true,
+            });
+
+            await addActiviyForBuy(
+              tag,
+              list?.data?.inscriptionId,
+              list?.content,
+              list?.price
+            );
+          }
         }
       }
     } catch (error) {
-      toast.error("ERROR:", error);
+      toast.error(`${error}`);
       setPendingTx(false);
       console.log(error);
     }
@@ -346,13 +438,14 @@ export default function BuyModal({
 
       <BuyBills listingPrice={list?.price} />
 
-      <button
-        disabled={dummyUTXOs.length >= 2}
-        className="w-full mt-2 bg-primary-contentDark"
-        onClick={generatePSBTGeneratingDummyUtxos}
-      >
-        Click Here to Generate Dummy UTXOs
-      </button>
+      {dummyUTXOs.length < 2 && (
+        <button
+          className="w-full mt-2 bg-primary-contentDark"
+          onClick={generatePSBTGeneratingDummyUtxos}
+        >
+          Click Here to Generate Dummy UTXOs
+        </button>
+      )}
 
       {dummyTx && (
         <a

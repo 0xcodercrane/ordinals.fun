@@ -3,12 +3,10 @@ import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import {
-  onValue,
   ref,
   query,
   orderByChild,
   equalTo,
-  push,
   update,
   remove,
   get,
@@ -16,13 +14,14 @@ import {
 import { db } from "@/services/firebase";
 import ListModal from "../trade/ListModal";
 import TransferModal from "../trade/TransferModal";
-import { addressFormat, validateInscription } from "@/utils";
+import { addressFormat } from "@/utils";
 import { toast } from "react-hot-toast";
 import { WalletContext } from "../../context/wallet";
 import { AiOutlineLoading } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import { TbArticleOff } from "react-icons/tb";
 import { TbGiftOff } from "react-icons/tb";
+import useActivities from "../../hooks/useActivities";
 
 export default function InscriptionCard({
   inscription,
@@ -34,6 +33,7 @@ export default function InscriptionCard({
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
+  const { removeListFromMarket } = useActivities();
   const [content, setContent] = useState("");
   const [inscriptionData, setInscriptionData] = useState();
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -116,6 +116,8 @@ export default function InscriptionCard({
 
       await update(dbRefUpdate, updates);
     }
+
+    await removeListFromMarket(inscription.inscriptionId);
   };
 
   const AddList = async () => {
@@ -129,23 +131,23 @@ export default function InscriptionCard({
       return;
     }
 
-    if (content.indexOf(tag) <= -1) {
-      toast.error("Invalid Inscription");
-      return;
-    }
+    // if (content.indexOf(tag) <= -1) {
+    //   toast.error("Invalid Inscription");
+    //   return;
+    // }
 
     try {
       setAdding(true);
-      const validation = await validateInscription(
-        content,
-        inscription.inscriptionId,
-        inscription
-      );
-      if (!validation) {
-        toast.error("Invalid Inscription");
-        setAdding(false);
-        return;
-      }
+      // const validation = await validateInscription(
+      //   content,
+      //   inscription.inscriptionId,
+      //   inscription
+      // );
+      // if (!validation) {
+      //   toast.error("Invalid Inscription");
+      //   setAdding(false);
+      //   return;
+      // }
       const newBlock = {
         content: content,
         output: inscription?.outputValue,

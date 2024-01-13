@@ -25,7 +25,8 @@ import useUTXOs from "../hooks/useUTXOs";
 import Banner from "../components/trade/Banner";
 
 export default function Home() {
-  const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs } = useUTXOs();
+  const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs, selectUtxos } =
+    useUTXOs();
   const { price } = useWallet();
   const [lists, setLists] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -80,6 +81,7 @@ export default function Home() {
                   sortedUtxos={sortedUtxos}
                   dummyUTXOs={dummyUTXOs}
                   refreshUTXOs={refreshUTXOs}
+                  selectUtxos={selectUtxos}
                 />
               );
             })}

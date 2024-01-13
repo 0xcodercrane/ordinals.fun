@@ -15,7 +15,6 @@
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@mempool/liquid.js": "^2.2.1",
-    "@mempool/mempool.js": "^2.3.0",
     "@metamask/obs-store": "^7.0.0",
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^2.0.1",

@@ -1,21 +1,10 @@
-import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { useEffect } from "react";
-import {
-  onValue,
-  ref,
-  query,
-  orderByChild,
-  equalTo,
-  push,
-  update,
-} from "firebase/database";
-import { db } from "@/services/firebase";
-import ListModal from "../trade/ListModal";
-import TransferModal from "../trade/TransferModal";
 import { addressFormat } from "@/utils";
 import BuyModal from "../trade/BuyModal";
+import { useContext } from "react";
+import { WalletContext } from "../../context/wallet";
+import { TbArticleOff } from "react-icons/tb";
 
 export default function BuyCard({
   list,
@@ -24,7 +13,10 @@ export default function BuyCard({
   sortedUtxos,
   dummyUTXOs,
   refreshUTXOs,
+  selectUtxos,
 }) {
+  const wallet = useContext(WalletContext);
+  const address = wallet.getAddress();
   const [modalIsOpen, setIsOpen] = useState(false);
 
   return (
@@ -50,12 +42,21 @@ export default function BuyCard({
             </span>
           </p>
         </div>
-        <button
-          className="main_btn py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
-          onClick={() => setIsOpen(true)}
-        >
-          Buy
-        </button>
+        {list.seller === address ? (
+          <a
+            href="/wallet"
+            className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
+          >
+            <TbArticleOff /> Listed By You
+          </a>
+        ) : (
+          <button
+            className="main_btn py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
+            onClick={() => setIsOpen(true)}
+          >
+            Buy
+          </button>
+        )}
       </div>
 
       <BuyModal
@@ -66,6 +67,8 @@ export default function BuyCard({
         sortedUtxos={sortedUtxos}
         dummyUTXOs={dummyUTXOs}
         refreshUTXOs={refreshUTXOs}
+        selectUtxos={selectUtxos}
+        tag={list?.tag}
       />
     </>
   );

@@ -31,13 +31,13 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id }) {
 
     try {
       const txid = await wallet.pushTx(rawTxInfo);
-      await sleep(3); // Wait for transaction synchronization
+      await sleep(1); // Wait for transaction synchronization
       if (txid) {
-        setPendingTx(false);
         setSucceed(true);
         setTx(txid);
         toast.success("Your transaction has been sent successfully.");
       }
+      setPendingTx(false);
     } catch (e) {
       setPendingTx(false);
       setSucceed(false);
