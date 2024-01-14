@@ -50,7 +50,7 @@ export default function Inscribe() {
       if (exist) {
         const key = Object.keys(snapshot.val())[0];
         const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
-        if (exist) {
+        if (data) {
           const existedInscriptions = snapshot.val()[key].inscriptions;
 
           const listedInscriptions = existedInscriptions.filter(

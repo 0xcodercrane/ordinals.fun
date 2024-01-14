@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useContext } from "react";
+import openApi from "@/services/openAPI";
 import { useState } from "react";
 import { useEffect } from "react";
 import {
@@ -35,7 +36,8 @@ export default function InscriptionCard({
   const address = wallet.getAddress();
   const { removeListFromMarket } = useActivities();
   const [content, setContent] = useState("");
-  const [inscriptionData, setInscriptionData] = useState();
+  const [isOwner, setIsOwner] = useState();
+  const [owner, setOwner] = useState();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isOpenTransfer, setIsOpenTransfer] = useState(false);
   const [added, setAdded] = useState(false);
@@ -48,6 +50,12 @@ export default function InscriptionCard({
           "https://ordinalslite.com/content/" + inscription.inscriptionId;
         const data = await fetch(url);
         const textData = await data.text();
+
+        const inscriptionData = await openApi.getInscriptionUtxoDetail(
+          inscription.inscriptionId
+        );
+        setIsOwner(inscriptionData?.inscriptions[0]?.address === address);
+        setOwner(inscriptionData?.inscriptions[0]?.address);
         setContent(textData);
       } catch (error) {
         console.log("content fetch", error);
@@ -105,14 +113,15 @@ export default function InscriptionCard({
       const updates = {};
 
       updates[`TVL`] =
-        Number(statusData[key]?.TVL) - Number(listedInscriptionData?.price);
+        Number(statusData[key]?.TVL) - Number(listedInscriptionData?.price) ||
+        0;
       updates[`floor`] =
         Number(statusData[key]?.listed) - 1 == 0
           ? 0
           : (Number(statusData[key]?.TVL) -
               Number(listedInscriptionData?.price)) /
-            (Number(statusData[key]?.listed) - 1);
-      updates[`listed`] = Number(statusData[key]?.listed) - 1;
+              (Number(statusData[key]?.listed) - 1) || 0;
+      updates[`listed`] = Number(statusData[key]?.listed) - 1 || 0;
 
       await update(dbRefUpdate, updates);
     }
@@ -182,7 +191,6 @@ export default function InscriptionCard({
           id: inscription.inscriptionId,
           blockNumber: Number(content.split(".")[0]),
         };
-        setInscriptionData(data);
       }
     }
   }, [content]);
@@ -203,7 +211,17 @@ export default function InscriptionCard({
   }, [selectedBlocks]);
 
   return (
-    <>
+    <div className="relative">
+      {!isOwner && owner && (
+        <div className="absolute z-50 w-full h-full top-0 left-0 bg-black/5 backdrop-blur-sm flex justify-center items-center text-center">
+          <div>
+            <p>Transfering to</p>
+            <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
+              {addressFormat(owner, 6)}
+            </a>
+          </div>
+        </div>
+      )}
       <div className={`${added && "cs-border"} in-card`}>
         <div className="in-content">
           {content && content}
@@ -295,6 +313,6 @@ export default function InscriptionCard({
         content={content}
         id={inscription?.inscriptionId}
       />
-    </>
+    </div>
   );
 }

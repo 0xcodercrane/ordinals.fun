@@ -231,6 +231,7 @@ export default function ListModal({
           content,
           listingPrice
         );
+        closeModal();
       }
       setPendingTx(false);
     } catch (error) {

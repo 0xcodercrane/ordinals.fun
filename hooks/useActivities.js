@@ -97,9 +97,10 @@ export default function useActivities() {
 
     if (existedActivity) {
       const key = Object.keys(existedActivity)[0];
-      const dbRefForUpdate = ref(db, `wallet/${address}/activities/${key}`);
-
-      await remove(dbRefForUpdate);
+      if (existedActivity[key]?.type === "Listed") {
+        const dbRefForUpdate = ref(db, `wallet/${address}/activities/${key}`);
+        await remove(dbRefForUpdate);
+      }
     }
   };
 
