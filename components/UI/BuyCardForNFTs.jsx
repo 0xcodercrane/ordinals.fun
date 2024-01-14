@@ -42,7 +42,7 @@ export default function BuyCardForNFTs({
   return (
     <>
       <div className="in-card">
-        <div className="in-content">
+        <div className="in-content p-0">
           <img
             src={`https://ordinalslite.com/content/${inscription.id}`}
             className="w-full h-full object-cover"
