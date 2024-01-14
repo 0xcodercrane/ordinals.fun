@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { WalletContext } from "../../context/wallet";
 import { TbArticleOff } from "react-icons/tb";
 import openAPI from "@/services/openAPI";
+import Link from "next/link";
 
 export default function BuyCardForNFTs({
   inscription,
@@ -74,12 +75,12 @@ export default function BuyCardForNFTs({
         )}
 
         {!fetching && data?.address === address && !listed ? (
-          <a
+          <Link
             href="/wallet"
             className="main_btn py-1 mt-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
           >
             <TbArticleOff /> Listed By You
-          </a>
+          </Link>
         ) : (
           <button
             disabled={!listed}
