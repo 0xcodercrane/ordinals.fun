@@ -282,7 +282,7 @@ export default function BulkListModal({
           return (
             <div
               key={key}
-              className="w-full h-24 rounded-md bg-primary-contentDark text-lg flex justify-center items-center my-3 relative"
+              className="w-full h-24 rounded-md bg-primary-contentDark text-sm flex justify-center items-center my-3 relative p-3"
               style={{ overflowWrap: "anywhere" }}
             >
               {block.content}

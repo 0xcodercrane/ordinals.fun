@@ -24,7 +24,7 @@ export default function Inscribe() {
   const { inscriptions } = useWallet();
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
-  const [inscriptionsFromDB, setInscriptionFromDB] = useState([]);
+  const [inscriptionsFromDB, setInscriptionFromDB] = useState("");
   const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [bulkSelect, setBulkSelect] = useState(false);
   const [type, setType] = useState("litemap");
@@ -50,7 +50,7 @@ export default function Inscribe() {
       if (exist) {
         const key = Object.keys(snapshot.val())[0];
         const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
-        if (data) {
+        if (data && key !== "activities") {
           const existedInscriptions = snapshot.val()[key].inscriptions;
 
           const listedInscriptions = existedInscriptions.filter(
@@ -73,11 +73,12 @@ export default function Inscribe() {
             }
           });
           await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
+        } else {
+          if (data) {
+            const dbRef = ref(db, `wallet/${address}`);
+            await push(dbRef, { inscriptions: data });
+          }
         }
-        await fetchInscriptions();
-      } else {
-        const dbRef = ref(db, `wallet/${address}`);
-        await push(dbRef, { inscriptions: data });
         await fetchInscriptions();
         pushing = false;
       }
@@ -90,7 +91,6 @@ export default function Inscribe() {
 
   async function fetchInscriptions() {
     const dbQuery = query(ref(db, `wallet/${address}`));
-    console.log("running");
     onValue(dbQuery, async (snapshot) => {
       const exist = snapshot.val();
       if (exist) {
@@ -135,7 +135,7 @@ export default function Inscribe() {
             </>
           ) : (
             <>
-              {inscriptionsFromDB.length == 0 ? (
+              {!inscriptionsFromDB ? (
                 <>
                   <div className="my-auto flex flex-col justify-center items-center">
                     <h1 className="text-xl font-bold mb-8 animate-pulse text-center">

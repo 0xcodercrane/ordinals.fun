@@ -6,13 +6,7 @@ import {
   ref,
   query,
   orderByChild,
-  equalTo,
-  push,
-  update,
-  get,
-  limitToLast,
-  limitToFirst,
-  endAt,
+  equalTo
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";

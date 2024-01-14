@@ -5,6 +5,7 @@ import { useState } from "react";
 import { db } from "@/services/firebase";
 import { useLastBlock, useMintedBlocksFromAPI } from "../../store/hooks";
 import NumberFormat from "../UI/NumberFormatter";
+import Link from "next/link";
 
 export default function Banner({ title, tag }) {
   const { mintedBlockNumber } = useMintedBlocksFromAPI();
@@ -145,9 +146,9 @@ export default function Banner({ title, tag }) {
         <div className="main_btn px-3 py-2 rounded-md w-fit">
           🔥 {volumeh} buys in last hour
         </div>
-        <div className="main_btn px-3 py-2 rounded-md w-fit">
+        <Link href={"/wallet"} className="main_btn px-3 py-2 rounded-md w-fit">
           Create Listing
-        </div>
+        </Link>
       </div>
     </>
   );

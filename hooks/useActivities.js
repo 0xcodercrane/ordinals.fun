@@ -31,11 +31,19 @@ export default function useActivities() {
       id: inscriptionId,
       price: price,
       type: "Listed",
+      tx: "",
     };
     await push(dbRef, newActivity);
   };
 
-  const updateListForSold = async (tag, inscriptionId, content, price) => {
+  const updateListForSold = async (
+    tag,
+    inscriptionId,
+    content,
+    price,
+    address,
+    tx
+  ) => {
     if (!address) {
       toast.error("Please connect your wallet.");
       return;
@@ -60,11 +68,12 @@ export default function useActivities() {
         price: price,
         type: "Sold",
         content: content,
+        tx: tx,
       });
     }
   };
 
-  const addActiviyForBuy = async (tag, inscriptionId, content, price) => {
+  const addActiviyForBuy = async (tag, inscriptionId, content, price, tx) => {
     if (!address) {
       toast.error("Please connect your wallet.");
       return;
@@ -77,6 +86,7 @@ export default function useActivities() {
       id: inscriptionId,
       price: price,
       type: "Buy",
+      tx: tx,
     };
     push(dbRef, newActivity);
   };

@@ -82,7 +82,7 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id }) {
       <div className="text-center text-2xl font-semibold">Send Litemap</div>
 
       <div
-        className="mx-auto w-full h-32 rounded-md bg-primary-contentDark text-3xl flex justify-center items-center my-3"
+        className="mx-auto w-full h-32 rounded-md bg-primary-contentDark text-xl flex justify-center items-center my-3 p-2"
         style={{ overflowWrap: "anywhere" }}
       >
         {content}

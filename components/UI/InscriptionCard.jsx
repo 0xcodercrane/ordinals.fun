@@ -214,12 +214,12 @@ export default function InscriptionCard({
     <div className="relative">
       {!isOwner && owner && (
         <div className="absolute z-50 w-full h-full top-0 left-0 bg-black/5 backdrop-blur-sm flex justify-center items-center text-center">
-          <div>
-            <p>Transfering to</p>
-            <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
+          {/* <div> */}
+          {/* <p>Transfering to</p> */}
+          {/* <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
               {addressFormat(owner, 6)}
-            </a>
-          </div>
+            </a> */}
+          {/* </div> */}
         </div>
       )}
       <div className={`${added && "cs-border"} in-card`}>

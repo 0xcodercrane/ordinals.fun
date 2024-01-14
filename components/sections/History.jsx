@@ -6,6 +6,7 @@ import { addressFormat } from "@/utils";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { WalletContext } from "@/context/wallet";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 export default function History() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function History() {
   const address = wallet.getAddress();
   const [orders, setOrders] = useState();
   const [fetchingData, setFetchingData] = useState(true);
-  const [trades, setTrades] = useState([]);
+  const [trades, setTrades] = useState();
   const [activities, setActivities] = useState();
 
   const goToPayment = (id) => {
@@ -92,20 +93,31 @@ export default function History() {
                     className="grid grid-cols-12 px-3 text-sm my-1 bg-[#19679d54] hover:bg-[#246da1cb] cursor-pointer items-center gap-2 py-1"
                   >
                     <div className="col-span-3">{activities[key].content}</div>
-                    <div className="col-span-3">{activities[key]?.price} LTC</div>
+                    <div className="col-span-3">
+                      {activities[key]?.price} LTC
+                    </div>
                     <div
                       className={`col-span-3 ${
                         activities[key]?.type == "Sold"
                           ? "text-green-500"
                           : activities[key]?.type == "Listed"
                           ? "text-sky-500"
-                          : "text-orange-500"
+                          : "text-yellow-400"
                       }`}
                     >
                       {activities[key]?.type}
                     </div>
-                    <div className="col-span-3 ">
+                    <div className="col-span-3 relative">
                       {new Date(activities[key]?.date).toDateString()}
+                      {activities[key].type !== "Listed" && (
+                        <a
+                          href={`https://litecoinspace.org/tx/${activities[key].tx}`}
+                          className="absolute right-1"
+                          target="_blank"
+                        >
+                          <FaExternalLinkAlt />
+                        </a>
+                      )}
                     </div>
                   </div>
                 );
@@ -132,7 +144,7 @@ export default function History() {
           <div className="col-span-3">Status</div>
           <div className="col-span-3">Date</div>
         </div>
-        {trades.length > 0 && !fetchingData ? (
+        {trades && !fetchingData ? (
           <div className="bg-[#14496c33] rounded-b-lg px-1 py-1  max-h-[500px] overflow-y-auto">
             {Object.keys(trades).map((tag, index) => {
               return (

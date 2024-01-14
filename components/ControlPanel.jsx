@@ -80,7 +80,6 @@ export default function ControlPanel({ from, to }) {
         });
       }
     }
-    console.log(blocks);
     setAvailableBlocks(blocks);
   }
 

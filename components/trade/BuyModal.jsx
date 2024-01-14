@@ -43,7 +43,7 @@ export default function BuyModal({
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const { psbt, networks } = usePSBT({ network: "litecoin" });
-  const { addActiviyForBuy } = useActivities();
+  const { addActiviyForBuy, updateListForSold } = useActivities();
   const [pendingTx, setPendingTx] = useState(false);
   const [dummyTx, setDummyTx] = useState("");
   const [succeed, setSucceed] = useState(false);
@@ -83,16 +83,10 @@ export default function BuyModal({
         );
       }
 
-      console.log(
-        sellerSignedPsbt.txInputs.length,
-        sellerSignedPsbt.txOutputs.length
-      );
-
       if (
         sellerSignedPsbt.txInputs.length != 1 ||
         sellerSignedPsbt.txOutputs.length != 1
       ) {
-        console.log(`Invalid seller signed PSBT`);
         return {
           price: 0,
           seller: "",
@@ -101,11 +95,6 @@ export default function BuyModal({
       }
 
       const sellerOutput = sellerSignedPsbt.txOutputs[0];
-      console.log(
-        Number(sellerOutput.value),
-        sellerOutput?.address,
-        sellerSignedPsbt
-      );
 
       return {
         price: Number(sellerOutput.value),
@@ -113,7 +102,6 @@ export default function BuyModal({
         sellerSignedPsbt: sellerSignedPsbt,
       };
     } catch (e) {
-      console.log(e);
       return {
         price: 0,
         seller: "",
@@ -187,6 +175,7 @@ export default function BuyModal({
   }
 
   async function generatePSBTBuyingInscription() {
+
     const psbt = new Psbt({
       network: networks["litecoin"],
     });
@@ -226,7 +215,7 @@ export default function BuyModal({
       let vins;
       let vouts;
 
-      minimumValueRequired = price + 2 * dummyUtxoValue;
+      minimumValueRequired = price + price * 0.02 + 2 * dummyUtxoValue;
       vins = 1;
       vouts = 2 + 2;
 
@@ -408,7 +397,17 @@ export default function BuyModal({
               tag,
               list?.data?.inscriptionId,
               list?.content,
-              list?.price
+              list?.price,
+              txId
+            );
+
+            await updateListForSold(
+              tag,
+              list?.data?.inscriptionId,
+              list?.content,
+              list?.price,
+              list?.seller,
+              txId
             );
           }
         }
