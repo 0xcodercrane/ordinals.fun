@@ -5,6 +5,7 @@ import BuyModal from "../trade/BuyModal";
 import { useContext } from "react";
 import { WalletContext } from "../../context/wallet";
 import { TbArticleOff } from "react-icons/tb";
+import Link from "next/link";
 
 export default function BuyCard({
   list,
@@ -43,12 +44,12 @@ export default function BuyCard({
           </p>
         </div>
         {list.seller === address ? (
-          <a
+          <Link
             href="/wallet"
             className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
           >
             <TbArticleOff /> Listed By You
-          </a>
+          </Link>
         ) : (
           <button
             className="main_btn py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
