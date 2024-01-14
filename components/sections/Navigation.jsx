@@ -15,8 +15,8 @@ export default function Navigation() {
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
-        <Link className="font-semibold" href="/market">
-          Market
+        <Link className="font-semibold" href="/collections">
+          Collections
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
