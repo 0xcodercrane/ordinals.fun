@@ -137,7 +137,7 @@ export const useMintedBlocksFromAPI = () => {
   useEffect(() => {
     async function searchBlocks() {
       try {
-        const res = await fetch("http://217.76.63.90:3000/text?text=.litemap");
+        const res = await fetch("/searchInscription/text?text=.litemap");
         const resJson = await res.json();
         if (resJson?.totalItems > 0) {
           dispatch(updateMintedBlockNumber(resJson?.totalItems));
