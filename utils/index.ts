@@ -282,7 +282,7 @@ export const getTxHexById = async (txId) => {
 
 export const validateInscription = async (key, inscriptionid) => {
   try {
-    const res = await fetch(`http://217.76.63.90:3000/text?text=${key}`);
+    const res = await fetch(`/searchInscription/text?text=${key}`);
     const resJson = await res.json();
     if (resJson?.totalItems > 0) {
       const filter = resJson?.results.filter(
