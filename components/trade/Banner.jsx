@@ -118,18 +118,12 @@ export default function Banner({ title, tag }) {
         </div>
         <div>
           <p className="font-semibold">
-            {mintedBlockNumber ? (
-              <NumberFormat number={mintedBlockNumber} />
-            ) : (
-              0
-            )}
+            {mintedBlockNumber ? mintedBlockNumber : 0}
           </p>
           <p className="text-sm dark:text-gray-300 text-gray-800">Owners</p>
         </div>
         <div>
-          <p className="font-semibold">
-            {lastBlock ? <NumberFormat number={lastBlock} /> : 0}
-          </p>
+          <p className="font-semibold">{lastBlock ? lastBlock : 0}</p>
           <p className="text-sm dark:text-gray-300 text-gray-800">
             Latest Block
           </p>

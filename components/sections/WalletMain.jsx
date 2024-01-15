@@ -142,7 +142,7 @@ export default function WalletMain({ setContentType }) {
                     className="rounded-md"
                     alt=""
                   />
-                  <p>LiteMaps</p>
+                  <p>All inscriptions</p>
                 </div>
                 <div className="flex gap-3">
                   <p>{account?.inscriptions?.total}</p>

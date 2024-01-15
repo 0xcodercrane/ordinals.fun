@@ -1,6 +1,5 @@
 import React from "react";
 import { useMintedBlocksFromAPI, useWallet } from "../../store/hooks";
-import NumberFormat from "./NumberFormatter";
 
 export default function Banner({ lastBlock }) {
   const { price } = useWallet();
@@ -15,27 +14,19 @@ export default function Banner({ lastBlock }) {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-lg">
         <div>
-          <p className="font-semibold">
-            <NumberFormat number={lastBlock} />
-          </p>
+          <p className="font-semibold">{lastBlock}</p>
           <p className="text-sm dark:text-gray-300 text-gray-800">
             Lastest Block
           </p>
         </div>
         <div>
-          <p className="font-semibold">
-            <NumberFormat number={lastBlock - mintedBlockNumber} />
-          </p>
+          <p className="font-semibold">{lastBlock - mintedBlockNumber}</p>
           <p className="text-sm dark:text-gray-300 text-gray-800">
             Available Blocks
           </p>
         </div>
         <div>
-          <p className="font-semibold">
-            {" "}
-            <NumberFormat number={mintedBlockNumber} />
-            {}
-          </p>
+          <p className="font-semibold">{mintedBlockNumber}</p>
           <p className="text-sm dark:text-gray-300 text-gray-800">Minted</p>
         </div>
         <div>
