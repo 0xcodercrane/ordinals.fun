@@ -24,7 +24,6 @@ export default function PaymentData({ data }) {
   const [rawTx1, setRawTxInfo1] = useState("");
   const [pendingTx, setPendingTx] = useState(false);
   const [creatingTx, setCreatingTx] = useState(true);
-  const [liteInfo, setLiteInfo] = useState();
 
   const toSatoshis1 = useMemo(() => {
     if (!data) return 0;
@@ -37,28 +36,8 @@ export default function PaymentData({ data }) {
     const d = fee - Number(data.ltcAmount) - padding;
     const satoshis = amountToSatoshis(d);
     return Number(satoshis.toFixed(0));
-    // return 100000;
   }, [data, fee]);
 
-  // const finalize = (liteInfo, toSatoshis2) => {
-  //   wallet
-  //     .createBitcoinTx(
-  //       {
-  //         address: liteInfo,
-  //         domain: liteInfo,
-  //       },
-  //       toSatoshis2,
-  //       4,
-  //       false
-  //     )
-  //     .then((data) => {
-  //       wallet.pushTx(data);
-  //     })
-  //     .catch((e) => {
-  //       finalize(liteInfo, toSatoshis2);
-  //       console.log(e);
-  //     });
-  // };
 
   const splite = (feeAddress, toSatoshis2) => {
     wallet
@@ -123,7 +102,6 @@ export default function PaymentData({ data }) {
       data &&
       toSatoshis1 !== 0 &&
       toSatoshis2 !== 0 &&
-      liteInfo &&
       feeAddress &&
       !confirmed1
     ) {
@@ -153,18 +131,8 @@ export default function PaymentData({ data }) {
           console.log(e);
         });
     }
-  }, [toSatoshis2, liteInfo, toSatoshis1, data, feeAddress, confirmed1]);
+  }, [toSatoshis2,  toSatoshis1, data, feeAddress, confirmed1]);
 
-  useEffect(() => {
-    const dbQuery = query(ref(db, "litecoinInfo"));
-
-    onValue(dbQuery, async (snapshot) => {
-      const exist = snapshot.val();
-      if (exist) {
-        setLiteInfo(exist);
-      }
-    });
-  }, []);
 
   return (
     <>
