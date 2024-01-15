@@ -59,6 +59,8 @@ export default function TransferModal({
 
   function closeModal() {
     setIsOpen(false);
+    setTx("");
+    setSucceed(false);
   }
 
   useEffect(() => {

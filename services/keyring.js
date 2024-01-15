@@ -353,7 +353,7 @@ class KeyringService extends EventEmitter {
   };
 
   signTransaction = (EXPrive, psbt, inputs) => {
-    console.log("simple key ring");
+    // console.log("simple key ring");
     const simpleKeyring = new HdKeyring({
       mnemonic: EXPrive,
       activeIndexes: [0],
