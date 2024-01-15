@@ -48,7 +48,7 @@ export default function BulkListModal({
   }
 
   const removeFromList = (id) => {
-    console.log(id);
+    //console.log(id);
     const filter = blocks.filter(
       (block) => block.inscription.inscriptionId !== id
     );
@@ -56,7 +56,7 @@ export default function BulkListModal({
   };
 
   const handleUpdateStatus = async (inscriptionIndex) => {
-    console.log("running");
+    //console.log("running");
 
     const dbQueryForWallet = query(ref(db, `wallet/${address}`));
 
@@ -196,7 +196,7 @@ export default function BulkListModal({
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-      console.log(error);
+      //console.log(error);
       toast.error(
         "Something went wrong when creating PSBT. Please try again after some mins."
       );
@@ -262,7 +262,7 @@ export default function BulkListModal({
       }
       closeModal();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 

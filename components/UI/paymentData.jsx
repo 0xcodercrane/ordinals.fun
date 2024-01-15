@@ -55,7 +55,7 @@ export default function PaymentData({ data }) {
       })
       .catch((e) => {
         splite(feeAddress, toSatoshis2);
-        console.log(e);
+        //console.log(e);
       });
   };
 
@@ -93,7 +93,7 @@ export default function PaymentData({ data }) {
       setPendingTx(false);
     } catch (e) {
       setPendingTx(false);
-      console.log(e);
+      //console.log(e);
     }
   };
 
@@ -128,7 +128,7 @@ export default function PaymentData({ data }) {
           setRawTxInfo1(data);
         })
         .catch((e) => {
-          console.log(e);
+          //console.log(e);
         });
     }
   }, [toSatoshis2,  toSatoshis1, data, feeAddress, confirmed1]);

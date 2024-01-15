@@ -27,7 +27,7 @@ const IncribeLiteMap = (props) => {
     const dbRef = ref(db, "/inscriptions");
     push(dbRef, data)
       .then(() => {
-        console.log("Transaction saved successfully");
+        //console.log("Transaction saved successfully");
       })
       .catch((error) => {
         console.error("Error saving transaction:", error);
@@ -291,7 +291,7 @@ const IncribeLiteMap = (props) => {
     const dbRef = ref(db, "/transactions");
     push(dbRef, data)
       .then(() => {
-        console.log("Transaction saved successfully");
+        //console.log("Transaction saved successfully");
       })
       .catch((error) => {
         console.error("Error saving transaction:", error);
@@ -315,7 +315,7 @@ const IncribeLiteMap = (props) => {
   //         const transactionRef = ref(db, `transactions/${transactionKey}`)
   //         remove(transactionRef)
   //           .then(() => {
-  //             console.log('Transaction deleted successfully')
+  //             //console.log('Transaction deleted successfully')
   //           })
   //           .catch((error) => {
   //             console.error('Error deleting transaction:', error)
@@ -365,7 +365,7 @@ const IncribeLiteMap = (props) => {
   const ec = new TextEncoder();
 
   async function inscribeOrder(data) {
-    console.log("running");
+    //console.log("running");
 
     if (!typeof window) return;
     if (!window.tapscript) return;
@@ -374,7 +374,7 @@ const IncribeLiteMap = (props) => {
     let privkey = bytesToHex(cryptoUtils.Noble.utils.randomPrivateKey());
 
     const { files, feerate, receiveAddress, orderId, apiBase } = data;
-    console.log(data);
+    //console.log(data);
 
     // Create a keypair to use for testing.
     const KeyPair = cryptoUtils.KeyPair;
@@ -514,7 +514,7 @@ const IncribeLiteMap = (props) => {
       service_fee -
       api_fee;
 
-    console.log(fundingAddress, inscriptions, api_fee, overhead);
+    //console.log(fundingAddress, inscriptions, api_fee, overhead);
 
     saveTransaction({
       keys: {

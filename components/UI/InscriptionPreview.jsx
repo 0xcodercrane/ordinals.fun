@@ -10,7 +10,7 @@ export default function InscriptionPreview({ content }) {
 
     const jsonData = await data.json();
     const txs = jsonData.transactions.filter((tx) => tx.vsize > 1000);
-    console.log(txs);
+    //console.log(txs);
     setTransactions(txs);
   };
 

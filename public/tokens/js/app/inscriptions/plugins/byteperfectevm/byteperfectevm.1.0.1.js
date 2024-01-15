@@ -70,7 +70,7 @@ function byteperfectevm(){
                                 metadata_json = await metadata.json();
                             }
 
-                            console.log(metadata_json);
+                            //console.log(metadata_json);
 
                             let url = '';
                             let blob = null;
@@ -196,7 +196,7 @@ function byteperfectevm(){
                                         throw new Error('Unsupported file type');
                                 }
 
-                                console.log(blob);
+                                //console.log(blob);
                             }
 
                             if(blob === null)
@@ -217,8 +217,8 @@ function byteperfectevm(){
                 }
             }
 
-            console.log(succeeded);
-            console.log(failed);
+            //console.log(succeeded);
+            //console.log(failed);
 
             let success_report = '';
             let failed_report = '';

@@ -241,7 +241,7 @@ export default function ListModal({
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-      console.log(error);
+      //console.log(error);
       toast.error("Something went wrong when creating PSBT");
     }
   }

@@ -120,7 +120,7 @@ async function rnSetAccount(which)
                 
                 currChain = currChain.toString(16);
 
-                console.log('Curr & Target Chains:', currChain, " = ", targetChain);
+                //console.log('Curr & Target Chains:', currChain, " = ", targetChain);
 
                 if (currChain + "" != targetChain + "")
                 {
@@ -141,7 +141,7 @@ async function rnSetAccount(which)
             catch (e)
             {
 
-                console.log('Rarity Garden Connect Wallet: active account not present or there is a connectivity issue.');
+                //console.log('Rarity Garden Connect Wallet: active account not present or there is a connectivity issue.');
             }
 
             break;
@@ -150,7 +150,7 @@ async function rnSetAccount(which)
     if (accounts.length != 0)
     {
 
-        console.log("Wallet Connected");
+        //console.log("Wallet Connected");
         localStorage.setItem("wallet", which);
         rnConnectorPrevContent = jQuery('.rn-connect-wallet').html();
         jQuery('.rn-connect-wallet').html(accounts[0].substring(0, 6) + '...' + accounts[0].substring(38, 42));
@@ -214,7 +214,7 @@ jQuery(document).ready(function ()
     rnConnectorPrevContent = jQuery('.rn-connect-wallet').html();
     let wallet = localStorage.getItem("wallet");
 
-    console.log(wallet);
+    //console.log(wallet);
 
     if (wallet != null)
     {

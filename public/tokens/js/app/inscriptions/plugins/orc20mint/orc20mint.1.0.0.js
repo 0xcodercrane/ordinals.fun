@@ -140,7 +140,7 @@ function orc20mint(){
             files.push({text: JSON.stringify(mint), name: mint.tick, hex: textToHex(JSON.stringify(mint)), mimetype: mimetype, sha256: ''});
         }
 
-        console.log(files);
+        //console.log(files);
 
         return true;
     }

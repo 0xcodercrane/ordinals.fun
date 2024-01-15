@@ -240,7 +240,7 @@ function orc20deploy(){
         let mimetype = "text/plain;charset=utf-8";
         files.push({text: JSON.stringify(deploy), name: deploy.tick, hex: textToHex(JSON.stringify(deploy)), mimetype: mimetype, sha256: ''});
 
-        console.log(files);
+        //console.log(files);
 
         return true;
     }

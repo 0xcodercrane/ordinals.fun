@@ -73,7 +73,7 @@ class OpenApiService {
       const data = await res.json();
       return data;
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -100,7 +100,7 @@ class OpenApiService {
   // getWalletConfig = async () => {
   //   const data = await this.httpGet("/default/config", {});
   //   if (data.status == API_STATUS.FAILED) {
-  //     console.log(data.message);
+  //     //console.log(data.message);
   //   }
   //   return data.result;
   // };
@@ -111,7 +111,7 @@ class OpenApiService {
     });
     if (data) {
       if (data.status == API_STATUS.FAILED) {
-        console.log(data.message);
+        //console.log(data.message);
       }
       return data.result;
     }
@@ -122,7 +122,7 @@ class OpenApiService {
       addresses,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -132,7 +132,7 @@ class OpenApiService {
       groups,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -142,7 +142,7 @@ class OpenApiService {
       address,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -152,7 +152,7 @@ class OpenApiService {
       inscriptionId,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -162,7 +162,7 @@ class OpenApiService {
       inscriptionId,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -172,7 +172,7 @@ class OpenApiService {
       inscriptionIds,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -184,7 +184,7 @@ class OpenApiService {
       size,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -194,7 +194,7 @@ class OpenApiService {
       address,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -202,7 +202,7 @@ class OpenApiService {
   getInscriptionSummary = async () => {
     const data = await this.httpGet("/default/inscription-summary", {});
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -210,7 +210,7 @@ class OpenApiService {
   getAppSummary = async () => {
     const data = await this.httpGet("/default/app-summary", {});
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -229,18 +229,18 @@ class OpenApiService {
     try {
       const data = await this.httpGet("/default/fee-summary", {});
       if (data.status == API_STATUS.FAILED) {
-        console.log(data.message);
+        //console.log(data.message);
       }
       return data.result;
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
   getDomainInfo = async (domain) => {
     const data = await this.httpGet("/address/search", { domain });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -253,7 +253,7 @@ class OpenApiService {
       feeRate,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -261,7 +261,7 @@ class OpenApiService {
   getInscribeResult = async (orderId) => {
     const data = await this.httpGet("/brc20/order-result", { orderId });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -269,7 +269,7 @@ class OpenApiService {
   getAddressTokenBalances = async (address, cursor, size) => {
     const data = await this.httpGet("/brc20/tokens", { address, cursor, size });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -280,7 +280,7 @@ class OpenApiService {
       ticker: encodeURIComponent(ticker),
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -293,7 +293,7 @@ class OpenApiService {
       size,
     });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -301,7 +301,7 @@ class OpenApiService {
   decodePsbt = async (psbtHex) => {
     const data = await this.httpPost("/tx/decode", { psbtHex });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -309,7 +309,7 @@ class OpenApiService {
   createMoonpayUrl = async (address) => {
     const data = await this.httpPost("/moonpay/create", { address });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -317,7 +317,7 @@ class OpenApiService {
   checkWebsite = async (website) => {
     const data = await this.httpPost("/default/check-website", { website });
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };
@@ -325,7 +325,7 @@ class OpenApiService {
   createOrder = async () => {
     const data = await this.httpPost("/order/create");
     if (data.status == API_STATUS.FAILED) {
-      console.log(data.message);
+      //console.log(data.message);
     }
     return data.result;
   };

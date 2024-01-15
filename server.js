@@ -9,5 +9,5 @@ proxy
     removeHeaders: ['cookie', 'cookie2'], // Remove any sensitive headers
   })
   .listen(PORT, () => {
-    console.log(`Proxy server running on http://localhost:${PORT}`)
+    //console.log(`Proxy server running on http://localhost:${PORT}`)
   })
