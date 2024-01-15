@@ -37,7 +37,7 @@ export default function Orders() {
         setFetchingData(false);
       });
     } else {
-      fetchingData(false);
+      setFetchingData(false);
     }
   }, [address]);
 
