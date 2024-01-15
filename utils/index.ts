@@ -11,7 +11,7 @@ export function addressFormat(address, length) {
       return formattedAddress;
     }
   } catch (error) {
-    //console.log(error);
+    console.log(error);
   }
 }
 
@@ -248,7 +248,7 @@ export const currentPrice = async () => {
     const currentPrice = jsonData?.Price;
     return currentPrice;
   } catch (error) {
-    //console.log(error);
+    console.log(error);
   }
 };
 
@@ -298,7 +298,7 @@ export const validateInscription = async (key, inscriptionid) => {
       return true;
     }
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     return true;
   }
 };

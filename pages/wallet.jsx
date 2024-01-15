@@ -46,7 +46,7 @@ export default function Inscribe() {
     pushing = true;
     const dbRef = ref(db, `wallet/${address}`);
 
-    //console.log("running");
+    // console.log("running");
     try {
       const snapshot = await get(dbRef);
       const exist = snapshot.exists();

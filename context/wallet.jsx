@@ -143,7 +143,7 @@ const Wallet = (props) => {
         dispatch(balance(newBalance));
       }
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   };
 
@@ -180,7 +180,7 @@ const Wallet = (props) => {
 
   const getAddressUtxo = async (address) => {
     const data = await openApi.getAddressUtxo(address);
-    // //console.log(data);
+    // console.log(data);
     return data;
   };
 
@@ -241,14 +241,14 @@ const Wallet = (props) => {
   };
 
   const signPsbt = async (psbt, options) => {
-    // //console.log("running sign psbt");
+    // console.log("running sign psbt");
     const mnemonic = getMnemonic();
 
     const account = await getCurrentAccount();
-    if (!account) //console.log("no current account");
+    if (!account) console.log("no current account");
 
     // const currentKeyring = await getcurrentKeyring();
-    // if (!currentKeyring) //console.log("no current keyring");
+    // if (!currentKeyring) console.log("no current keyring");
     const psbtNetwork = toPsbtNetwork();
 
     const toSignInputs = [];
@@ -268,7 +268,7 @@ const Wallet = (props) => {
       if (script && !isSigned) {
         const address = PsbtAddress.fromOutputScript(script, psbtNetwork);
         if (account.address === address) {
-          // //console.log("siginPSBT");
+          // console.log("siginPSBT");
           toSignInputs.push({
             index,
             publicKey: account.pubkey,
@@ -277,31 +277,31 @@ const Wallet = (props) => {
         }
       }
     });
-    // //console.log("before:", psbt, mnemonic, toSignInputs);
+    // console.log("before:", psbt, mnemonic, toSignInputs);
     psbt = await keyring.signTransaction(mnemonic, psbt, toSignInputs);
     // const validator =
     if (options && options.autoFinalized == false) {
       // do not finalize
     } else {
-      // //console.log(toSignInputs);
+      // console.log(toSignInputs);
       // await psbt.signInput(0, account, []);
       toSignInputs.forEach((v) => {
         //   // psbt.validateSignaturesOfInput(v.index, validator);
         psbt.finalizeInput(v.index);
       });
     }
-    // //console.log("after:", psbt);
+    // console.log("after:", psbt);
     return psbt;
   };
 
   const decodePsbt = async (psbtHex) => {
-    // //console.log(psbtHex);
+    // console.log(psbtHex);
     return openApi.decodePsbt(psbtHex);
   };
 
   const sendBTC = async ({ to, amount, utxos, receiverToPayFee, feeRate }) => {
     const currentAccount = accountInfo?.account?.accounts[0];
-    if (!currentAccount) //console.log("no current account");
+    if (!currentAccount) console.log("no current account");
 
     const psbtNetwork = toPsbtNetwork();
 
@@ -327,13 +327,13 @@ const Wallet = (props) => {
       feeRate,
       enableRBF: false,
     });
-    // //console.log("finialized3333");
+    // console.log("finialized3333");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
 
-    // //console.log(psbt);
-    // //console.log(psbt.toHex());
+    // console.log(psbt);
+    // console.log(psbt.toHex());
     return psbt.toHex();
   };
 
@@ -344,34 +344,34 @@ const Wallet = (props) => {
     outputValue,
   }) => {
     const currentAccount = accountInfo?.account?.accounts[0];
-    if (!currentAccount) //console.log("no current account");
+    if (!currentAccount) console.log("no current account");
 
     const psbtNetwork = toPsbtNetwork();
     const utxo = await openApi.getInscriptionUtxo(inscriptionId);
     if (!utxo) {
-      //console.log("UTXO not found.");
+      console.log("UTXO not found.");
       return;
     }
 
     if (utxo.inscriptions.length > 1) {
-      //console.log(
+      console.log(
         "Multiple inscriptions are mixed together. Please split them first."
       );
       return;
     }
 
     if (!currentAccount?.address) {
-      //console.log("no Account");
+      console.log("no Account");
       return;
     }
 
-    // //console.log(currentAccount);
+    // console.log(currentAccount);
 
     const btc_utxos = await openApi.getAddressUtxo(currentAccount?.address);
     const utxos = [utxo].concat(btc_utxos);
 
     if (utxos.length < 0) {
-      //console.log("No UTXOs");
+      console.log("No UTXOs");
       return;
     }
 
@@ -414,7 +414,7 @@ const Wallet = (props) => {
     feeRate,
   }) => {
     const currentAccount = accountInfo?.account?.accounts[0];
-    if (!currentAccount) //console.log("no current account");
+    if (!currentAccount) console.log("no current account");
 
     const psbtNetwork = toPsbtNetwork();
 
@@ -439,12 +439,12 @@ const Wallet = (props) => {
       feeRate,
       enableRBF: false,
     });
-    // //console.log("finialized3333");
+    // console.log("finialized3333");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
 
-    // //console.log(psbt.toHex());
+    // console.log(psbt.toHex());
     return psbt.toHex();
   };
 
@@ -465,7 +465,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-      //console.log(
+      console.log(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
@@ -477,7 +477,7 @@ const Wallet = (props) => {
       feeRate = summary.list[1].feeRate;
     }
 
-    // //console.log("finalized1");
+    // console.log("finalized1");
     const psbtHex = await sendBTC({
       to: toAddressInfo.address,
       amount: toAmount,
@@ -486,7 +486,7 @@ const Wallet = (props) => {
       feeRate,
     });
 
-    // //console.log("finalized2");
+    // console.log("finalized2");
     const psbt = Psbt.fromHex(psbtHex);
     const rawtx = psbt.extractTransaction().toHex();
     // const fee = psbt.getFee();
@@ -496,7 +496,7 @@ const Wallet = (props) => {
     //   toAddressInfo,
     //   fee,
     // };
-    // //console.log("rawTxInfo:", rawtx);
+    // console.log("rawTxInfo:", rawtx);
     return rawtx;
   };
 
@@ -507,9 +507,9 @@ const Wallet = (props) => {
     receiverToPayFee
   ) => {
     const fromAddress = accountInfo?.account?.accounts[0]?.address;
-    // //console.log(fromAddress);
+    // console.log(fromAddress);
     const utxos = await getAddressUtxo(fromAddress);
-    // //console.log(utxos);
+    // console.log(utxos);
     if (utxos?.length == 0) {
       toast.error("utxos fetch issue");
       return;
@@ -518,7 +518,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-      //console.log(
+      console.log(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
@@ -530,7 +530,7 @@ const Wallet = (props) => {
       feeRate = summary.list[1].feeRate;
     }
 
-    // //console.log("finalized1");
+    // console.log("finalized1");
     const psbtHex = await sendMultiBTC({
       receivers: receivers,
       utxos: utxos,
@@ -538,11 +538,11 @@ const Wallet = (props) => {
       feeRate,
     });
 
-    // //console.log("finalized2");
+    // console.log("finalized2");
     const psbt = Psbt.fromHex(psbtHex);
     const rawtx = psbt.extractTransaction().toHex();
     const fee = psbt.getFee();
-    // //console.log("rawTxInfo:", rawtx);
+    // console.log("rawTxInfo:", rawtx);
     return rawtx;
   };
 
@@ -571,9 +571,9 @@ const Wallet = (props) => {
   };
 
   // useEffect(() => {
-  //   //console.log("---------current Key ring-------------");
-  //   //console.log(accountInfo);
-  //   //console.log("---------current Key ring-------------");
+  //   console.log("---------current Key ring-------------");
+  //   console.log(accountInfo);
+  //   console.log("---------current Key ring-------------");
   // }, [accountInfo]);
 
   useEffect(() => {

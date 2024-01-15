@@ -16,7 +16,7 @@ const ThemeContextProvider = (props) => {
 
   useEffect(() => {
     if (isDarkMode) {
-      //console.log('sadfasdf')
+      console.log('sadfasdf')
       setTheme("dark");
     } else {
       setTheme("light");

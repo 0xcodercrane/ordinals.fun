@@ -59,7 +59,7 @@ export default function InscriptionCard({
         setOwner(inscriptionData?.inscriptions[0]?.address);
         setContent(textData);
       } catch (error) {
-        //console.log("content fetch", error);
+        console.log("content fetch", error);
       }
   };
 
@@ -175,7 +175,7 @@ export default function InscriptionCard({
       setAdding(false);
     } catch (error) {
       toast.error("When validating:", error);
-      //console.log(error);
+      console.log(error);
       setAdding(true);
     }
   };

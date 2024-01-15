@@ -34,7 +34,7 @@ export default function NFTs({
       ).then((response) => response.json()),
     ]);
     let NFTs = [];
-    // //console.log(inscriptionsFromDB, inscriptions);
+    // console.log(inscriptionsFromDB, inscriptions);
     inscriptionsFromDB.map((inscription) => {
       const filter = inscriptions.filter(
         (item) => item.id === inscription.inscriptionId

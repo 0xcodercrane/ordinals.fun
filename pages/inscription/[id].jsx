@@ -27,7 +27,7 @@ export default function Inscription(props) {
         setContent(textData);
         setLoading(false);
       } catch (error) {
-        //console.log("content fetch", error);
+        // console.log("content fetch", error);
         setLoading(false);
       }
     }

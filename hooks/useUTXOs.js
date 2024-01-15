@@ -23,18 +23,18 @@ export default function useUTXOs() {
   async function selectUtxos(utxos, amount, vins, vouts, recommendedFeeRate) {
     const selectedUtxos = [];
     let selectedAmount = 0;
-    //console.log(amount, recommendedFeeRate);
+    console.log(amount, recommendedFeeRate);
 
     // Sort descending by value, and filter out dummy utxos
     utxos = utxos
       .filter((x) => x.value > dummyUtxoValue)
       .sort((a, b) => b.value - a.value);
 
-    //console.log(
-      amount +
-        dummyUtxoValue +
-        calculateFee(vins + selectedUtxos.length, vouts, recommendedFeeRate)
-    );
+    // console.log(
+    //   amount +
+    //     dummyUtxoValue +
+    //     calculateFee(vins + selectedUtxos.length, vouts, recommendedFeeRate)
+    // );
 
     for (const utxo of utxos) {
       // Never spend a utxo that contains an inscription for cardinal purposes
@@ -81,7 +81,7 @@ export default function useUTXOs() {
         setDummyUTXOs(res.filter((x) => x.value == dummyUtxoValue));
       }
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   };
 

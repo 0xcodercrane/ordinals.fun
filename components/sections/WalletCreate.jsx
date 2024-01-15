@@ -36,8 +36,6 @@ export default function WalletCreate({ setType, isImport }) {
     hdPath: "m/84'/2'/0'/0",
   });
 
-  //console.log(isImport, '----------isIMport--')
-
   const importWallet = async () => {
     try {
       const encryptBooted = await walletContext.Boot(password);
@@ -56,7 +54,7 @@ export default function WalletCreate({ setType, isImport }) {
       dispatch(isUnlocked(true));
       dispatch(preVault(preMnemonics));
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   };
 
@@ -84,7 +82,7 @@ export default function WalletCreate({ setType, isImport }) {
         dispatch(preVault(preMnemonics));
       }
     } catch (error) {
-      //console.log("create wallet:", error);
+      console.log("create wallet:", error);
     }
   };
 
