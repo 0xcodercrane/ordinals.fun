@@ -160,7 +160,7 @@ export default function WalletSend({ setContentType }) {
     wallet
       .createBitcoinTx(toInfo, toSatoshis, feeRate, autoAdjust)
       .then((data) => {
-        console.log(data);
+      //  console.log(data);
         // if (data.fee < data.estimateFee) {
         //   setError(`Network fee must be at leat ${data.estimateFee}`);
         //   return;
@@ -176,7 +176,7 @@ export default function WalletSend({ setContentType }) {
         );
       })
       .catch((e) => {
-        console.log(e);
+      //  console.log(e);
         setError(e.message);
       });
   }, [toInfo, inputAmount, autoAdjust, feeRate]);
@@ -208,7 +208,7 @@ export default function WalletSend({ setContentType }) {
       setPendingTx(false);
     } catch (e) {
       setPendingTx(false);
-      console.log(e);
+    //  console.log(e);
     }
 
     return ret;

@@ -79,7 +79,7 @@ const Inscribe = (props) => {
       const orderState = await response.json()
       return orderState
     } else {
-      console.log(response.status)
+    //  console.log(response.status)
     }
   }
 

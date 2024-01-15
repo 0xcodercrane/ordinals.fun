@@ -143,7 +143,7 @@ const Wallet = (props) => {
         dispatch(balance(newBalance));
       }
     } catch (error) {
-      console.log(error);
+    //  console.log(error);
     }
   };
 
@@ -349,19 +349,19 @@ const Wallet = (props) => {
     const psbtNetwork = toPsbtNetwork();
     const utxo = await openApi.getInscriptionUtxo(inscriptionId);
     if (!utxo) {
-      console.log("UTXO not found.");
+    //  console.log("UTXO not found.");
       return;
     }
 
     if (utxo.inscriptions.length > 1) {
-      console.log(
+    //  console.log(
         "Multiple inscriptions are mixed together. Please split them first."
       );
       return;
     }
 
     if (!currentAccount?.address) {
-      console.log("no Account");
+    //  console.log("no Account");
       return;
     }
 
@@ -371,7 +371,7 @@ const Wallet = (props) => {
     const utxos = [utxo].concat(btc_utxos);
 
     if (utxos.length < 0) {
-      console.log("No UTXOs");
+    //  console.log("No UTXOs");
       return;
     }
 
@@ -465,7 +465,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-      console.log(
+    //  console.log(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
@@ -518,7 +518,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-      console.log(
+    //  console.log(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
@@ -571,9 +571,9 @@ const Wallet = (props) => {
   };
 
   // useEffect(() => {
-  //   console.log("---------current Key ring-------------");
-  //   console.log(accountInfo);
-  //   console.log("---------current Key ring-------------");
+  // //  console.log("---------current Key ring-------------");
+  // //  console.log(accountInfo);
+  // //  console.log("---------current Key ring-------------");
   // }, [accountInfo]);
 
   useEffect(() => {

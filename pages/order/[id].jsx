@@ -94,7 +94,7 @@ const Payment = () => {
               const dbRef = ref(db, "/inscriptions");
               push(dbRef, inscirption)
                 .then(() => {
-                  console.log("Transaction saved successfully");
+                //  console.log("Transaction saved successfully");
                 })
                 .catch((error) => {
                   console.error("Error saving transaction:", error);
@@ -104,7 +104,7 @@ const Payment = () => {
         });
       }
     } catch (error) {
-      console.log("----save inscription--", error);
+    //  console.log("----save inscription--", error);
     }
   };
 

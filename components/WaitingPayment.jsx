@@ -95,7 +95,7 @@ const WaitingPayment = () => {
             inscribeContext.setOrderDetail(data[id])
             inscribeContext.setPendingOrder(pendingTime)
             localStorage.setItem('pendingOrder1', pendingTime)
-            console.log(data)
+          //  console.log(data)
             localStorage.setItem('orderDetail', JSON.stringify(data[id]))
           }
         })
