@@ -17,6 +17,7 @@ import Tabs from "../components/UI/Tabs";
 import LTC20 from "../components/sections/LTC20";
 import NFTs from "../components/sections/NFTs";
 import History from "../components/sections/History";
+import Head from "next/head";
 
 export default function Inscribe() {
   const wallet = useContext(WalletContext);
@@ -44,44 +45,51 @@ export default function Inscribe() {
     pushing = true;
     const dbRef = ref(db, `wallet/${address}`);
 
+    console.log("running");
     try {
       const snapshot = await get(dbRef);
       const exist = snapshot.exists();
 
       if (exist) {
-        // const key = Object.keys(snapshot.val())[0];
-        // const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
-        // if (data && key !== "activities") {
-        //   const existedInscriptions = snapshot.val()[key].inscriptions;
+        const key = Object.keys(snapshot.val())[0];
+        const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
+        if (data && key !== "activities") {
+          const existedInscriptions = snapshot.val()[key].inscriptions;
 
-        //   const listedInscriptions = existedInscriptions.filter(
-        //     (inscription) => inscription?.listed === true
-        //   );
+          const listedInscriptions = existedInscriptions.filter(
+            (inscription) => inscription?.listed === true
+          );
 
-        //   let updatedinscriptions = [];
-        //   data.map((inscription) => {
-        //     const filter = listedInscriptions?.filter(
-        //       (list) => list?.inscriptionId == inscription?.inscriptionId
-        //     );
-        //     if (filter.length > 0) {
-        //       updatedinscriptions.push({
-        //         ...inscription,
-        //         listed: true,
-        //         tag: filter[0]?.tag,
-        //       });
-        //     } else {
-        //       updatedinscriptions.push(inscription);
-        //     }
-        //   });
-        //   await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
-        // } else {
-        //   if (data) {
-        //     const dbRef = ref(db, `wallet/${address}`);
-        //     await push(dbRef, { inscriptions: data });
-        //   }
-        // }
+          let updatedinscriptions = [];
+          data.map((inscription) => {
+            const filter = listedInscriptions?.filter(
+              (list) => list?.inscriptionId == inscription?.inscriptionId
+            );
+            if (filter.length > 0) {
+              updatedinscriptions.push({
+                ...inscription,
+                listed: true,
+                tag: filter[0]?.tag,
+              });
+            } else {
+              updatedinscriptions.push(inscription);
+            }
+          });
+          await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
+        } else {
+          if (data) {
+            const dbRef = ref(db, `wallet/${address}`);
+            await push(dbRef, { inscriptions: data });
+          }
+        }
         await fetchInscriptions();
         pushing = false;
+      } else {
+        if (data) {
+          const dbRef = ref(db, `wallet/${address}`);
+          await push(dbRef, { inscriptions: data });
+        }
+        setFetchingData(false);
       }
     } catch (error) {
       setFetchingData(false);
@@ -164,7 +172,7 @@ export default function Inscribe() {
                               key={key}
                               inscriptionIndex={key + offset * 10}
                               bulkSelect={bulkSelect}
-                              tag={type}
+                              tag={"litemap"}
                               setSelectedBlocks={setSelectedBlocks}
                               selectedBlocks={selectedBlocks}
                             />
@@ -222,6 +230,14 @@ export default function Inscribe() {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Wallet</title>
+        <meta
+          name="description"
+          content="Litemap - wallet history and inscriptions"
+        />
+      </Head>
+
       <h1 className="text-3xl font-semibold mb-8 my-8 text-center">
         My Wallet
       </h1>
@@ -273,7 +289,7 @@ export default function Inscribe() {
       <BulkListModal
         modalIsOpen={isOpen}
         setIsOpen={setIsOpen}
-        tag={type}
+        tag={type === "litemap" ? "litemap" : NFTSlug}
         blocks={selectedBlocks}
         setSelectedBlocks={setSelectedBlocks}
         cancelBlocks={cancelBlocks}

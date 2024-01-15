@@ -14,6 +14,7 @@ import { db } from "@/services/firebase";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useInscribe } from "../store/hooks";
 import OrderHistory from "../components/UI/OrderHistory";
+import Head from "next/head";
 
 const CreateOrder = () => {
   const dispatch = useDispatch();
@@ -94,6 +95,14 @@ const CreateOrder = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Create Order</title>
+        <meta
+          name="description"
+          content="Litemap - Create order to inscribe litemaps"
+        />
+      </Head>
+
       <div className="py-16 flex justify-center relative">
         <div className="w-full max-w-[600px] bg-primary-dark/20 px-4 py-8 rounded-lg relative shadow-lg shadow-black/30">
           <div

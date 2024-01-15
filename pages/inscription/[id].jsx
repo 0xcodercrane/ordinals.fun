@@ -6,6 +6,7 @@ import { useState } from "react";
 import InscriptionPreview from "@/components/UI/InscriptionPreview";
 import openAPI from "@/services/openAPI";
 import InscriptionDetails from "@/components/UI/InscriptionDetails";
+import Head from "next/head";
 
 export default function Inscription(props) {
   const router = useRouter();
@@ -56,6 +57,11 @@ export default function Inscription(props) {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Inscription Detail</title>
+        <meta name="description" content="Litemap - Inscription Detail" />
+      </Head>
+
       <p className="my-8 text-center text-3xl font-semibold">
         Inscription Detail
       </p>

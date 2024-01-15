@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Layout from "@/components/sections/Layout";
 import { useContext } from "react";
 import { WalletContext } from "@/context/wallet";
+import Head from "next/head";
 
 export default function Orders() {
   const router = useRouter();
@@ -42,6 +43,14 @@ export default function Orders() {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Orders</title>
+        <meta
+          name="description"
+          content="Litemap - Orders history for inscribe"
+        />
+      </Head>
+
       <p className="my-8 text-center text-3xl font-semibold">My orders</p>
 
       <div className="w-full max-w-[700px] max-h-[1200px] rounded-lg shadow-lg shadow-black/30 mt-6">

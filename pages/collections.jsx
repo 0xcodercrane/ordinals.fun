@@ -2,10 +2,19 @@ import React, { useState } from "react";
 import Layout from "@/components/sections/Layout";
 import { collectionsData } from "../configs/constants";
 import CollectionTr from "../components/UI/CollectionTr";
+import Head from "next/head";
 
 export default function collections() {
   return (
     <Layout>
+      <Head>
+        <title>Litemap - NFT Collections</title>
+        <meta
+          name="description"
+          content="Litemap - NFT Collections for market"
+        />
+      </Head>
+
       <div className="text-4xl text-center py-4">
         <h2>NFT Collections</h2>
         <p className="text-sm text-center w-full max-w-[900px] my-3 mx-auto lg:px-[150px]">

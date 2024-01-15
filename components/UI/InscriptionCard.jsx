@@ -15,7 +15,7 @@ import {
 import { db } from "@/services/firebase";
 import ListModal from "../trade/ListModal";
 import TransferModal from "../trade/TransferModal";
-import { addressFormat } from "@/utils";
+import { addressFormat, validateInscription } from "@/utils";
 import { toast } from "react-hot-toast";
 import { WalletContext } from "../../context/wallet";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -141,23 +141,26 @@ export default function InscriptionCard({
       return;
     }
 
-    // if (content.indexOf(tag) <= -1) {
-    //   toast.error("Invalid Inscription");
-    //   return;
-    // }
+    if (tag === "litemap" && content.indexOf(tag) <= -1) {
+      toast.error("Invalid Inscription");
+      return;
+    }
 
     try {
       setAdding(true);
-      // const validation = await validateInscription(
-      //   content,
-      //   inscription.inscriptionId,
-      //   inscription
-      // );
-      // if (!validation) {
-      //   toast.error("Invalid Inscription");
-      //   setAdding(false);
-      //   return;
-      // }
+      if (tag === "litemap") {
+        const validation = await validateInscription(
+          content,
+          inscription.inscriptionId,
+          inscription
+        );
+        if (!validation) {
+          toast.error("Invalid Inscription");
+          setAdding(false);
+          return;
+        }
+      }
+
       const newBlock = {
         content: content,
         output: inscription?.outputValue,
@@ -215,8 +218,8 @@ export default function InscriptionCard({
     <div className="relative">
       {!isOwner && owner && (
         <div className="absolute z-50 w-full h-full top-0 left-0 bg-black/5 backdrop-blur-sm flex justify-center items-center text-center">
-          {/* <div> */}
-          {/* <p>Transfering to</p> */}
+          {/* <div>
+      {/* <p>Transfering to</p> */}
           {/* <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
               {addressFormat(owner, 6)}
             </a> */}
@@ -229,7 +232,7 @@ export default function InscriptionCard({
             <>
               <img
                 src={`https://ordinalslite.com/content/${inscription.inscriptionId}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 alt=""
               />
             </>
@@ -315,7 +318,7 @@ export default function InscriptionCard({
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
         tag={tag}
-        content={content}
+        content={isNFT ? inscription?.inscriptionId : content}
         output={inscription?.outputValue}
         inscription={inscription}
         inscriptionIndex={inscriptionIndex}
@@ -326,6 +329,7 @@ export default function InscriptionCard({
         setIsOpen={setIsOpenTransfer}
         content={content}
         id={inscription?.inscriptionId}
+        inscription={inscription}
       />
     </div>
   );

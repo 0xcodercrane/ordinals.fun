@@ -63,8 +63,8 @@ export default function NFTs({
 
   return (
     <div className="my-3 w-full">
-      <div className="flex gap-2 justify-between w-full">
-        <div className="flex gap-2">
+      <div className="flex gap-3 justify-between w-full flex-wrap">
+        <div className="flex gap-2 w-full sm:w-full/2 justify-between sm:justify-start">
           {meta?.inscription_icon ===
           "9278bd914fdc07f866fc4b4e402c87a0aa04666cfc9f0c9dde6ead58b17abcf7i0" ? (
             <img
@@ -97,29 +97,31 @@ export default function NFTs({
           </select>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center justify-between sm:justify-end w-full  sm:w-full/2">
           <p>Supply: {meta?.supply} </p>
-          <a
-            className="p-1.5 rounded-full main_btn"
-            target="_blank"
-            href={meta?.website_link}
-          >
-            <CgWebsite />
-          </a>
-          <a
-            className="p-1.5 rounded-full main_btn"
-            target="_blank"
-            href={meta?.twitter_link}
-          >
-            <FaTwitter />
-          </a>
-          <a
-            className="p-1.5 rounded-full main_btn"
-            target="_blank"
-            href={meta?.discord_link}
-          >
-            <BsDiscord />
-          </a>
+          <div className="flex gap-2">
+            <a
+              className="p-1.5 rounded-full main_btn"
+              target="_blank"
+              href={meta?.website_link}
+            >
+              <CgWebsite />
+            </a>
+            <a
+              className="p-1.5 rounded-full main_btn"
+              target="_blank"
+              href={meta?.twitter_link}
+            >
+              <FaTwitter />
+            </a>
+            <a
+              className="p-1.5 rounded-full main_btn"
+              target="_blank"
+              href={meta?.discord_link}
+            >
+              <BsDiscord />
+            </a>
+          </div>
         </div>
       </div>
 

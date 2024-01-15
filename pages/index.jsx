@@ -1,13 +1,7 @@
 import React from "react";
 import Layout from "@/components/sections/Layout";
 import InscriptionCard from "../components/UI/InscriptionCard";
-import {
-  onValue,
-  ref,
-  query,
-  orderByChild,
-  equalTo
-} from "firebase/database";
+import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -17,6 +11,7 @@ import BuyCard from "../components/UI/BuyCard";
 import { useWallet } from "../store/hooks";
 import useUTXOs from "../hooks/useUTXOs";
 import Banner from "../components/trade/Banner";
+import Head from "next/head";
 
 export default function Home() {
   const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs, selectUtxos } =
@@ -52,6 +47,11 @@ export default function Home() {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Market</title>
+        <meta name="description" content="Litemap - Litemap Market" />
+      </Head>
+
       <Banner title="Litemaps" tag="litemap" />
 
       {fetchingData ? (

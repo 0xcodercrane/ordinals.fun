@@ -58,6 +58,14 @@ export default function Collection() {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - {collection.name} Market </title>
+        <meta
+          name="description"
+          content="Litemap - NFTs Market place on Litecoin"
+        />
+      </Head>
+
       <div className="text-4xl py-4 grid grid-cols-1 sm:grid-cols-12 w-full gap-3 items-center">
         {collection?.inscription_icon ===
         "9278bd914fdc07f866fc4b4e402c87a0aa04666cfc9f0c9dde6ead58b17abcf7i0" ? (

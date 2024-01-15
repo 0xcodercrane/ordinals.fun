@@ -7,6 +7,19 @@ import { WalletContext } from "../../context/wallet";
 import { TbArticleOff } from "react-icons/tb";
 import openAPI from "@/services/openAPI";
 import Link from "next/link";
+import {
+  ref,
+  push,
+  query,
+  orderByChild,
+  equalTo,
+  onValue,
+  update,
+  get,
+  remove,
+} from "firebase/database";
+import { db } from "@/services/firebase";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function BuyCardForNFTs({
   inscription,
@@ -25,6 +38,7 @@ export default function BuyCardForNFTs({
   const [list, setList] = useState();
   const [data, setData] = useState();
   const [fetching, setFetching] = useState(true);
+  const [checkingListed, setCheckingListed] = useState(true);
 
   const getData = async (id) => {
     try {
@@ -34,9 +48,29 @@ export default function BuyCardForNFTs({
     setFetching(false);
   };
 
+  const getList = async (id) => {
+    setCheckingListed(true);
+    const dbQueryForList = query(
+      ref(db, `market/${slug}`),
+      orderByChild("data/inscriptionId"),
+      equalTo(id)
+    );
+
+    onValue(dbQueryForList, async (snapshot) => {
+      const exist = snapshot.val();
+      if (exist) {
+        const key = Object.keys(exist)[0];
+        setList(exist[key]);
+        setListed(true);
+      }
+      setCheckingListed(false);
+    });
+  };
+
   useEffect(() => {
     if (inscription?.id) {
       getData(inscription?.id);
+      getList(inscription?.id);
     }
   }, [inscription]);
 
@@ -46,7 +80,7 @@ export default function BuyCardForNFTs({
         <div className="in-content p-0">
           <img
             src={`https://ordinalslite.com/content/${inscription.id}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             alt=""
           />
           <div className="in-transfer">#{data?.inscriptionNumber}</div>
@@ -62,17 +96,15 @@ export default function BuyCardForNFTs({
           <p>name:</p>
           <p>{inscription.meta.name}</p>
         </div>
-        {listed && (
-          <div className="flex justify-between gap-1 mb-2 text-sm">
-            <p>Price:</p>
-            <p>
-              {list?.price}{" "}
-              <span className="text-[11px] text-gray-300">
-                ~$ {(list?.price * price).toFixed(3)}
-              </span>
-            </p>
-          </div>
-        )}
+        <div className="flex justify-between gap-1 mb-2 text-sm">
+          <p>Price:</p>
+          <p>
+            {list?.price}{" "}
+            <span className="text-[11px] text-gray-300">
+              ~$ {(list?.price * price).toFixed(3)}
+            </span>
+          </p>
+        </div>
 
         {!fetching && data?.address === address && !listed ? (
           <Link
@@ -82,19 +114,27 @@ export default function BuyCardForNFTs({
             <TbArticleOff /> Listed By You
           </Link>
         ) : (
-          <button
-            disabled={!listed}
-            className="main_btn py-1 mt-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
-            onClick={() => setIsOpen(true)}
-          >
-            {!listed ? "Not Listed" : "Buy"}
-          </button>
+          <>
+            {checkingListed ? (
+              <button className="main_btn py-1 mt-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full">
+                <AiOutlineLoading className="animate-spin m-auto my-1" />
+              </button>
+            ) : (
+              <button
+                disabled={!listed}
+                className="main_btn py-1 mt-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
+                onClick={() => setIsOpen(true)}
+              >
+                {!listed ? "Not Listed" : "Buy"}
+              </button>
+            )}
+          </>
         )}
       </div>
       <BuyModal
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
-        list={inscription}
+        list={list}
         utxos={utxos}
         sortedUtxos={sortedUtxos}
         dummyUTXOs={dummyUTXOs}

@@ -175,7 +175,6 @@ export default function BuyModal({
   }
 
   async function generatePSBTBuyingInscription() {
-
     const psbt = new Psbt({
       network: networks["litecoin"],
     });
@@ -373,7 +372,7 @@ export default function BuyModal({
           setBuyTx(txId);
 
           const dbQuery = query(
-            ref(db, "market/litemap"),
+            ref(db, `market/${tag}`),
             orderByChild("data/inscriptionId"),
             equalTo(list?.data?.inscriptionId)
           );
@@ -383,7 +382,7 @@ export default function BuyModal({
 
           if (existedInscription) {
             const key = Object.keys(existedInscription)[0];
-            const dbRefForUpdate = ref(db, `/market/litemap/${key}`);
+            const dbRefForUpdate = ref(db, `/market/${tag}/${key}`);
 
             await update(dbRefForUpdate, {
               ...list,
@@ -432,7 +431,18 @@ export default function BuyModal({
         className="mx-auto w-40 h-32  rounded-md bg-primary-contentDark text-xl flex justify-center items-center my-3 relative px-2"
         style={{ overflowWrap: "anywhere" }}
       >
-        {list?.content}
+        {list?.data?.contentType.indexOf("image") > -1 && (
+          <>
+            <img
+              src={`https://ordinalslite.com/content/${list?.data?.inscriptionId}`}
+              className="w-full h-full object-contain mx-auto max-w-[300px]"
+              alt=""
+            />
+          </>
+        )}
+
+        {list?.data?.contentType.indexOf("text") > -1 && <>{list?.content}</>}
+
         <div className="in-transfer">#{list?.data?.inscriptionNumber}</div>
       </div>
 

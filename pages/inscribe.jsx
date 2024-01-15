@@ -15,6 +15,7 @@ import ControlPanel from "../components/ControlPanel";
 import { useBlocks, useInscribe, useLastBlock } from "../store/hooks";
 import { push, ref } from "firebase/database";
 import { db } from "@/services/firebase";
+import Head from "next/head";
 
 const Inscribe = () => {
   const dispatch = useDispatch();
@@ -99,6 +100,11 @@ const Inscribe = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Inscribe</title>
+        <meta name="description" content="Litemap - Litemap inscribe" />
+      </Head>
+
       <Banner lastBlock={lastBlock} />
 
       <ControlPanel

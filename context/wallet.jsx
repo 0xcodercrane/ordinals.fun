@@ -178,7 +178,7 @@ const Wallet = (props) => {
 
   const getAddressUtxo = async (address) => {
     const data = await openApi.getAddressUtxo(address);
-    console.log(data);
+    // console.log(data);
     return data;
   };
 
@@ -266,7 +266,7 @@ const Wallet = (props) => {
       if (script && !isSigned) {
         const address = PsbtAddress.fromOutputScript(script, psbtNetwork);
         if (account.address === address) {
-          console.log("siginPSBT");
+          // console.log("siginPSBT");
           toSignInputs.push({
             index,
             publicKey: account.pubkey,
@@ -275,7 +275,7 @@ const Wallet = (props) => {
         }
       }
     });
-    console.log("before:", psbt, mnemonic, toSignInputs);
+    // console.log("before:", psbt, mnemonic, toSignInputs);
     psbt = await keyring.signTransaction(mnemonic, psbt, toSignInputs);
     // const validator =
     if (options && options.autoFinalized == false) {
@@ -293,7 +293,7 @@ const Wallet = (props) => {
   };
 
   const decodePsbt = async (psbtHex) => {
-    console.log(psbtHex);
+    // console.log(psbtHex);
     return openApi.decodePsbt(psbtHex);
   };
 
@@ -330,7 +330,7 @@ const Wallet = (props) => {
     //@ts-ignore
     psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
 
-    console.log(psbt);
+    // console.log(psbt);
     // console.log(psbt.toHex());
     return psbt.toHex();
   };
@@ -363,7 +363,7 @@ const Wallet = (props) => {
       return;
     }
 
-    console.log(currentAccount);
+    // console.log(currentAccount);
 
     const btc_utxos = await openApi.getAddressUtxo(currentAccount?.address);
     const utxos = [utxo].concat(btc_utxos);
@@ -505,9 +505,9 @@ const Wallet = (props) => {
     receiverToPayFee
   ) => {
     const fromAddress = accountInfo?.account?.accounts[0]?.address;
-    console.log(fromAddress);
+    // console.log(fromAddress);
     const utxos = await getAddressUtxo(fromAddress);
-    console.log(utxos);
+    // console.log(utxos);
     if (utxos?.length == 0) {
       toast.error("utxos fetch issue");
       return;

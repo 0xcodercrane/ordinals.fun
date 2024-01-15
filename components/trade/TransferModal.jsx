@@ -11,7 +11,7 @@ import OutPutValue from "./OutPutValue";
 import { sleep } from "@/utils";
 import { toast } from "react-hot-toast";
 
-export default function TransferModal({ modalIsOpen, setIsOpen, content, id }) {
+export default function TransferModal({ modalIsOpen, setIsOpen, content, id, inscription }) {
   const wallet = useContext(WalletContext);
   const defaultOutputValue = 10000;
   const [feeRate, setFeeRate] = useState("economy");
@@ -32,6 +32,7 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id }) {
     try {
       const txid = await wallet.pushTx(rawTxInfo);
       await sleep(1); // Wait for transaction synchronization
+
       if (txid) {
         setSucceed(true);
         setTx(txid);
@@ -85,7 +86,17 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id }) {
         className="mx-auto w-full h-32 rounded-md bg-primary-contentDark text-xl flex justify-center items-center my-3 p-2"
         style={{ overflowWrap: "anywhere" }}
       >
-        {content}
+        {inscription?.contentType.indexOf("image") > -1 && (
+          <>
+            <img
+              src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
+              className="w-full h-full object-contain mx-auto max-w-[300px]"
+              alt=""
+            />
+          </>
+        )}
+
+        {inscription?.contentType.indexOf("text") > -1 && <>{content}</>}
       </div>
 
       <SendAddress

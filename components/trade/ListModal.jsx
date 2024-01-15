@@ -143,20 +143,22 @@ export default function ListModal({
       return;
     }
 
-    // if (content.indexOf(tag) <= -1) {
-    //   toast.error("Invalid Inscription");
-    //   return;
-    // }
+    if (tag === "litemap") {
+      if (content.indexOf(tag) <= -1) {
+        toast.error("Invalid Inscription");
+        return;
+      }
 
-    // const validation = await validateInscription(
-    //   content,
-    //   inscription.inscriptionId
-    // );
+      const validation = await validateInscription(
+        content,
+        inscription.inscriptionId
+      );
 
-    // if (!validation) {
-    //   toast.error("Invalid Inscription");
-    //   return;
-    // }
+      if (!validation) {
+        toast.error("Invalid Inscription");
+        return;
+      }
+    }
 
     try {
       setPendingTx(true);
@@ -249,14 +251,27 @@ export default function ListModal({
       className="cs-modal relative"
     >
       <div className="text-center text-2xl font-semibold">
-        List litemap for sale
+        List {tag} for sale
       </div>
 
       <div
         className="mx-auto w-full h-32 rounded-md bg-primary-contentDark text-3xl flex justify-center items-center my-3"
         style={{ overflowWrap: "anywhere" }}
       >
-        {content}
+        {inscription?.contentType.indexOf("image") > -1 && (
+          <>
+            <img
+              src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
+              className="w-full h-full object-contain mx-auto max-w-[300px]"
+              alt=""
+            />
+          </>
+        )}
+
+        {inscription?.contentType.indexOf("text") > -1 && (
+          <>{content}</>
+        )}
+        
       </div>
 
       <div className="mt-1">

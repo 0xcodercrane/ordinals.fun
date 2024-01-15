@@ -274,7 +274,7 @@ export default function BulkListModal({
       className="cs-modal relative"
     >
       <div className="text-center text-2xl font-semibold">
-        List litemap for sale
+        List {tag} for sale
       </div>
 
       <div className="mx-auto  grid grid-cols-3 gap-1">
@@ -285,7 +285,20 @@ export default function BulkListModal({
               className="w-full h-24 rounded-md bg-primary-contentDark text-sm flex justify-center items-center my-3 relative p-3"
               style={{ overflowWrap: "anywhere" }}
             >
-              {block.content}
+              {block?.inscription?.contentType.indexOf("image") > -1 && (
+                <>
+                  <img
+                    src={`https://ordinalslite.com/content/${block?.inscription?.inscriptionId}`}
+                    className="w-full h-full object-contain"
+                    alt=""
+                  />
+                </>
+              )}
+
+              {block?.inscription?.contentType.indexOf("text") > -1 && (
+                <>{block?.content}</>
+              )}
+
               <button
                 className="absolute rounded-full p-1 top-1 right-1"
                 onClick={() => removeFromList(block.inscription.inscriptionId)}

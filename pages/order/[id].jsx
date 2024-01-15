@@ -27,6 +27,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Confirming from "../../components/UI/Confirming";
 import { FaArrowLeft } from "react-icons/fa";
+import Head from "next/head";
 
 const Payment = () => {
   const dispatch = useDispatch();
@@ -211,6 +212,14 @@ const Payment = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>Litemap - Order</title>
+        <meta
+          name="description"
+          content="Litemap - Waiting payment for Order"
+        />
+      </Head>
+
       {orderData ? (
         <div className="py-[70px] flex justify-center relative px-2">
           <div className="px-4 py-16 w-full max-w-[600px] rounded-lgn bg-primary-dark/20 relative shadow-lg shadow-black/30">
