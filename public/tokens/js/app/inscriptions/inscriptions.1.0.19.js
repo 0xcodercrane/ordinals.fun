@@ -174,7 +174,7 @@ async function startInscriptionRecovery(key) {
                 $('#backup-recovery').innerHTML += '<div id="recovery-item-' + key + '-'+utxo.vout+'" style="font-size: 14px;">Found UTXO with ' + utxo.value + ' sats [<a style="font-size: 14px;" href="javascript:void(0);" onclick="recover(' + i + ', ' + utxo.vout + ', $(\'#taproot_address\').value, \'' + key + '\')">recover</a>]</div>';
                 $('#backup-recovery').innerHTML += '<hr/>';
 
-                //console.log(utxo);
+                console.log(utxo);
             }
         }
 
@@ -448,10 +448,10 @@ $('.form').addEventListener("change", async function () {
             let base64 = b64.substring(b64.indexOf("base64,") + 7);
             let hex = base64ToHex(base64);
 
-            ////console.log( "hex:", hex );
-            ////console.log( "bytes:", hexToBytes( hex ) );
+            //console.log( "hex:", hex );
+            //console.log( "bytes:", hexToBytes( hex ) );
 
-            //console.log(this.files[i]);
+            console.log(this.files[i]);
 
             let sha256 = await fileToSha256Hex(this.files[i]);
             files.push({
@@ -467,7 +467,7 @@ $('.form').addEventListener("change", async function () {
         alert(limit_reached + " of your desired inscriptions exceed(s) the maximum of 350kb.")
     }
 
-    //console.log(files);
+    console.log(files);
 });
 
 $('.startover').addEventListener("click", async function () {
@@ -534,7 +534,7 @@ async function run(estimate) {
         let mimetype = "text/plain;charset=utf-8";
         files.push({text: JSON.stringify(deploy), name: deploy.tick, hex: textToHex(JSON.stringify(deploy)), mimetype: mimetype, sha256: ''});
 
-        //console.log(files);
+        console.log(files);
     }
 
     if ($('.brc20_transfer_form').style.display != "none") {
@@ -572,7 +572,7 @@ async function run(estimate) {
             files.push({text: JSON.stringify(transfer), name: transfer.tick, hex: textToHex(JSON.stringify(transfer)), mimetype: mimetype, sha256: ''});
         }
 
-        //console.log(files);
+        console.log(files);
     }
 
     if ($('.brc20_mint_form').style.display != "none") {
@@ -618,7 +618,7 @@ async function run(estimate) {
             });
         }
 
-        //console.log(files);
+        console.log(files);
     }
 
     if ($('.unisat_form').style.display != "none") {
@@ -659,7 +659,7 @@ async function run(estimate) {
                 mimetype: mimetype,
                 sha256: ''
             });
-            //console.log(domain);
+            console.log(domain);
         }
     }
 
@@ -701,7 +701,7 @@ async function run(estimate) {
                 mimetype: mimetype,
                 sha256: ''
             });
-            //console.log(domain);
+            console.log(domain);
         }
     }
 
@@ -768,7 +768,7 @@ async function run(estimate) {
 
         files = newFiles;
 
-        //console.log(files);
+        console.log(files);
     }
 
     if(active_plugin !== null)
@@ -898,7 +898,7 @@ async function run(estimate) {
         return;
     }
 
-    //console.log('PUBKEY', pubkey);
+    console.log('PUBKEY', pubkey);
 
     let inscriptions = [];
     let total_fee = 0;
@@ -951,8 +951,8 @@ async function run(estimate) {
 
         let inscriptionAddress = Address.p2tr.encode(tapkey, encodedAddressPrefix);
 
-        //console.log('Inscription address: ', inscriptionAddress);
-        //console.log('Tapkey:', tapkey);
+        console.log('Inscription address: ', inscriptionAddress);
+        console.log('Tapkey:', tapkey);
 
         let prefix = 160;
 
@@ -963,7 +963,7 @@ async function run(estimate) {
 
         let txsize = prefix + Math.floor(data.length / 4);
 
-        //console.log("TXSIZE", txsize);
+        console.log("TXSIZE", txsize);
 
         let fee = feerate * txsize;
         total_fee += fee;
@@ -993,10 +993,10 @@ async function run(estimate) {
     }
 
     let fundingAddress = Address.p2tr.encode(init_tapkey, encodedAddressPrefix);
-    //console.log('Funding address: ', fundingAddress, 'based on', init_tapkey);
+    console.log('Funding address: ', fundingAddress, 'based on', init_tapkey);
 
     let toAddress = $('.address').value;
-    //console.log('Address that will receive the inscription:', toAddress);
+    console.log('Address that will receive the inscription:', toAddress);
 
     $('#backup').style.display = "none";
     $('.submit').style.display = "none";
@@ -1018,7 +1018,7 @@ async function run(estimate) {
     $('.display').innerHTML = html;
 
     let qr_value = "bitcoin:" + fundingAddress + "?amount=" + satsToBitcoin(total_fees);
-    //console.log("qr:", qr_value);
+    console.log("qr:", qr_value);
 
     let overhead = total_fees - total_fee - (padding * inscriptions.length) - tip;
 
@@ -1063,7 +1063,7 @@ async function run(estimate) {
     let vout = txinfo[1];
     let amt = txinfo[2];
 
-    //console.log("yay! txid:", txid, "vout:", vout, "amount:", amt);
+    console.log("yay! txid:", txid, "vout:", vout, "amount:", amt);
 
     $('.modal-content').innerHTML = '<div id="funds-msg">Inscriptions about to begin. Please wait'+(!$('#cpfp').checked ? ' for the seed transaction to confirm (CPFP disabled)' : '')+'...</div>';
     $('.modal').style.display = "block";
@@ -1113,12 +1113,12 @@ async function run(estimate) {
     init_redeemtx.vin[0].witness = [ init_sig.hex, init_script, init_cblock ];
 
     console.dir(init_redeemtx, {depth: null});
-    //console.log('YOUR SECKEY', seckey);
+    console.log('YOUR SECKEY', seckey);
 
     let rawtx = Tx.encode(init_redeemtx).hex;
     let _txid = await pushBTCpmt(rawtx);
 
-    //console.log('Init TX', _txid);
+    console.log('Init TX', _txid);
 
     let include_mempool = $('#cpfp').checked;
 
@@ -1207,10 +1207,10 @@ async function initDatabase(){
         upgrade(db, oldVersion, newVersion, transaction, event) {
             let store = db.createObjectStore("InscriptionsLog", {keyPath: "PrivKey"});
             let index = store.createIndex("PrivKey", "data.inscription", { unique: false });
-            //console.log(index);
+            console.log(index);
             store = db.createObjectStore("InscriptionDates", {keyPath: "PrivKey"});
             index = store.createIndex("PrivKey", "data.date", { unique: false });
-            //console.log(index);
+            console.log(index);
         }
     });
 }
@@ -1286,7 +1286,7 @@ async function recover(index, utxo_vout, to, privkey) {
     if(!isValidTaprootAddress(to))
     {
         $('#recovery-item-'+privkey+'-'+utxo_vout).innerHTML += '<div style="font-size: 14px;">Invalid taproot address. Please add the recovery recipient in the "Receiving address" at the very top.</a>';
-        //console.log('Invalid to address.');
+        console.log('Invalid to address.');
         return;
     }
 
@@ -1333,16 +1333,16 @@ async function recover(index, utxo_vout, to, privkey) {
     if(utxo === null)
     {
         $('#recovery-item-'+privkey+'-'+utxo_vout).innerHTML += '<div style="font-size: 14px;">Utxo not found</a>';
-        //console.log('Utxo not found');
+        console.log('Utxo not found');
         return;
     }
 
-    //console.log(Address.p2tr.encode(plainTapKey, encodedAddressPrefix));
-    //console.log(utxo);
+    console.log(Address.p2tr.encode(plainTapKey, encodedAddressPrefix));
+    console.log(utxo);
 
     let txid = utxo.txid;
 
-    //console.log(tx[index]);
+    console.log(tx[index]);
 
     for(let j = 0; j < tx[index].script.length; j++){
 
@@ -1364,7 +1364,7 @@ async function recover(index, utxo_vout, to, privkey) {
 
     scripts.push(script);
 
-    //console.log('RECOVER:INPUTS', inputs);
+    console.log('RECOVER:INPUTS', inputs);
 
     if(utxo.value - base_fee <= 0){
 
@@ -1388,7 +1388,7 @@ async function recover(index, utxo_vout, to, privkey) {
         }],
     });
 
-    //console.log(scripts);
+    console.log(scripts);
 
     for(let i = 0; i < inputs.length; i++){
 
@@ -1398,7 +1398,7 @@ async function recover(index, utxo_vout, to, privkey) {
         redeemtx.vin[0].witness = [ sig.hex, scripts[i], cblock ];
     }
 
-    //console.log('RECOVER:REDEEMTEX', redeemtx);
+    console.log('RECOVER:REDEEMTEX', redeemtx);
 
     let rawtx = Tx.encode(redeemtx).hex;
     let _txid = await pushBTCpmt(rawtx);
@@ -1408,7 +1408,7 @@ async function recover(index, utxo_vout, to, privkey) {
         _txid = 'Please wait for the other transactions to finish and then try again.';
     }
 
-    //console.log('RECOVER:PUSHRES', _txid);
+    console.log('RECOVER:PUSHRES', _txid);
 
     $('#recovery-item-'+privkey+'-'+utxo_vout).innerHTML += '<div style="font-size: 14px;">Result: ' + _txid+'</div>';
 }
@@ -1511,7 +1511,7 @@ function isValidTaprootAddress(address) {
         Address.p2tr.decode(address).hex;
         return true;
     } catch (e) {
-        //console.log(e);
+        console.log(e);
     }
     return;
 }
@@ -1576,7 +1576,7 @@ async function pushBTCpmt(rawtx) {
         {
             if(encodedAddressPrefix == 'main')
             {
-                //console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
+                console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
                 txid = await postData("https://blockstream.info/api/tx", rawtx);
             }
         }
@@ -1585,7 +1585,7 @@ async function pushBTCpmt(rawtx) {
     {
         if(encodedAddressPrefix == 'main')
         {
-            //console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
+            console.log('USING BLOCKSTREAM FOR PUSHING INSTEAD');
             txid = await postData("https://blockstream.info/api/tx", rawtx);
         }
     }
@@ -1651,7 +1651,7 @@ async function loopTilAddressReceivesMoney(address, includeMempool) {
         return new Promise(function (resolve, reject) {
             if (!data_i_seek) {
                 setTimeout(async function () {
-                    //console.log("waiting for address to receive money...");
+                    console.log("waiting for address to receive money...");
                     try {
                         itReceivedMoney = await addressOnceHadMoney(address, includeMempool);
                     }catch(e){ }
@@ -1857,9 +1857,9 @@ $('.address').onkeyup = checkAddress;
 
 async function isUsedDomain(domain) {
     let data = await getData(`https://api.sats.id/names/${encodeURIComponent(domain)}`);
-    //console.log("data:", data);
+    console.log("data:", data);
     data = JSON.parse(data);
-    //console.log("data:", data);
+    console.log("data:", data);
     if ("name" in data) return true;
     if (data["error"] == "Too many requests") return null;
     return false;
@@ -1897,7 +1897,7 @@ async function isUsedUnisatDomain(domain) {
 async function isUsedUnisatDomainFallback(domain) {
 
     let data = await getData('https://api2.ordinalsbot.com/search?text='+encodeURIComponent(domain));
-    //console.log("data:", data);
+    console.log("data:", data);
     try
     {
         data = JSON.parse(data);
@@ -2045,7 +2045,7 @@ $('#bytes_checker').onclick = async function () {
 
         let hash_result = await getData('https://api2.ordinalsbot.com/search?hash=' + files[i].sha256);
 
-        //console.log(hash_result);
+        console.log(hash_result);
 
         try {
             hash_result = JSON.parse(hash_result);

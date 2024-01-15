@@ -42,7 +42,7 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id, ins
     } catch (e) {
       setPendingTx(false);
       setSucceed(false);
-      //console.log(e);
+      console.log(e);
     }
   };
 
@@ -66,7 +66,7 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id, ins
             setCreatingTx(false);
           });
       } catch (error) {
-        //console.log(error);
+        console.log(error);
         setCreatingTx(false);
       }
     }

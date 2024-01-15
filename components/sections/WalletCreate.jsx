@@ -36,6 +36,8 @@ export default function WalletCreate({ setType, isImport }) {
     hdPath: "m/84'/2'/0'/0",
   });
 
+  console.log(isImport, '----------isIMport--')
+
   const importWallet = async () => {
     try {
       const encryptBooted = await walletContext.Boot(password);

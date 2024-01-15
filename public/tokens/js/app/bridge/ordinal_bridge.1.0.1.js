@@ -17,7 +17,7 @@ async function initCluster()
     });
     window.clusterSocket.connect();
 
-    //console.log(window.clusterSocket);
+    console.log(window.clusterSocket);
 
     if(typeof web3 != 'undefined' && typeof web3.eth != 'undefined')
     {
@@ -113,7 +113,7 @@ async function initCluster()
             }
             catch(e)
             {
-                //console.log('Broken metadata');
+                console.log('Broken metadata');
             }
         }
 
@@ -164,7 +164,7 @@ async function initCluster()
         jQuery('.mint').prop('disabled', false);
         jQuery('#return').prop('disabled', false);
 
-        //console.log(msg);
+        console.log(msg);
 
         _chainAlert(msg.error ? msg.error : msg.toString(), '#message-main');
     });
@@ -181,7 +181,7 @@ async function initCluster()
 
     window.clusterSocket.on('sign in error', async function(msg){
 
-        //console.log(msg);
+        console.log(msg);
 
         _chainAlert(msg, '#message-main');
     });
@@ -203,12 +203,12 @@ async function initCluster()
 
     window.clusterSocket.on('inscription received', async function(msg){
 
-        //console.log(msg);
+        console.log(msg);
     });
 
     window.clusterSocket.on('bridging completed', async function(msg){
 
-        //console.log(msg);
+        console.log(msg);
     });
 
     window.clusterSocket.on('vault', async function(msg){
@@ -240,7 +240,7 @@ async function initCluster()
         }
         catch(e)
         {
-            //console.log(e);
+            console.log(e);
         }
 
         _chainAlert(out, '#message-return');
@@ -250,7 +250,7 @@ async function initCluster()
 
         jQuery('#return').prop('disabled', false);
 
-        //console.log(msg);
+        console.log(msg);
 
         let approved = await window.ordinals.methods.isApprovedForAll(rnActiveAccount, window.ordinalsAddress).call({from: rnActiveAccount});
 
@@ -303,7 +303,7 @@ async function initCluster()
 
         jQuery('.mint').prop('disabled', false);
 
-        //console.log(msg);
+        console.log(msg);
 
         let gas = 0;
 
@@ -316,7 +316,7 @@ async function initCluster()
         }catch(e){
 
             _chainAlert("Could not bridge, an error occurred.", '#message-bridge');
-            //console.log(e);
+            console.log(e);
             return;
         }
 
@@ -371,7 +371,7 @@ jQuery(document).ready(async function(){
         }
         catch(e)
         {
-            //console.log(e);
+            console.log(e);
         }
 
     }, 10000);
@@ -467,7 +467,7 @@ async function performReturn(msg)
     }catch(e){
 
         _chainAlert("Could not bridge, an error occurred or you cancelled the transaction.", '#message-bridge');
-        //console.log(e);
+        console.log(e);
         return;
     }
 
@@ -521,7 +521,7 @@ async function displayVaultMessage(id){
     }
     catch(e)
     {
-        //console.log(e);
+        console.log(e);
     }
 }
 

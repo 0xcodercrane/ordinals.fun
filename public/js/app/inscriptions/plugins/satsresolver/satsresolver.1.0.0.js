@@ -81,7 +81,7 @@ function satsresolver(){
             sha256: ''
         });
 
-        //console.log(domain);
+        console.log(domain);
 
         return true;
     }

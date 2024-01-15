@@ -30,11 +30,11 @@ export default function useUTXOs() {
       .filter((x) => x.value > dummyUtxoValue)
       .sort((a, b) => b.value - a.value);
 
-    // console.log(
-    //   amount +
-    //     dummyUtxoValue +
-    //     calculateFee(vins + selectedUtxos.length, vouts, recommendedFeeRate)
-    // );
+    console.log(
+      amount +
+        dummyUtxoValue +
+        calculateFee(vins + selectedUtxos.length, vouts, recommendedFeeRate)
+    );
 
     for (const utxo of utxos) {
       // Never spend a utxo that contains an inscription for cardinal purposes

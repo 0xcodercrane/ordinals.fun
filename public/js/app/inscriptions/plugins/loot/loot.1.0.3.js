@@ -219,7 +219,7 @@ function loot(){
 
             let loot_ids = $('#loot_id').value.trim().split("\n");
 
-            //console.log(loot_ids);
+            console.log(loot_ids);
 
             for(let i = 0; i < loot_ids.length; i++)
             {
@@ -260,7 +260,7 @@ function loot(){
                 }
             }
 
-            //console.log(files);
+            console.log(files);
         }
 
         $('#loot_checker').onclick = async function () {
@@ -276,7 +276,7 @@ function loot(){
 
                 let hash_result = await getData('https://api2.ordinalsbot.com/search?hash=' + files[i].sha256_check);
 
-                //console.log(hash_result);
+                console.log(hash_result);
 
                 try {
 

@@ -38,19 +38,19 @@ class EmptyKeyring {
     return [];
   }
   signTransaction(psbt, inputs) {
-    //console.log("Method not implemented.");
+    console.log("Method not implemented.");
   }
   signMessage(address, message) {
-    //console.log("Method not implemented.");
+    console.log("Method not implemented.");
   }
   verifyMessage(address, message, sig) {
-    //console.log("Method not implemented.");
+    console.log("Method not implemented.");
   }
   exportAccount(address) {
-    //console.log("Method not implemented.");
+    console.log("Method not implemented.");
   }
   removeAccount(address) {
-    //console.log("Method not implemented.");
+    console.log("Method not implemented.");
   }
 
   async serialize() {
@@ -170,7 +170,7 @@ class KeyringService extends EventEmitter {
     accountCount
   ) => {
     if (!bip39.validateMnemonic(seed)) {
-      return //console.log("mnemonic phrase is invalid");
+      return console.log("mnemonic phrase is invalid");
     }
     await this.persistAllKeyrings();
     const activeIndexes = [];
@@ -189,7 +189,7 @@ class KeyringService extends EventEmitter {
     );
     const accounts = await keyring.getAccounts();
     if (!accounts[0]) {
-      //console.log("KeyringController - First Account not found.");
+      console.log("KeyringController - First Account not found.");
     }
     this.persistAllKeyrings();
     this.setUnlocked();
@@ -198,7 +198,7 @@ class KeyringService extends EventEmitter {
   };
 
   addKeyring = async (keyring, addressType) => {
-    // //console.log(keyring);
+    // console.log(keyring);
     try {
       const accounts = await keyring.getAccounts();
       await this.checkForDuplicate(keyring.type, accounts);
@@ -209,7 +209,7 @@ class KeyringService extends EventEmitter {
       await this.fullUpdate();
       return keyring;
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   };
 
@@ -244,7 +244,7 @@ class KeyringService extends EventEmitter {
       this.keyrings = await this.unlockKeyrings(password, vault);
       return this.keyrings;
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     } finally {
       this.setUnlocked();
     }
@@ -283,9 +283,9 @@ class KeyringService extends EventEmitter {
 
   addNewKeyring = async (type, opts, addressType) => {
     const Keyring = this.getKeyringClassForType(type);
-    //console.log(type);
+    console.log(type);
     const keyring = new Keyring(opts);
-    //console.log("newKeyrig", keyring);
+    console.log("newKeyrig", keyring);
     return await this.addKeyring(keyring, addressType);
   };
 
@@ -308,7 +308,7 @@ class KeyringService extends EventEmitter {
     });
 
     return isIncluded
-      ? //console.log("Wallet existed.")
+      ? console.log("Wallet existed.")
       : Promise.resolve(newAccountArray);
   };
 
@@ -333,7 +333,7 @@ class KeyringService extends EventEmitter {
     const keyring = await this.getKeyringForAccount(address, type);
 
     if (typeof keyring.removeAccount != "function") {
-      //console.log(
+      console.log(
         `Keyring ${keyring.type} doesn't support account removal operations`
       );
     }
@@ -353,14 +353,14 @@ class KeyringService extends EventEmitter {
   };
 
   signTransaction = (EXPrive, psbt, inputs) => {
-    //console.log("simple key ring");
+    console.log("simple key ring");
     const simpleKeyring = new HdKeyring({
       mnemonic: EXPrive,
       activeIndexes: [0],
       hdPath: "m/84'/2'/0'/0",
       passphrase: "",
     });
-    // //console.log(simpleKeyring);
+    // console.log(simpleKeyring);
     return simpleKeyring.signTransaction(psbt, inputs);
   };
 
@@ -407,7 +407,7 @@ class KeyringService extends EventEmitter {
   unlockKeyrings = async (password, _vault) => {
     const encryptedVault = _vault;
     if (!encryptedVault) {
-      //console.log("no vault");
+      console.log("no vault");
     }
 
     await this.clearKeyrings();
@@ -430,7 +430,7 @@ class KeyringService extends EventEmitter {
 
   _restoreKeyring = async (serialized) => {
     const { type, data, addressType } = serialized;
-    //console.log(type, data, addressType);
+    console.log(type, data, addressType);
     // if (type === KEYRING_TYPE.Empty) {
     //   const keyring = new EmptyKeyring();
     //   return {
@@ -516,7 +516,7 @@ class KeyringService extends EventEmitter {
         return keyring;
       }
     }
-    //console.log("No keyring found for the requested account.");
+    console.log("No keyring found for the requested account.");
   };
 
   displayForKeyring = async (keyring, addressType, index) => {

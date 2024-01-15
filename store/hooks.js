@@ -143,7 +143,7 @@ export const useMintedBlocksFromAPI = () => {
           dispatch(updateMintedBlockNumber(resJson?.totalItems));
         }
       } catch (error) {
-        //console.log(error);
+        console.log(error);
       }
     }
 
