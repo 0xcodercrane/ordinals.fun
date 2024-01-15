@@ -46,7 +46,7 @@ export default function Inscribe() {
     pushing = true;
     const dbRef = ref(db, `wallet/${address}`);
 
-  //  console.log("running");
+    //  console.log("running");
     try {
       const snapshot = await get(dbRef);
       const exist = snapshot.exists();
@@ -258,19 +258,35 @@ export default function Inscribe() {
         My Wallet
       </h1>
 
-      <div className="flex justify-between w-full">
+      {!bulkSelect ? (
+        <button
+          className="main_btn px-2 py-1 rounded-md sm:hidden inline-block mb-1"
+          onClick={() => setBulkSelect(true)}
+        >
+          Bulk Select
+        </button>
+      ) : (
+        <button
+          className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2 items-center sm:hidden flex  mb-1"
+          onClick={() => cancelBlocks()}
+        >
+          <MdCancel /> Cancel
+        </button>
+      )}
+
+      <div className="flex justify-center sm:justify-between w-full">
         <Tabs type={type} setType={setType} loading={fetchingData} />
 
         {!bulkSelect ? (
           <button
-            className="main_btn px-2 py-1 rounded-md"
+            className="main_btn px-2 py-1 rounded-md hidden sm:inline-block"
             onClick={() => setBulkSelect(true)}
           >
             Bulk Select
           </button>
         ) : (
           <button
-            className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2 flex items-center"
+            className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2  items-center hidden sm:flex"
             onClick={() => cancelBlocks()}
           >
             <MdCancel /> Cancel

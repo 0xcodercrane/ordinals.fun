@@ -354,7 +354,7 @@ const Wallet = (props) => {
     }
 
     if (utxo.inscriptions.length > 1) {
-    //  console.log(
+     console.log(
         "Multiple inscriptions are mixed together. Please split them first."
       );
       return;
@@ -465,7 +465,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-    //  console.log(
+     console.log(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
@@ -518,7 +518,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-    //  console.log(
+     console.log(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `

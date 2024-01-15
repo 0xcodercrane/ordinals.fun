@@ -44,6 +44,14 @@ export default function InscriptionCard({
   const [added, setAdded] = useState(false);
   const [adding, setAdding] = useState(false);
 
+  const openTransferModal = () => {
+    if (inscription?.listed) {
+      toast.error("Please cancel list before transfer");
+      return;
+    }
+    setIsOpenTransfer(true);
+  };
+
   const getContent = async () => {
     if (inscription.inscriptionId)
       try {
@@ -59,7 +67,7 @@ export default function InscriptionCard({
         setOwner(inscriptionData?.inscriptions[0]?.address);
         setContent(textData);
       } catch (error) {
-      //  console.log("content fetch", error);
+        //  console.log("content fetch", error);
       }
   };
 
@@ -175,7 +183,7 @@ export default function InscriptionCard({
       setAdding(false);
     } catch (error) {
       toast.error("When validating:", error);
-    //  console.log(error);
+      //  console.log(error);
       setAdding(true);
     }
   };
@@ -216,16 +224,17 @@ export default function InscriptionCard({
 
   return (
     <div className="relative">
-      {!isOwner && owner && (
-        <div className="absolute z-50 w-full h-full top-0 left-0 bg-black/5 backdrop-blur-sm flex justify-center items-center text-center">
-          {/* <div>
+      {(!isOwner && owner) ||
+        (content === "litemap" && content.indexOf(".litemap") == -1 && (
+          <div className="absolute z-50 w-full h-full top-0 left-0 bg-black/5 backdrop-blur-sm flex justify-center items-center text-center">
+            {/* <div>
       {/* <p>Transfering to</p> */}
-          {/* <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
+            {/* <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
               {addressFormat(owner, 6)}
             </a> */}
-          {/* </div> */}
-        </div>
-      )}
+            {/* </div> */}
+          </div>
+        ))}
       <div className={`${added && "cs-border"} in-card`}>
         <div className="in-content">
           {inscription.contentType.indexOf("image") > -1 && (
@@ -243,8 +252,7 @@ export default function InscriptionCard({
           )}
 
           <button
-            disabled={inscription?.listed}
-            onClick={() => setIsOpenTransfer(true)}
+            onClick={() => openTransferModal(true)}
             className="in-transfer"
           >
             Transfer

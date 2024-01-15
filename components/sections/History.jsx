@@ -76,9 +76,9 @@ export default function History() {
   return (
     <div className="w-full mt-8">
       <div className="mt-6">
-        <div className="grid grid-cols-12 px-3 py-2 bg-primary-dark/30 rounded-t-lg">
+        <div className="grid grid-cols-9 sm:grid-cols-12 px-3 py-2 bg-primary-dark/30 rounded-t-lg">
           <div className="col-span-3">Content</div>
-          <div className="col-span-3">Price</div>
+          <div className="col-span-3 hidden sm:inline-block">Price</div>
           <div className="col-span-3">Action</div>
           <div className="col-span-3">Date</div>
         </div>
@@ -90,10 +90,14 @@ export default function History() {
                 return (
                   <div
                     key={index}
-                    className="grid grid-cols-12 px-3 text-sm my-1 bg-[#19679d54] hover:bg-[#246da1cb] cursor-pointer items-center gap-2 py-1"
+                    className="grid grid-cols-9 sm:grid-cols-12 px-3 text-sm my-1 bg-[#19679d54] hover:bg-[#246da1cb] cursor-pointer items-center gap-2 py-1"
                   >
-                    <div className="col-span-3">{activities[key].content}</div>
                     <div className="col-span-3">
+                      {activities[key].content.length > 15
+                        ? addressFormat(activities[key].content, 6)
+                        : activities[key].content}
+                    </div>
+                    <div className="col-span-3 hidden sm:inline-block">
                       {activities[key]?.price} LTC
                     </div>
                     <div

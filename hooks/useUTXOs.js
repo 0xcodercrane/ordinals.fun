@@ -30,7 +30,7 @@ export default function useUTXOs() {
       .filter((x) => x.value > dummyUtxoValue)
       .sort((a, b) => b.value - a.value);
 
-  //  console.log(
+   console.log(
       amount +
         dummyUtxoValue +
         calculateFee(vins + selectedUtxos.length, vouts, recommendedFeeRate)
