@@ -29,6 +29,7 @@ export default function Inscribe() {
   const [bulkSelect, setBulkSelect] = useState(false);
   const [type, setType] = useState("litemap");
   const [isOpen, setIsOpen] = useState(false);
+  const [NFTSlug, setNFTSlug] = useState("");
   let pushing = false;
 
   const cancelBlocks = () => {
@@ -48,37 +49,37 @@ export default function Inscribe() {
       const exist = snapshot.exists();
 
       if (exist) {
-        const key = Object.keys(snapshot.val())[0];
-        const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
-        if (data && key !== "activities") {
-          const existedInscriptions = snapshot.val()[key].inscriptions;
+        // const key = Object.keys(snapshot.val())[0];
+        // const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
+        // if (data && key !== "activities") {
+        //   const existedInscriptions = snapshot.val()[key].inscriptions;
 
-          const listedInscriptions = existedInscriptions.filter(
-            (inscription) => inscription?.listed === true
-          );
+        //   const listedInscriptions = existedInscriptions.filter(
+        //     (inscription) => inscription?.listed === true
+        //   );
 
-          let updatedinscriptions = [];
-          data.map((inscription) => {
-            const filter = listedInscriptions?.filter(
-              (list) => list?.inscriptionId == inscription?.inscriptionId
-            );
-            if (filter.length > 0) {
-              updatedinscriptions.push({
-                ...inscription,
-                listed: true,
-                tag: filter[0]?.tag,
-              });
-            } else {
-              updatedinscriptions.push(inscription);
-            }
-          });
-          await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
-        } else {
-          if (data) {
-            const dbRef = ref(db, `wallet/${address}`);
-            await push(dbRef, { inscriptions: data });
-          }
-        }
+        //   let updatedinscriptions = [];
+        //   data.map((inscription) => {
+        //     const filter = listedInscriptions?.filter(
+        //       (list) => list?.inscriptionId == inscription?.inscriptionId
+        //     );
+        //     if (filter.length > 0) {
+        //       updatedinscriptions.push({
+        //         ...inscription,
+        //         listed: true,
+        //         tag: filter[0]?.tag,
+        //       });
+        //     } else {
+        //       updatedinscriptions.push(inscription);
+        //     }
+        //   });
+        //   await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
+        // } else {
+        //   if (data) {
+        //     const dbRef = ref(db, `wallet/${address}`);
+        //     await push(dbRef, { inscriptions: data });
+        //   }
+        // }
         await fetchInscriptions();
         pushing = false;
       }
@@ -202,7 +203,14 @@ export default function Inscribe() {
     if (type === "nfts") {
       return (
         <>
-          <NFTs />
+          <NFTs
+            inscriptionsFromDB={inscriptionsFromDB}
+            loading={fetchingData}
+            bulkSelect={bulkSelect}
+            setNFTSlug={setNFTSlug}
+            setSelectedBlocks={setSelectedBlocks}
+            selectedBlocks={selectedBlocks}
+          />
         </>
       );
     }

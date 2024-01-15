@@ -102,4 +102,65 @@ export const collectionsData = [
     discord_link: "https://discord.gg/xdSqy4tfCZ",
     website_link: "",
   },
+  {
+    name: "Ah sh*t, here we ordinal again",
+    inscription_icon:
+      "cb0e438418ce4e6e0a58ed939844fdb09ddd09beafdd2d30015887d96aefbb02i0",
+    supply: "84",
+    slug: "ah-sh*t-here-we-ordinal-again",
+    description:
+      "Ah sh*t, here we ordinal again collection that contains 84 Inscriptions on Litecoin Ordinals, ranging from #928 to #1014.",
+    twitter_link: "",
+    discord_link: "",
+    website_link: "",
+  },
+  {
+    name: "Ballers",
+    inscription_icon:
+      "532c3f371404d1ec5e976cdc03b99b3b9614c91b71673660a5caece36f15b387i0",
+    supply: "4999",
+    slug: "ballers",
+    description:
+      "Litecoin Ballers is a collection that contains 4999 Inscriptions on Litecoin Ordinals",
+    twitter_link: "",
+    discord_link: "",
+    website_link: "",
+  },
+  {
+    name: "Drip Cats",
+    inscription_icon:
+      "14fc806b0f9d17e1c28903c7b476c0b020c1f3c0a15e22b86ebec58aadfb6431i0",
+    supply: "50",
+    slug: "drip-cats",
+    description:
+      "The Baddest Pixel Cats on Litecoin blockhain. Elite 3102-3167k inscriptions range",
+    twitter_link: "https://twitter.com/Drip_Cats",
+    discord_link: "https://discord.gg/PR4EVkxWHv",
+    website_link: "https://dripcatsnft.com",
+  },
+  {
+    description:
+      " Only 84 unique and original Armored patches. In the style of embroidered military patches, proudly wear Litecoin's colors all over the world.",
+    discord_link: "",
+    inscription_icon:
+      "dcf1bd275b77b7e584412c4bca2f352b029aacbed367b217f7fbb71da9e19180i0",
+    name: "Litecoin Armored Patch",
+    slug: "litecoin-armored-patch",
+    royalty_address: "ltc1qn6hcv0fgnh92y89jxw6m0pyp2fz7luu7046lme",
+    supply: "84",
+    website_link: "",
+    twitter_link: "https://twitter.com/ArmoredPatch",
+  },
+  {
+    name: "Litecoin Lizards",
+    inscription_icon:
+      "a620faf4fe04b0e9be324cc53ffbb5f0cf714a76b21bf139b9139199e7c1fc61i0",
+    supply: "11",
+    slug: "litecoin-lizards",
+    description:
+      "Litecoin Lizards collection that contains 11 sub 1k Inscriptions on Litecoin Ordinals, ranging from #859 to #874.",
+    twitter_link: "",
+    discord_link: "",
+    website_link: "",
+  },
 ];

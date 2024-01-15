@@ -31,6 +31,7 @@ export default function InscriptionCard({
   tag,
   setSelectedBlocks,
   selectedBlocks,
+  isNFT = false,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -224,7 +225,20 @@ export default function InscriptionCard({
       )}
       <div className={`${added && "cs-border"} in-card`}>
         <div className="in-content">
-          {content && content}
+          {inscription.contentType.indexOf("image") > -1 && (
+            <>
+              <img
+                src={`https://ordinalslite.com/content/${inscription.inscriptionId}`}
+                className="w-full h-full object-cover"
+                alt=""
+              />
+            </>
+          )}
+
+          {inscription.contentType.indexOf("text") > -1 && (
+            <>{content && content}</>
+          )}
+
           <button
             disabled={inscription?.listed}
             onClick={() => setIsOpenTransfer(true)}

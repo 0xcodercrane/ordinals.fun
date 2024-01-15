@@ -13,16 +13,16 @@ export default function collections() {
         </p>
       </div>
       <div className="my-3 w-full">
-        <table class="table-auto w-full">
+        <table className="table-auto w-full">
           <thead>
             <tr className="px-[6px!important] my-[4px!important]">
-              <th class="px-1 lg:px-3 py-1">#</th>
-              <th class="py-1">Logo</th>
-              <th class="py-1">Name</th>
-              <th class="py-1 hidden lg:inline-block">Description</th>
-              <th class="py-1">Link</th>
-              <th class="py-1 hidden lg:inline-block">Supply</th>
-            </tr> 
+              <th className="px-1 lg:px-3 py-1">#</th>
+              <th className="py-1">Logo</th>
+              <th className="py-1">Name</th>
+              <th className="py-1 hidden lg:inline-block">Description</th>
+              <th className="py-1">Link</th>
+              <th className="py-1 hidden lg:inline-block">Supply</th>
+            </tr>
           </thead>
           <tbody>
             {collectionsData.map((collection, key) => {
