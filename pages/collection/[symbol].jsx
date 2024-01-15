@@ -60,7 +60,7 @@ export default function Collection() {
   return (
     <Layout>
       <Head>
-        <title>Litemap - {collection.name} Market </title>
+        <title>Litemap - {collection?.name} Market </title>
         <meta
           name="description"
           content="Litemap - NFTs Market place on Litecoin"
