@@ -222,123 +222,131 @@ export default function InscriptionCard({
     }
   }, [selectedBlocks]);
 
-  return (
-    <div className="relative">
-      {(!isOwner && owner) ||
-        (content === "litemap" && content.indexOf(".litemap") == -1 && (
-          <div className="absolute z-50 w-full h-full top-0 left-0 bg-black/5 backdrop-blur-sm flex justify-center items-center text-center">
-            {/* <div>
-      {/* <p>Transfering to</p> */}
-            {/* <a href={`https://litecoinspace.org/address/${owner}`} className="underline">
-              {addressFormat(owner, 6)}
-            </a> */}
-            {/* </div> */}
-          </div>
-        ))}
-      <div className={`${added && "cs-border"} in-card`}>
-        <div className="in-content">
-          {inscription.contentType.indexOf("image") > -1 && (
-            <>
-              <img
-                src={`https://ordinalslite.com/content/${inscription.inscriptionId}`}
-                className="w-full h-full object-contain"
-                alt=""
-              />
-            </>
-          )}
-
-          {inscription.contentType.indexOf("text") > -1 && (
-            <>{content && content}</>
-          )}
-
-          <button
-            onClick={() => openTransferModal(true)}
-            className="in-transfer"
-          >
-            Transfer
-          </button>
-        </div>
-
-        <Link
-          href={"/inscription/" + inscription.inscriptionId}
-          className="in-link"
-        >
-          #{addressFormat(inscription?.inscriptionId, 4)}
-        </Link>
-
-        <hr className="mb-2" />
-
-        {inscription?.listed ? (
-          <>
-            <button
-              className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
-              onClick={() =>
-                handleCancelList(inscription?.tag, inscriptionIndex)
-              }
-            >
-              <TbGiftOff /> Listed
-            </button>
-          </>
-        ) : (
-          <>
-            {bulkSelect ? (
+  if (
+    (!isOwner && owner) ||
+    (tag === "litemap" && content.indexOf(".litemap") == -1)
+  ) {
+    return;
+  } else {
+    return (
+      <div className="relative">
+        <div className={`${added && "cs-border"} in-card`}>
+          <div className="in-content">
+            {inscription?.contentType.indexOf("image") > -1 && (
               <>
-                {added ? (
-                  <button
-                    className="main_btn cs-border bg-transparent py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
-                    onClick={() => removeFromList()}
-                  >
-                    <TbArticleOff />
-                    Added
-                  </button>
-                ) : (
-                  <button
-                    disabled={adding || added}
-                    className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
-                    onClick={() => AddList()}
-                  >
-                    <>
-                      {adding ? (
-                        <AiOutlineLoading className="text-lg text-white font-semibold animate-spin" />
-                      ) : (
-                        <>
-                          <FaPlus />
-                          Add
-                        </>
-                      )}
-                    </>
-                  </button>
+                <img
+                  src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
+                  className="w-full h-full object-contain"
+                  alt=""
+                />
+              </>
+            )}
+
+            {inscription?.contentType.indexOf("text") > -1 && (
+              <>
+                {content && (
+                  <>
+                    {content.indexOf("tick") > -1 ? (
+                      <div className="text-lg font-bold px-3">
+                        {JSON.parse(content).tick}
+                      </div>
+                    ) : (
+                      <div className="text-lg font-bold px-3">{content}</div>
+                    )}
+                  </>
                 )}
               </>
-            ) : (
-              <button
-                className="main_btn py-1 h-8  rounded-md w-full"
-                onClick={() => setIsOpen(true)}
-              >
-                List
-              </button>
             )}
-          </>
-        )}
+
+            <button
+              onClick={() => openTransferModal(true)}
+              className="in-transfer"
+            >
+              Transfer
+            </button>
+          </div>
+
+          <Link
+            href={"/inscription/" + inscription.inscriptionId}
+            className="in-link"
+          >
+            #{addressFormat(inscription?.inscriptionId, 4)}
+          </Link>
+
+          <hr className="mb-2" />
+
+          {inscription?.listed ? (
+            <>
+              <button
+                className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
+                onClick={() =>
+                  handleCancelList(inscription?.tag, inscriptionIndex)
+                }
+              >
+                <TbGiftOff /> Listed
+              </button>
+            </>
+          ) : (
+            <>
+              {bulkSelect ? (
+                <>
+                  {added ? (
+                    <button
+                      className="main_btn cs-border bg-transparent py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
+                      onClick={() => removeFromList()}
+                    >
+                      <TbArticleOff />
+                      Added
+                    </button>
+                  ) : (
+                    <button
+                      disabled={adding || added}
+                      className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
+                      onClick={() => AddList()}
+                    >
+                      <>
+                        {adding ? (
+                          <AiOutlineLoading className="text-lg text-white font-semibold animate-spin" />
+                        ) : (
+                          <>
+                            <FaPlus />
+                            Add
+                          </>
+                        )}
+                      </>
+                    </button>
+                  )}
+                </>
+              ) : (
+                <button
+                  className="main_btn py-1 h-8  rounded-md w-full"
+                  onClick={() => setIsOpen(true)}
+                >
+                  List
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        <ListModal
+          modalIsOpen={modalIsOpen}
+          setIsOpen={setIsOpen}
+          tag={tag}
+          content={inscription?.contentType?.indexOf('image') > -1? inscription?.inscriptionId : content}
+          output={inscription?.outputValue}
+          inscription={inscription}
+          inscriptionIndex={inscriptionIndex}
+        />
+
+        <TransferModal
+          modalIsOpen={isOpenTransfer}
+          setIsOpen={setIsOpenTransfer}
+          content={content}
+          id={inscription?.inscriptionId}
+          inscription={inscription}
+        />
       </div>
-
-      <ListModal
-        modalIsOpen={modalIsOpen}
-        setIsOpen={setIsOpen}
-        tag={tag}
-        content={isNFT ? inscription?.inscriptionId : content}
-        output={inscription?.outputValue}
-        inscription={inscription}
-        inscriptionIndex={inscriptionIndex}
-      />
-
-      <TransferModal
-        modalIsOpen={isOpenTransfer}
-        setIsOpen={setIsOpenTransfer}
-        content={content}
-        id={inscription?.inscriptionId}
-        inscription={inscription}
-      />
-    </div>
-  );
+    );
+  }
 }

@@ -48,15 +48,15 @@ export default function BulkListModal({
   }
 
   const removeFromList = (id) => {
-  //  console.log(id);
+    //  console.log(id);
     const filter = blocks.filter(
       (block) => block.inscription.inscriptionId !== id
     );
     setSelectedBlocks(filter);
   };
 
-  const handleUpdateStatus = async (inscriptionIndex) => {
-  //  console.log("running");
+  const handleUpdateStatus = async (tag, inscriptionIndex) => {
+    //  console.log("running");
 
     const dbQueryForWallet = query(ref(db, `wallet/${address}`));
 
@@ -190,13 +190,13 @@ export default function BulkListModal({
           content,
           listingPrice
         );
-        await handleUpdateStatus(inscriptionIndex);
+        await handleUpdateStatus(tag, inscriptionIndex);
         await sleep(0.2);
       }
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-    //  console.log(error);
+      //  console.log(error);
       toast.error(
         "Something went wrong when creating PSBT. Please try again after some mins."
       );
@@ -262,7 +262,7 @@ export default function BulkListModal({
       }
       closeModal();
     } catch (error) {
-    //  console.log(error);
+      //  console.log(error);
     }
   }
 
@@ -296,7 +296,15 @@ export default function BulkListModal({
               )}
 
               {block?.inscription?.contentType.indexOf("text") > -1 && (
-                <>{block?.content}</>
+                <>
+                  {block?.content.indexOf("tick") > -1 ? (
+                    <div className="text-3xl font-bold px-3">
+                      {JSON.parse(block?.content).tick}
+                    </div>
+                  ) : (
+                    <div className="text-3xl font-bold px-3">{block?.content}</div>
+                  )}
+                </>
               )}
 
               <button

@@ -11,7 +11,13 @@ import OutPutValue from "./OutPutValue";
 import { sleep } from "@/utils";
 import { toast } from "react-hot-toast";
 
-export default function TransferModal({ modalIsOpen, setIsOpen, content, id, inscription }) {
+export default function TransferModal({
+  modalIsOpen,
+  setIsOpen,
+  content,
+  id,
+  inscription,
+}) {
   const wallet = useContext(WalletContext);
   const defaultOutputValue = 10000;
   const [feeRate, setFeeRate] = useState("economy");
@@ -42,7 +48,7 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id, ins
     } catch (e) {
       setPendingTx(false);
       setSucceed(false);
-    //  console.log(e);
+      //  console.log(e);
     }
   };
 
@@ -66,7 +72,7 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id, ins
             setCreatingTx(false);
           });
       } catch (error) {
-      //  console.log(error);
+        //  console.log(error);
         setCreatingTx(false);
       }
     }
@@ -96,7 +102,17 @@ export default function TransferModal({ modalIsOpen, setIsOpen, content, id, ins
           </>
         )}
 
-        {inscription?.contentType.indexOf("text") > -1 && <>{content}</>}
+        {inscription?.contentType.indexOf("text") > -1 && (
+          <>
+            {content.indexOf("tick") > -1 ? (
+              <div className="text-3xl font-bold px-3">
+                {JSON.parse(content).tick}
+              </div>
+            ) : (
+              <div className="text-3xl font-bold px-3">{content}</div>
+            )}
+          </>
+        )}
       </div>
 
       <SendAddress

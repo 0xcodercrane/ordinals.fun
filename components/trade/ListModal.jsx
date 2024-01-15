@@ -241,7 +241,7 @@ export default function ListModal({
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-    //  console.log(error);
+      //  console.log(error);
       toast.error("Something went wrong when creating PSBT");
     }
   }
@@ -271,7 +271,17 @@ export default function ListModal({
           </>
         )}
 
-        {inscription?.contentType.indexOf("text") > -1 && <>{content}</>}
+        {inscription?.contentType.indexOf("text") > -1 && (
+          <>
+            {content.indexOf("tick") > -1 ? (
+              <div className="text-3xl font-bold px-3">
+                {JSON.parse(content).tick}
+              </div>
+            ) : (
+              <div className="text-3xl font-bold px-3">{content}</div>
+            )}
+          </>
+        )}
       </div>
 
       <div className="mt-1">

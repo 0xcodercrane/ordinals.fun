@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function InscriptionPreview({ content }) {
+export default function InscriptionPreview({ content, inscription }) {
   const [transactions, setTransactions] = useState([]);
 
   const getData = async () => {
@@ -10,7 +10,7 @@ export default function InscriptionPreview({ content }) {
 
     const jsonData = await data.json();
     const txs = jsonData.transactions.filter((tx) => tx.vsize > 1000);
-  //  console.log(txs);
+    //  console.log(txs);
     setTransactions(txs);
   };
 
@@ -20,7 +20,31 @@ export default function InscriptionPreview({ content }) {
 
   return (
     <div className="w-full h-full text-4xl dark:bg-primary-dark/20 bg-primary-light/10 rounded-lg p-3 flex justify-center items-center font-bold min-h-[400px] gap-1">
-      {content}
+      {inscription?.contentType.indexOf("image") > -1 && (
+        <>
+          <img
+            src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
+            className="w-full h-full object-contain"
+            alt=""
+          />
+        </>
+      )}
+
+      {inscription?.contentType.indexOf("text") > -1 && (
+        <>
+          {content && (
+            <>
+              {content.indexOf("tick") > -1 ? (
+                <div className="text-3xl font-bold px-3">
+                  {JSON.parse(content).tick}
+                </div>
+              ) : (
+                <div className="text-3xl font-bold px-3">{content}</div>
+              )}
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 }

@@ -67,7 +67,7 @@ export default function Inscription(props) {
       </p>
 
       <div className="my-8 grid lg:grid-cols-2 grid-cols-1 gap-3 w-full">
-        <InscriptionPreview content={content} />
+        <InscriptionPreview content={content} inscription={data} />
         <InscriptionDetails data={data} content={content} />
       </div>
     </Layout>

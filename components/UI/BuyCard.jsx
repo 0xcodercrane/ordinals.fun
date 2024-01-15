@@ -24,7 +24,28 @@ export default function BuyCard({
     <>
       <div className="in-card">
         <div className="in-content">
-          {list?.content}
+          {list?.data?.contentType.indexOf("image") > -1 && (
+            <>
+              <img
+                src={`https://ordinalslite.com/content/${list?.data?.inscriptionId}`}
+                className="w-full h-full object-contain"
+                alt=""
+              />
+            </>
+          )}
+
+          {list?.data?.contentType.indexOf("text") > -1 && (
+            <>
+              {list?.content.indexOf("tick") > -1 ? (
+                <div className="text-lg font-bold px-3">
+                  {JSON.parse(list?.content).tick}
+                </div>
+              ) : (
+                <div className="text-lg font-bold px-3">{list?.content}</div>
+              )}
+            </>
+          )}
+
           <div className="in-transfer">#{list?.data?.inscriptionNumber}</div>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InscriptionCardSkelenton from "../UI/InscriptionCardSkelenton";
 import Link from "next/link";
 import InscriptionCard from "../UI/InscriptionCard";
@@ -10,6 +10,7 @@ export default function Others({
   bulkSelect,
   setSelectedBlocks,
   selectedBlocks,
+  setNFTSlug,
 }) {
   const [offset, setOffset] = useState(0);
 
@@ -17,8 +18,12 @@ export default function Others({
     setOffset(e.selected);
   };
 
+  useEffect(() => {
+    setNFTSlug("others");
+  }, []);
+
   return (
-    <div className="my-auto w-full">
+    <div className={`w-full ${!inscriptionsFromDB && "my-auto"}`}>
       <div className="my-2">
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
@@ -41,7 +46,7 @@ export default function Others({
                             key={key}
                             inscriptionIndex={key + offset * 10}
                             bulkSelect={bulkSelect}
-                            tag={"others"}
+                            tag="others"
                             setSelectedBlocks={setSelectedBlocks}
                             selectedBlocks={selectedBlocks}
                             isNFT={true}
@@ -55,7 +60,9 @@ export default function Others({
                   onPageChange={handlePageClick}
                   pageRangeDisplayed={2}
                   marginPagesDisplayed={1}
-                  pageCount={Math.ceil(Object.keys(inscriptionsFromDB).length / 10)}
+                  pageCount={Math.ceil(
+                    Object.keys(inscriptionsFromDB).length / 10
+                  )}
                   previousLabel="<"
                   renderOnZeroPageCount={null}
                   className="pagination"

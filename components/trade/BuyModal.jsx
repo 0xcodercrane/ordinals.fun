@@ -168,7 +168,7 @@ export default function BuyModal({
       refreshUTXOs();
       toast.success("Successfully create 2 dummy UTXOs.");
     } catch (error) {
-    //  console.log(error);
+      //  console.log(error);
       setPendingTx(false);
       toast.error(error?.message);
     }
@@ -274,7 +274,7 @@ export default function BuyModal({
         ...sellerSignedPsbt.data.globalMap.unsignedTx.tx.outs[0],
       });
 
-    //  console.log(paymentUtxos);
+      //  console.log(paymentUtxos);
       // Add payment utxo inputs
       for (const utxo of paymentUtxos) {
         const tx = bitcoin.Transaction.fromHex(await getTxHexById(utxo.txid));
@@ -414,7 +414,7 @@ export default function BuyModal({
     } catch (error) {
       toast.error(`${error}`);
       setPendingTx(false);
-    //  console.log(error);
+      //  console.log(error);
     }
   }
 
@@ -441,7 +441,18 @@ export default function BuyModal({
           </>
         )}
 
-        {list?.data?.contentType.indexOf("text") > -1 && <>{list?.content}</>}
+        {list?.data?.contentType.indexOf("text") > -1 && (
+          <>
+            {" "}
+            {list?.content.indexOf("tick") > -1 ? (
+              <div className="text-3xl font-bold px-3">
+                {JSON.parse(list?.content).tick}
+              </div>
+            ) : (
+              <div className="text-3xl font-bold px-3">{list?.content}</div>
+            )}
+          </>
+        )}
 
         <div className="in-transfer">#{list?.data?.inscriptionNumber}</div>
       </div>

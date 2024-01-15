@@ -1,18 +1,39 @@
 import React from "react";
 
 export default function InscriptionDetails({ data, content }) {
-
   return (
     <div className="p-3 dark:bg-primary-dark/20 bg-primary-light/10 rounded-lg">
       {content ? (
-        <div className="text-3xl font-bold px-3">{content}</div>
+        <>
+          {data?.contentType?.indexOf("text") > -1 ? (
+            <>
+              {content.indexOf("tick") > -1 ? (
+                <div className="text-3xl font-bold px-3">
+                  {JSON.parse(content).tick}
+                </div>
+              ) : (
+                <div className="text-3xl font-bold px-3">{content}</div>
+              )}
+            </>
+          ) : (
+            <div className="text-3xl font-bold px-3">
+              <img
+                src={`https://ordinalslite.com/content/${data?.inscriptionId}`}
+                className=" object-contain mx-auto max-w-[36px]"
+                alt=""
+              />
+            </div>
+          )}
+        </>
       ) : (
         <div className="animate-pulse dark:bg-primary-dark/20 bg-primary-light/20 rounded-sm h-8 w-32"></div>
       )}
 
       <div className="rounded-lg p-3 divide-primary-dark/40 divide-y">
         <div className="py-2">
-          <p className="text-sm dark:text-gray-300 text-gray-800">Inscription ID</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">
+            Inscription ID
+          </p>
           {data?.inscriptionId ? (
             <p className="break-words">{data?.inscriptionId}</p>
           ) : (
@@ -28,7 +49,9 @@ export default function InscriptionDetails({ data, content }) {
           )}
         </div>
         <div className="py-2">
-          <p className="text-sm dark:text-gray-300 text-gray-800">Output value</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">
+            Output value
+          </p>
           {data?.outputValue ? (
             <p className="break-words">{data?.outputValue}</p>
           ) : (
@@ -36,7 +59,9 @@ export default function InscriptionDetails({ data, content }) {
           )}
         </div>
         <div className="py-2">
-          <p className="text-sm dark:text-gray-300 text-gray-800">Content Length</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">
+            Content Length
+          </p>
           {data?.contentLength ? (
             <p className="break-words">{data?.contentLength}</p>
           ) : (
@@ -44,7 +69,9 @@ export default function InscriptionDetails({ data, content }) {
           )}
         </div>
         <div className="py-2">
-          <p className="text-sm dark:text-gray-300 text-gray-800">Content Type</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">
+            Content Type
+          </p>
           {data?.contentType ? (
             <p className="break-words">{data?.contentType}</p>
           ) : (
@@ -52,7 +79,9 @@ export default function InscriptionDetails({ data, content }) {
           )}
         </div>
         <div className="py-2">
-          <p className="text-sm dark:text-gray-300 text-gray-800">Inscription Number</p>
+          <p className="text-sm dark:text-gray-300 text-gray-800">
+            Inscription Number
+          </p>
           {data?.inscriptionNumber ? (
             <p className="break-words">{data?.inscriptionNumber}</p>
           ) : (
