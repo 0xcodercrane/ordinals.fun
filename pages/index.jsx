@@ -26,6 +26,12 @@ export default function Home() {
     setOffset(e.selected);
   };
 
+  const test = async () => {
+    const res = await fetch(`/searchInscription/text?text=tfd`);
+    const resJson = await res.json();
+    console.log(resJson);
+  };
+
   useEffect(() => {
     const fetchTotalItems = async () => {
       const dbQuery = query(
@@ -42,6 +48,7 @@ export default function Home() {
         setFetchingData(false);
       });
     };
+    test();
     fetchTotalItems();
   }, []);
 

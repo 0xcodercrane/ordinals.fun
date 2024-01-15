@@ -28,6 +28,10 @@ const nextConfig = {
         source: "/chainz/:slug*",
         destination: "https://chainz.cryptoid.info/:slug*",
       },
+      {
+        source: "/searchInscription/:slug*",
+        destination: "http://217.76.63.90:3000/:slug*",
+      },
     ];
   },
 };
