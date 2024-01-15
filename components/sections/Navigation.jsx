@@ -16,7 +16,17 @@ export default function Navigation() {
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
         <Link className="font-semibold" href="/collections">
-          Collections
+          NFTs
+        </Link>
+      </div>
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+        <Link className="font-semibold" href="/ltc-20">
+          LTC-20
+        </Link>
+      </div>
+      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+        <Link className="font-semibold" href="/others">
+          Others
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
@@ -58,6 +68,21 @@ export default function Navigation() {
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
                   <Link className="font-semibold" href="/">
                     LiteMap
+                  </Link>
+                </li>
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link className="font-semibold" href="/collections">
+                    NFTs
+                  </Link>
+                </li>
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link className="font-semibold" href="/ltc-20">
+                    LTC-20
+                  </Link>
+                </li>
+                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
+                  <Link className="font-semibold" href="/others">
+                    Others
                   </Link>
                 </li>
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">

@@ -63,8 +63,8 @@ export default function NFTs({
 
   return (
     <div className="my-3 w-full">
-      <div className="flex gap-3 justify-between w-full flex-wrap">
-        <div className="flex gap-2 w-full sm:w-full/2 justify-between sm:justify-start">
+      <div className="flex gap-3 justify-between w-full flex-wrap sm:flex-nowrap">
+        <div className="flex gap-2 justify-between sm:justify-start">
           {meta?.inscription_icon ===
           "9278bd914fdc07f866fc4b4e402c87a0aa04666cfc9f0c9dde6ead58b17abcf7i0" ? (
             <img
@@ -97,7 +97,7 @@ export default function NFTs({
           </select>
         </div>
 
-        <div className="flex gap-2 items-center justify-between sm:justify-end w-full  sm:w-full/2">
+        <div className="flex gap-2 items-center justify-between sm:justify-end">
           <p>Supply: {meta?.supply} </p>
           <div className="flex gap-2">
             <a
@@ -136,7 +136,6 @@ export default function NFTs({
           <>
             {myInscriptions.length > 0 ? (
               <>
-                {" "}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
                   {myInscriptions &&
                     myInscriptions

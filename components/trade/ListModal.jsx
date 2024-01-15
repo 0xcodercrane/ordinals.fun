@@ -148,6 +148,7 @@ export default function ListModal({
         toast.error("Invalid Inscription");
         return;
       }
+      setPendingTx(true);
 
       const validation = await validateInscription(
         content,
@@ -156,6 +157,8 @@ export default function ListModal({
 
       if (!validation) {
         toast.error("Invalid Inscription");
+        setPendingTx(false);
+        closeModal();
         return;
       }
     }
@@ -268,10 +271,7 @@ export default function ListModal({
           </>
         )}
 
-        {inscription?.contentType.indexOf("text") > -1 && (
-          <>{content}</>
-        )}
-        
+        {inscription?.contentType.indexOf("text") > -1 && <>{content}</>}
       </div>
 
       <div className="mt-1">

@@ -18,6 +18,7 @@ import LTC20 from "../components/sections/LTC20";
 import NFTs from "../components/sections/NFTs";
 import History from "../components/sections/History";
 import Head from "next/head";
+import Others from "../components/sections/Others";
 
 export default function Inscribe() {
   const wallet = useContext(WalletContext);
@@ -212,6 +213,21 @@ export default function Inscribe() {
       return (
         <>
           <NFTs
+            inscriptionsFromDB={inscriptionsFromDB}
+            loading={fetchingData}
+            bulkSelect={bulkSelect}
+            setNFTSlug={setNFTSlug}
+            setSelectedBlocks={setSelectedBlocks}
+            selectedBlocks={selectedBlocks}
+          />
+        </>
+      );
+    }
+
+    if (type === "others") {
+      return (
+        <>
+          <Others
             inscriptionsFromDB={inscriptionsFromDB}
             loading={fetchingData}
             bulkSelect={bulkSelect}

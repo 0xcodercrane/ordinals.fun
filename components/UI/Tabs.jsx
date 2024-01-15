@@ -38,6 +38,17 @@ export default function Tabs({ type, setType, loading }) {
       </button>
       <button
         disabled={loading}
+        className={`py-2 sm:px-2.5 lg:w-24 h-full w-[63px] text-sm rounded-none ${
+          type == "others" ? "main_btn" : ""
+        }`}
+        onClick={() => {
+          setType("others");
+        }}
+      >
+        Others
+      </button>
+      <button
+        disabled={loading}
         className={`py-2 sm:px-2.5 lg:w-24 h-full w-[63px] text-sm rounded-none  rounded-tr-md ${
           type == "history" ? "main_btn" : ""
         }`}
