@@ -8,6 +8,7 @@ import { useWallet } from "../../store/hooks";
 import useUTXOs from "../../hooks/useUTXOs";
 import BuyCardForNFTs from "../../components/UI/BuyCardForNFTs";
 import BuyCardSkelenton from "../../components/UI/BuyCardSkelenton";
+import Head from "next/head";
 
 export default function Collection() {
   const router = useRouter();
