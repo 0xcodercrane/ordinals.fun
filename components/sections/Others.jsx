@@ -18,7 +18,7 @@ export default function Others({
   };
 
   return (
-    <div className="my-3 w-full">
+    <div className="my-auto w-full">
       <div className="my-2">
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
@@ -66,13 +66,6 @@ export default function Others({
                 <h1 className="text-xl font-bold mb-8 animate-pulse text-center">
                   You don not have any NFTs.
                 </h1>
-
-                <Link
-                  href={`/collection/${meta?.slug}`}
-                  className="mx-auto main_btn px-3 py-2 rounded-md"
-                >
-                  Buy Now
-                </Link>
               </div>
             )}
           </>

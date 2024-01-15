@@ -7,6 +7,7 @@ import InscriptionCardSkelenton from "../UI/InscriptionCardSkelenton";
 import Link from "next/link";
 import InscriptionCard from "../UI/InscriptionCard";
 import ReactPaginate from "react-paginate";
+import Layout from "@/components/sections/Layout";
 
 export default function NFTs({
   inscriptionsFromDB,
@@ -168,7 +169,7 @@ export default function NFTs({
                 />
               </>
             ) : (
-              <div className="flex flex-col justify-center items-center h-full mt-16">
+              <div className="flex flex-col justify-center items-center w-full mt-[14rem]">
                 <h1 className="text-xl font-bold mb-8 animate-pulse text-center">
                   You don not have any NFTs.
                 </h1>

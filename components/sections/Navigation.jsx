@@ -9,38 +9,38 @@ import { FaWallet } from "react-icons/fa";
 export default function Navigation() {
   return (
     <Nav className="links-block">
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/">
           LiteMap
         </Link>
       </div>
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/collections">
           NFTs
         </Link>
       </div>
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/ltc-20">
           LTC-20
         </Link>
       </div>
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/others">
           Others
         </Link>
       </div>
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/inscribe">
           Inscribe
         </Link>
       </div>
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/wallet">
           Wallet
         </Link>
       </div>
 
-      <div className="md:flex md:justify-center md:items-center md:mx-1 hidden">
+      <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
         <Link className="font-semibold" href="/orders">
           Orders
         </Link>
