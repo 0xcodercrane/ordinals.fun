@@ -274,11 +274,11 @@ export default function ListModal({
         {inscription?.contentType.indexOf("text") > -1 && (
           <>
             {content.indexOf("tick") > -1 ? (
-              <div className="text-3xl font-bold px-3">
+              <div className="text-sm font-bold px-3">
                 {JSON.parse(content).tick}
               </div>
             ) : (
-              <div className="text-3xl font-bold px-3">{content}</div>
+              <div className="text-sm font-bold px-3">{content}</div>
             )}
           </>
         )}

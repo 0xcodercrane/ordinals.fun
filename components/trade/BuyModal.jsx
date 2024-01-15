@@ -445,11 +445,11 @@ export default function BuyModal({
           <>
             {" "}
             {list?.content.indexOf("tick") > -1 ? (
-              <div className="text-3xl font-bold px-3">
+              <div className="text-sm font-bold px-3">
                 {JSON.parse(list?.content).tick}
               </div>
             ) : (
-              <div className="text-3xl font-bold px-3">{list?.content}</div>
+              <div className="text-sm font-bold px-3">{list?.content}</div>
             )}
           </>
         )}

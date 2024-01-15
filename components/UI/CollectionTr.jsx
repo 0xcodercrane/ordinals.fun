@@ -32,7 +32,7 @@ export default function CollectionTr({ index, collection }) {
           />
         )}
       </td>
-      <td className="py-2 text-sm sm:text-lg" onClick={goToNFTPage}>
+      <td className="py-2 text-sm sm:text-lg pl-1" onClick={goToNFTPage}>
         {collection?.name}
       </td>
       <td

@@ -27,7 +27,7 @@ export default function collections() {
             <tr className="px-[6px!important] my-[4px!important]">
               <th className="px-1 lg:px-3 py-1">#</th>
               <th className="py-1">Logo</th>
-              <th className="py-1">Name</th>
+              <th className="py-1 pl-1">Name</th>
               <th className="py-1 hidden lg:inline-block">Description</th>
               <th className="py-1">Link</th>
               <th className="py-1 hidden lg:inline-block">Supply</th>

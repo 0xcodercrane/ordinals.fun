@@ -39,7 +39,7 @@ export default function OrderHistory() {
   }, [address]);
 
   return (
-    <div className="w-full max-w-[600px] max-h-[600px] rounded-lg shadow-lg shadow-black/30">
+    <div className="w-full max-w-[600px] rounded-lg shadow-lg shadow-black/30">
       <div className="grid grid-cols-12 px-3 py-2 bg-primary-dark/20 rounded-t-lg">
         <div className="col-span-6">Order ID</div>
         <div className="col-span-3">Status</div>
@@ -47,7 +47,7 @@ export default function OrderHistory() {
       </div>
 
       {orders && !fetchingData ? (
-        <div className="bg-[#14496c33] rounded-b-lg px-1 py-1">
+        <div className="bg-[#14496c33] rounded-b-lg px-1 py-1 max-h-[500px] overflow-y-auto">
           {Object.keys(orders)
             .reverse()
             .map((key, index) => {
