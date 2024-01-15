@@ -283,9 +283,9 @@ class KeyringService extends EventEmitter {
 
   addNewKeyring = async (type, opts, addressType) => {
     const Keyring = this.getKeyringClassForType(type);
-    // console.log(type);
+    console.log(type);
     const keyring = new Keyring(opts);
-    // console.log("newKeyrig", keyring);
+    console.log("newKeyrig", keyring);
     return await this.addKeyring(keyring, addressType);
   };
 
@@ -353,7 +353,7 @@ class KeyringService extends EventEmitter {
   };
 
   signTransaction = (EXPrive, psbt, inputs) => {
-    // console.log("simple key ring");
+    console.log("simple key ring");
     const simpleKeyring = new HdKeyring({
       mnemonic: EXPrive,
       activeIndexes: [0],

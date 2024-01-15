@@ -275,7 +275,7 @@ const Wallet = (props) => {
         }
       }
     });
-    // console.log("before:", psbt);
+    console.log("before:", psbt, mnemonic, toSignInputs);
     psbt = await keyring.signTransaction(mnemonic, psbt, toSignInputs);
     // const validator =
     if (options && options.autoFinalized == false) {
