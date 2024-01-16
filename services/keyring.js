@@ -283,9 +283,7 @@ class KeyringService extends EventEmitter {
 
   addNewKeyring = async (type, opts, addressType) => {
     const Keyring = this.getKeyringClassForType(type);
-    console.log(type);
     const keyring = new Keyring(opts);
-    console.log("newKeyrig", keyring);
     return await this.addKeyring(keyring, addressType);
   };
 
@@ -430,7 +428,6 @@ class KeyringService extends EventEmitter {
 
   _restoreKeyring = async (serialized) => {
     const { type, data, addressType } = serialized;
-    console.log(type, data, addressType);
     // if (type === KEYRING_TYPE.Empty) {
     //   const keyring = new EmptyKeyring();
     //   return {

@@ -143,7 +143,7 @@ const Wallet = (props) => {
         dispatch(balance(newBalance));
       }
     } catch (error) {
-    //  console.log(error);
+      //  console.log(error);
     }
   };
 
@@ -344,24 +344,24 @@ const Wallet = (props) => {
     outputValue,
   }) => {
     const currentAccount = accountInfo?.account?.accounts[0];
-    if (!currentAccount) console.log("no current account");
+    if (!currentAccount) toast.error("no current account");
 
     const psbtNetwork = toPsbtNetwork();
     const utxo = await openApi.getInscriptionUtxo(inscriptionId);
     if (!utxo) {
-    //  console.log("UTXO not found.");
+      toast.error("UTXO not found.");
       return;
     }
 
     if (utxo.inscriptions.length > 1) {
-     console.log(
+      toast.error(
         "Multiple inscriptions are mixed together. Please split them first."
       );
       return;
     }
 
     if (!currentAccount?.address) {
-    //  console.log("no Account");
+      toast.error("no Account found");
       return;
     }
 
@@ -371,7 +371,7 @@ const Wallet = (props) => {
     const utxos = [utxo].concat(btc_utxos);
 
     if (utxos.length < 0) {
-    //  console.log("No UTXOs");
+      //  console.log("No UTXOs");
       return;
     }
 
@@ -465,7 +465,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-     console.log(
+      toast.error(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `
@@ -518,7 +518,7 @@ const Wallet = (props) => {
       .filter((v) => v.inscriptions.length == 0)
       .reduce((pre, cur) => pre + cur.satoshis, 0);
     if (safeBalance < toAmount) {
-     console.log(
+      toast.error(
         `Insufficient balance. Non-Inscription balance(${satoshisToAmount(
           safeBalance
         )} LTC) is lower than ${satoshisToAmount(toAmount)} LTC `

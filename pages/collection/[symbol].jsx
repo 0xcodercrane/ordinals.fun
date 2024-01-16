@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -8,7 +9,7 @@ import { useWallet } from "../../store/hooks";
 import useUTXOs from "../../hooks/useUTXOs";
 import BuyCardForNFTs from "../../components/UI/BuyCardForNFTs";
 import BuyCardSkelenton from "../../components/UI/BuyCardSkelenton";
-import Head from "next/head";
+import NFTCollectionBanner from "../../components/trade/NFTCollectionBanner";
 
 export default function Collection() {
   const router = useRouter();
@@ -67,28 +68,7 @@ export default function Collection() {
         />
       </Head>
 
-      <div className="text-4xl py-4 grid grid-cols-1 sm:grid-cols-12 w-full gap-3 items-center">
-        {collection?.inscription_icon ===
-        "9278bd914fdc07f866fc4b4e402c87a0aa04666cfc9f0c9dde6ead58b17abcf7i0" ? (
-          <img
-            src={`/litecoin.png`}
-            className="rounded-md w-full col-span-12 sm:col-span-2 mx-auto max-w-[150px]"
-            alt="logo"
-          />
-        ) : (
-          <img
-            src={`https://ordinalslite.com/content/${collection?.inscription_icon}`}
-            className="rounded-md w-full col-span-12 sm:col-span-2 mx-auto max-w-[150px]"
-            alt="logo"
-          />
-        )}
-        <div className="col-span-12 sm:col-span-10">
-          <h2 className="font-semibold">{collection?.name}</h2>
-          <p className="text-sm w-full sm:max-w-[900px] my-3 ">
-            {collection?.description}
-          </p>
-        </div>
-      </div>
+      <NFTCollectionBanner collection={collection} tag={slug} />
 
       {fetchingData ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">

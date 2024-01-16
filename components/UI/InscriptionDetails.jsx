@@ -8,15 +8,15 @@ export default function InscriptionDetails({ data, content }) {
           {data?.contentType?.indexOf("text") > -1 ? (
             <>
               {content.indexOf("tick") > -1 ? (
-                <div className="text-3xl font-bold px-3">
+                <div className="text-lg font-bold px-3">
                   {JSON.parse(content).tick}
                 </div>
               ) : (
-                <div className="text-3xl font-bold px-3">{content}</div>
+                <div className="text-lg font-bold px-3">{content}</div>
               )}
             </>
           ) : (
-            <div className="text-3xl font-bold px-3">
+            <div className="text-lg font-bold px-3">
               <img
                 src={`https://ordinalslite.com/content/${data?.inscriptionId}`}
                 className=" object-contain mx-auto max-w-[36px]"

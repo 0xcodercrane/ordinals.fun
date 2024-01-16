@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { WalletContext } from "../../context/wallet";
 import {
@@ -18,6 +18,7 @@ export default function WalletCreate({ setType, isImport }) {
   const [wanning, setWanning] = useState("");
   const [created, setCreated] = useState(false);
   const [seedPhrase, setSeedPhrase] = useState("");
+  const confirmRef = useRef(null);
 
   const [contextData, setConntextData] = useState({
     mnemonics: "",
@@ -36,7 +37,7 @@ export default function WalletCreate({ setType, isImport }) {
     hdPath: "m/84'/2'/0'/0",
   });
 
-//  console.log(isImport, '----------isIMport--')
+  //  console.log(isImport, '----------isIMport--')
 
   const importWallet = async () => {
     try {
@@ -56,7 +57,7 @@ export default function WalletCreate({ setType, isImport }) {
       dispatch(isUnlocked(true));
       dispatch(preVault(preMnemonics));
     } catch (error) {
-    //  console.log(error);
+      //  console.log(error);
     }
   };
 
@@ -84,7 +85,7 @@ export default function WalletCreate({ setType, isImport }) {
         dispatch(preVault(preMnemonics));
       }
     } catch (error) {
-    //  console.log("create wallet:", error);
+      //  console.log("create wallet:", error);
     }
   };
 
@@ -119,6 +120,16 @@ export default function WalletCreate({ setType, isImport }) {
   const handleOnKeyUp = (e) => {
     if (!disabled && "Enter" == e.key) {
       btnClick();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault(); // Prevent default behavior of losing focus
+      // Move focus to the next input or element
+      // You can use the `ref` attribute to reference the next input element
+      // and call its `focus` method to move the focus
+      confirmRef.current.focus();
     }
   };
 
@@ -161,6 +172,7 @@ export default function WalletCreate({ setType, isImport }) {
                 setPassword(e.target.value);
               }}
               autoFocus={true}
+              onKeyDown={handleKeyDown}
             />
             <input
               type="password2"
@@ -173,6 +185,8 @@ export default function WalletCreate({ setType, isImport }) {
                 verify(e.target.value);
               }}
               onKeyUp={(e) => handleOnKeyUp(e)}
+              onKeyDown={handleKeyDown}
+              ref={confirmRef}
             />
 
             {wanning && <p className="text-red-500 mt-2 text-sm">{wanning}</p>}
@@ -210,6 +224,7 @@ export default function WalletCreate({ setType, isImport }) {
             setPassword(e.target.value);
           }}
           autoFocus={true}
+          onKeyDown={handleKeyDown}
         />
         <input
           type="password2"
@@ -222,6 +237,8 @@ export default function WalletCreate({ setType, isImport }) {
             verify(e.target.value);
           }}
           onKeyUp={(e) => handleOnKeyUp(e)}
+          onKeyDown={handleKeyDown}
+          ref={confirmRef}
         />
 
         {wanning && <p className="text-red-500 mt-2 text-sm">{wanning}</p>}

@@ -1,8 +1,8 @@
-import { onValue, orderByChild, query, ref, startAt } from "firebase/database";
 import React from "react";
+import { onValue, orderByChild, query, ref, startAt } from "firebase/database";
+import { db } from "@/services/firebase";
 import { useEffect } from "react";
 import { useState } from "react";
-import { db } from "@/services/firebase";
 import { useLastBlock, useMintedBlocksFromAPI } from "../../store/hooks";
 import NumberFormat from "../UI/NumberFormatter";
 import Link from "next/link";

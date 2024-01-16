@@ -795,7 +795,12 @@ section > .marquee {
 }
 
 .in-card {
-  @apply rounded-lg p-3 dark:bg-primary-dark/30 bg-primary-light/40  backdrop-blur-md shadow shadow-black/30 dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 duration-200 w-full;
+  @apply rounded-lg p-3 dark:bg-primary-dark/30 bg-primary-light/40 cursor-pointer  backdrop-blur-md shadow shadow-black/30 dark:hover:bg-primary-dark/30 hover:bg-primary-light/30  w-full duration-300;
+  border: 0.5px solid transparent!important;
+}
+
+.in-card:hover {
+  border: 0.5px solid rgba(255, 255, 255, 0.404)!important;
 }
 
 .in-content {

@@ -20,6 +20,7 @@ import {
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { AiOutlineLoading } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export default function BuyCardForNFTs({
   inscription,
@@ -31,6 +32,7 @@ export default function BuyCardForNFTs({
   selectUtxos,
   slug,
 }) {
+  const router = useRouter();
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -46,6 +48,12 @@ export default function BuyCardForNFTs({
       setData(data?.inscriptions[0]);
     } catch (error) {}
     setFetching(false);
+  };
+
+  const goToDetails = (id) => {
+    if (id) {
+      router.push(`/inscription/${id}`);
+    }
   };
 
   const getList = async (id) => {
@@ -76,7 +84,7 @@ export default function BuyCardForNFTs({
 
   return (
     <>
-      <div className="in-card">
+      <div className="in-card" onClick={() => goToDetails(inscription.id)}>
         <div className="in-content p-0">
           <img
             src={`https://ordinalslite.com/content/${inscription.id}`}
@@ -123,7 +131,10 @@ export default function BuyCardForNFTs({
               <button
                 disabled={!listed}
                 className="main_btn py-1 mt-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
-                onClick={() => setIsOpen(true)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent event bubbling
+                  setIsOpen(true);
+                }}
               >
                 {!listed ? "Not Listed" : "Buy"}
               </button>

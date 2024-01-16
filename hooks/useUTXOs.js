@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useAddress } from "../store/hooks";
-import openApi from "@/services/openAPI";
 import { toast } from "react-hot-toast";
 import { calculateFee } from "@/utils";
 
@@ -56,8 +55,8 @@ export default function useUTXOs() {
 
     if (selectedAmount < amount) {
       toast.error(`Not enough cardinal spendable funds.
-            Address has:  ${satToBtc(selectedAmount)} ${coin}
-            Needed:          ${satToBtc(amount)} ${coin}
+            Address has:  ${satoshisToBTC(selectedAmount)} ${coin}
+            Needed:          ${satoshisToBTC(amount)} ${coin}
             
             UTXOs:
             ${utxos.map((x) => `${x.txid}:${x.vout}`).join("\n")}`);

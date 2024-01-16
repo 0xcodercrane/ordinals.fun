@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { WalletContext } from "../../context/wallet";
 import { TbArticleOff } from "react-icons/tb";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function BuyCard({
   list,
@@ -16,13 +17,21 @@ export default function BuyCard({
   refreshUTXOs,
   selectUtxos,
 }) {
+  const router = useRouter();
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const [modalIsOpen, setIsOpen] = useState(false);
 
+  const goToDetails = (id) => {
+    router.push(`/inscription/${id}`);
+  };
+
   return (
     <>
-      <div className="in-card">
+      <div
+        className="in-card"
+        onClick={() => goToDetails(list?.data?.inscriptionId)}
+      >
         <div className="in-content">
           {list?.data?.contentType.indexOf("image") > -1 && (
             <>
@@ -74,7 +83,10 @@ export default function BuyCard({
         ) : (
           <button
             className="main_btn py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
-            onClick={() => setIsOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent event bubbling
+              setIsOpen(true);
+            }}
           >
             Buy
           </button>
