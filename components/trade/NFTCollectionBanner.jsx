@@ -5,6 +5,7 @@ import { BsDiscord } from "react-icons/bs";
 import { useState } from "react";
 import { onValue, orderByChild, query, ref, startAt } from "firebase/database";
 import { db } from "@/services/firebase";
+import NumberFormat from "../UI/NumberFormatter";
 
 export default function NFTCollectionBanner({ collection, tag }) {
   const [status, setStatus] = useState(0);
