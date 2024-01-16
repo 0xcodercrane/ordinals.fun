@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useAddress } from "../store/hooks";
 import { toast } from "react-hot-toast";
-import { calculateFee } from "@/utils";
+import { calculateFee, satoshisToBTC } from "@/utils";
 
 export default function useUTXOs() {
   const dummyUtxoValue = 3000;
