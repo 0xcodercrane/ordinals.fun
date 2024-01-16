@@ -23,6 +23,8 @@ import { FaPlus } from "react-icons/fa";
 import { TbArticleOff } from "react-icons/tb";
 import { TbGiftOff } from "react-icons/tb";
 import useActivities from "../../hooks/useActivities";
+import { MdOutlineCallSplit } from "react-icons/md";
+import SpliteModal from "../trade/SpliteModal";
 
 export default function InscriptionCard({
   inscription,
@@ -43,6 +45,7 @@ export default function InscriptionCard({
   const [isOpenTransfer, setIsOpenTransfer] = useState(false);
   const [added, setAdded] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [splite, setSplite] = useState(false);
 
   const openTransferModal = () => {
     if (inscription?.listed) {
@@ -259,6 +262,13 @@ export default function InscriptionCard({
             )}
 
             <button
+              onClick={() => setSplite(true)}
+              className="main_btn p-0.5 rounded-full absolute top-1 left-1"
+            >
+              <MdOutlineCallSplit className="text-sm" />
+            </button>
+
+            <button
               onClick={() => openTransferModal(true)}
               className="in-transfer"
             >
@@ -333,7 +343,11 @@ export default function InscriptionCard({
           modalIsOpen={modalIsOpen}
           setIsOpen={setIsOpen}
           tag={tag}
-          content={inscription?.contentType?.indexOf('image') > -1? inscription?.inscriptionId : content}
+          content={
+            inscription?.contentType?.indexOf("image") > -1
+              ? inscription?.inscriptionId
+              : content
+          }
           output={inscription?.outputValue}
           inscription={inscription}
           inscriptionIndex={inscriptionIndex}
@@ -344,6 +358,13 @@ export default function InscriptionCard({
           setIsOpen={setIsOpenTransfer}
           content={content}
           id={inscription?.inscriptionId}
+          inscription={inscription}
+        />
+
+        <SpliteModal
+          modalIsOpen={splite}
+          setIsOpen={setSplite}
+          content={content}
           inscription={inscription}
         />
       </div>
