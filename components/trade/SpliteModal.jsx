@@ -34,8 +34,10 @@ export default function SpliteModal({
       </div>
 
       <div className="my-1 text-sm text-center text-yellow-500">
-        Please split inscription if you got the error <span className="text-red-500">"Multiple inscriptions are
-        mixed together"</span>  when you are transfering or listing.
+        Please split inscription if you got the error{" "}
+        <span className="text-red-500">{`"Multiple inscriptions are
+        mixed together"`}</span>{" "}
+        when you are transfering or listing.
       </div>
 
       <div
