@@ -36,6 +36,7 @@
     "eslint-config-next": "13.4.10",
     "firebase": "^10.1.0",
     "i18next": "^23.7.8",
+    "is-mobile": "^4.0.0",
     "jquery": "^3.7.0",
     "koa-compose": "^4.1.0",
     "loglevel": "^1.8.0",

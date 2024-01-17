@@ -186,21 +186,21 @@ export default function ControlPanel({ from, to }) {
         <div className="flex gap-2 justify-between mt-3">
           <button
             className="main_btn py-2 px-3 rounded-md w-full"
+            onClick={() => getBlocksForAmount(25)}
+          >
+            25
+          </button>
+          <button
+            className="main_btn py-2 px-3 rounded-md w-full"
+            onClick={() => getBlocksForAmount(50)}
+          >
+            50
+          </button>
+          <button
+            className="main_btn py-2 px-3 rounded-md w-full"
             onClick={() => getBlocksForAmount(100)}
           >
             100
-          </button>
-          <button
-            className="main_btn py-2 px-3 rounded-md w-full"
-            onClick={() => getBlocksForAmount(200)}
-          >
-            200
-          </button>
-          <button
-            className="main_btn py-2 px-3 rounded-md w-full"
-            onClick={() => getBlocksForAmount(300)}
-          >
-            All
           </button>
           <button
             className="main_btn py-2 px-3 rounded-md w-full"
