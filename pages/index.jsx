@@ -68,8 +68,8 @@ export default function Home() {
             .map((index, list) => {
               return (
                 <BuyCard
-                  key={index}
-                  list={lists[Object.keys(lists)[list]]}
+                  key={list}
+                  list={lists[index]}
                   price={price}
                   utxos={utxos}
                   sortedUtxos={sortedUtxos}

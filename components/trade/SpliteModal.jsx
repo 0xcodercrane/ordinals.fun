@@ -18,7 +18,6 @@ export default function SpliteModal({
 
   function closeModal() {
     setIsOpen(false);
-    setTx("");
   }
 
   return (

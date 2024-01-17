@@ -115,6 +115,7 @@ export default function Inscribe() {
       toast.error("Please select inscriptions");
       return;
     }
+    setBulkSelect(false);
     setIsOpen(true);
   };
 

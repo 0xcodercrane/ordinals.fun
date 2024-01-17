@@ -273,6 +273,7 @@ export default function BuyModal({
       psbt.addOutput({
         ...sellerSignedPsbt.data.globalMap.unsignedTx.tx.outs[0],
       });
+      // console.log('market_fee')
 
       //  console.log(paymentUtxos);
       // Add payment utxo inputs
@@ -306,6 +307,7 @@ export default function BuyModal({
           });
         }
       }
+      // console.log(market_fee)
 
       // Create two new dummy utxos outputs for the next purchase
       psbt.addOutput({
@@ -322,6 +324,7 @@ export default function BuyModal({
 
       const changeValue =
         totalValue - dummyUtxoValue * 2 - price - market_fee - fee - 10000;
+      // console.log(changeValue)
 
       if (changeValue < 0) {
         toast.error(`Your wallet address doesn't have enough funds to buy this inscription.
@@ -341,19 +344,25 @@ export default function BuyModal({
       });
 
       const singedPSBT = await wallet.signPsbt(psbt, {});
+      // console.log(singedPSBT)
 
       const psbtHEX = singedPSBT.toHex();
 
+      // console.log(psbtHEX)
+
       const decodedPsbt = await wallet.decodePsbt(psbtHEX);
+      // console.log(decodedPsbt)
 
       if (decodedPsbt.warning) {
         toast.error("RawTx decoding is failed");
         return;
       }
+      // console.log(decodedPsbt)
 
       const newPSBT = Psbt.fromHex(psbtHEX);
       const rawtx = newPSBT.extractTransaction().toHex();
 
+      // console.log(rawtx)
       if (rawtx) {
         const txId = await wallet.pushTx(rawtx);
         if (txId.indexOf("Broadcast") >= 0) {
