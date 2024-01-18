@@ -23,7 +23,6 @@ import { FaPlus } from "react-icons/fa";
 import { TbArticleOff } from "react-icons/tb";
 import { TbGiftOff } from "react-icons/tb";
 import useActivities from "../../hooks/useActivities";
-import { MdOutlineCallSplit } from "react-icons/md";
 import SpliteModal from "../trade/SpliteModal";
 
 export default function InscriptionCard({
@@ -33,21 +32,37 @@ export default function InscriptionCard({
   tag,
   setSelectedBlocks,
   selectedBlocks,
-  isNFT = false,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const { removeListFromMarket } = useActivities();
   const [content, setContent] = useState("");
-  const [isOwner, setIsOwner] = useState();
-  const [owner, setOwner] = useState();
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isOpenTransfer, setIsOpenTransfer] = useState(false);
   const [added, setAdded] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [splite, setSplite] = useState(false);
+
+  const [isOpenSplit, setIsOpenSplit] = useState(false);
+  const [inscriptionDetails, setInscriptionDetails] = useState();
+  const [isNeedToSplit, setIsNeedToSplit] = useState(false);
+  const [isMultiStuck, setIsMultiStuck] = useState(false);
+  const HIGH_BALANCE = 10000;
+
+  const openListModal = () => {
+    if (isNeedToSplit || isMultiStuck) {
+      setIsOpenSplit(true);
+      return;
+    }
+
+    setIsOpen(true);
+  };
 
   const openTransferModal = () => {
+    if (isNeedToSplit || isMultiStuck) {
+      setIsOpenSplit(true);
+      return;
+    }
+
     if (inscription?.listed) {
       toast.error("Please cancel list before transfer");
       return;
@@ -58,17 +73,28 @@ export default function InscriptionCard({
   const getContent = async () => {
     if (inscription.inscriptionId)
       try {
-        const url =
-          "https://ordinalslite.com/content/" + inscription.inscriptionId;
-        const data = await fetch(url);
-        const textData = await data.text();
+        if (inscription?.contentType.indexOf("text") > -1) {
+          const url =
+            "https://ordinalslite.com/content/" + inscription.inscriptionId;
+          const data = await fetch(url);
+          const textData = await data.text();
+          setContent(textData);
+        }
 
-        const inscriptionData = await openApi.getInscriptionUtxoDetail(
-          inscription.inscriptionId
-        );
-        setIsOwner(inscriptionData?.inscriptions[0]?.address === address);
-        setOwner(inscriptionData?.inscriptions[0]?.address);
-        setContent(textData);
+        // const utxo = await openApi.getInscriptionUtxoDetail(inscription.inscriptionId);
+        // console.log('Bitcoin project: ', utxo )
+        // if (utxo) {
+        //   setInscriptionDetails(inscriptionData);
+        //   if (utxo.inscriptions.length > 1) {
+        //     setInscriptions(utxo.inscriptions);
+        //     setIsNeedToSplit(true);
+        //     setIsMultiStuck(true);
+        //   }
+        // }
+
+        // if (inscription.outputValue > HIGH_BALANCE) {
+        //   setIsNeedToSplit(true);
+        // }
       } catch (error) {
         //  console.log("content fetch", error);
       }
@@ -142,6 +168,13 @@ export default function InscriptionCard({
   };
 
   const AddList = async () => {
+    if (isNeedToSplit || isMultiStuck) {
+      toast.error(
+        "This inscription is mixed together. Please split them first."
+      );
+      return;
+    }
+
     if (!content) {
       toast.error("Please wait until feching content");
       return;
@@ -200,17 +233,6 @@ export default function InscriptionCard({
   };
 
   useEffect(() => {
-    if (content) {
-      if (content.indexOf("litemap") > -1) {
-        const data = {
-          id: inscription.inscriptionId,
-          blockNumber: Number(content.split(".")[0]),
-        };
-      }
-    }
-  }, [content]);
-
-  useEffect(() => {
     getContent();
   }, [inscription]);
 
@@ -225,16 +247,13 @@ export default function InscriptionCard({
     }
   }, [selectedBlocks]);
 
-  if (
-    (!isOwner && owner) ||
-    (tag === "litemap" && content.indexOf(".litemap") == -1)
-  ) {
+  if (tag === "litemap" && content.indexOf(".litemap") == -1) {
     return;
   } else {
     return (
       <div className="relative">
         <div className={`${added && "cs-border"} in-card`}>
-          <div className="in-content">
+          <div className="in-content overflow-hidden">
             {inscription?.contentType.indexOf("image") > -1 && (
               <>
                 <img
@@ -260,13 +279,6 @@ export default function InscriptionCard({
                 )}
               </>
             )}
-
-            <button
-              onClick={() => setSplite(true)}
-              className="main_btn p-0.5 rounded-full absolute top-1 left-1"
-            >
-              <MdOutlineCallSplit className="text-sm" />
-            </button>
 
             <button
               onClick={() => openTransferModal(true)}
@@ -330,7 +342,7 @@ export default function InscriptionCard({
               ) : (
                 <button
                   className="main_btn py-1 h-8  rounded-md w-full"
-                  onClick={() => setIsOpen(true)}
+                  onClick={openListModal}
                 >
                   List
                 </button>
@@ -362,9 +374,11 @@ export default function InscriptionCard({
         />
 
         <SpliteModal
-          modalIsOpen={splite}
-          setIsOpen={setSplite}
-          content={content}
+          isNeedToSplit={isNeedToSplit}
+          isMultiStuck={isMultiStuck}
+          modalIsOpen={isOpenSplit}
+          setIsOpen={setIsOpenSplit}
+          inscriptionDetails={inscriptionDetails}
           inscription={inscription}
         />
       </div>

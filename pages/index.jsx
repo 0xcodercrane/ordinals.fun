@@ -28,6 +28,14 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTotalItems = async () => {
+      const res = await fetch(
+        "https://api.chikun.market/api/address/collections?address=ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru"
+      );
+
+      const resJson = await res.json();
+
+      console.log(resJson);
+
       const dbQuery = query(
         ref(db, "market/litemap"),
         orderByChild("paid"),
@@ -68,8 +76,8 @@ export default function Home() {
             .map((index, list) => {
               return (
                 <BuyCard
-                  key={index}
-                  list={lists[Object.keys(lists)[list]]}
+                  key={list}
+                  list={lists[index]}
                   price={price}
                   utxos={utxos}
                   sortedUtxos={sortedUtxos}

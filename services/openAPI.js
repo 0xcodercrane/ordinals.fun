@@ -161,10 +161,10 @@ class OpenApiService {
     const data = await this.httpGet("/inscription/utxo-detail", {
       inscriptionId,
     });
-    if (data.status == API_STATUS.FAILED) {
+    if (data?.status == API_STATUS.FAILED) {
       console.log(data.message);
     }
-    return data.result;
+    return data?.result;
   };
 
   getInscriptionUtxos = async (inscriptionIds) => {

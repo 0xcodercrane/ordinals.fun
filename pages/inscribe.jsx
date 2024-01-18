@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import Block from "@/components/UI/Block";
 import Banner from "@/components/UI/Banner";
 import Layout from "@/components/sections/Layout";
@@ -13,9 +14,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import ControlPanel from "../components/ControlPanel";
 import { useBlocks, useInscribe, useLastBlock } from "../store/hooks";
-import { push, ref } from "firebase/database";
-import { db } from "@/services/firebase";
-import Head from "next/head";
+import isMobile from "is-mobile";
 
 const Inscribe = () => {
   const dispatch = useDispatch();
@@ -26,6 +25,8 @@ const Inscribe = () => {
   const { selectedBlock } = useInscribe();
 
   const [pageStep, setPageStep] = useState(1);
+  const [pageSize, setPageSize] = useState(300);
+  const [pageCount, setPageCount] = useState(lastBlock / 300);
   const [bulkMintAmount, setBulkMintAmount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(2013994);
@@ -90,9 +91,16 @@ const Inscribe = () => {
   };
 
   const handlePageClick = (e) => {
-    const step = Number(e.selected) * 300 + 1;
+    const step = Number(e.selected) * pageSize + 1;
     setPageStep(step);
   };
+
+  useEffect(() => {
+    if (isMobile()) {
+      setPageSize(102);
+      setPageCount(lastBlock / 102);
+    }
+  }, [isMobile()]);
 
   useEffect(() => {
     dispatch(initialize());
@@ -110,23 +118,24 @@ const Inscribe = () => {
       <ControlPanel
         setBulkMintAmount={setBulkMintAmount}
         from={lastBlock - pageStep}
-        to={lastBlock - (pageStep + 299)}
+        to={lastBlock - (pageStep + pageSize - 1)}
       />
 
       <ReactPaginate
+        key={pageSize + "1"}
         breakLabel="..."
         nextLabel=">"
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={lastBlock / 300}
+        pageCount={pageCount}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"
       />
 
       <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
-        {Array.from({ length: 300 }, (_, index) => {
+        {Array.from({ length: pageSize }, (_, index) => {
           if (lastBlock - (index + pageStep) >= 1)
             return (
               <Block
@@ -139,12 +148,13 @@ const Inscribe = () => {
       </div>
 
       <ReactPaginate
+        key={pageSize + "2"}
         breakLabel="..."
         nextLabel=">"
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={lastBlock / 300}
+        pageCount={pageCount}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"

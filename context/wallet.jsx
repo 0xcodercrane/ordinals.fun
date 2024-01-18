@@ -128,6 +128,15 @@ const Wallet = (props) => {
     dispatch(booted({}));
   };
 
+  const getInscriptionUtxoDetail = async (inscriptionId) => {
+    const utxo = await openApi.getInscriptionUtxoDetail(inscriptionId);
+    if (!utxo) {
+      toast.error("UTXO not found.");
+      return;
+    }
+    return utxo;
+  };
+
   const fetchbalance = async () => {
     try {
       if (accountInfo?.account) {
@@ -564,6 +573,10 @@ const Wallet = (props) => {
     return rawtx;
   };
 
+  const createSplitTx = async (inscriptionId, feeRate, outputValue) => {
+
+  };
+
   const pushTx = async (rawTxInfo) => {
     const txid = await openApi.pushTx(rawTxInfo);
     fetchbalance();
@@ -618,6 +631,8 @@ const Wallet = (props) => {
         createOrdinalsTx,
         signPsbt,
         decodePsbt,
+        getInscriptionUtxoDetail,
+        createSplitTx,
       }}
     >
       {props.children}

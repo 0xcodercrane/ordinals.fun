@@ -86,11 +86,6 @@ export default function Navigation() {
                   </Link>
                 </li>
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link className="font-semibold" href="/market">
-                    Market
-                  </Link>
-                </li>
-                <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
                   <Link className="font-semibold" href="/inscribe">
                     Inscribe
                   </Link>
@@ -102,7 +97,7 @@ export default function Navigation() {
                 </li>
 
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link className="font-semibold" href="/wallet">
+                  <Link className="font-semibold" href="/orders">
                     Orders
                   </Link>
                 </li>

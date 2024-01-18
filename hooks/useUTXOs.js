@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useAddress } from "../store/hooks";
 import { toast } from "react-hot-toast";
 import { calculateFee, satoshisToBTC } from "@/utils";
+import openApi from "@/services/openAPI";
 
 export default function useUTXOs() {
   const dummyUtxoValue = 3000;
@@ -12,28 +13,12 @@ export default function useUTXOs() {
   const [dummyUTXOs, setDummyUTXOs] = useState([]);
 
   async function doesUtxoContainInscription(utxo) {
-    const html = await fetch(
-      `https://ordinalslite.com/output/${utxo.txid}:${utxo.vout}`
-    ).then((response) => response.text());
-
-    return html.match(/class=thumbnails/) !== null;
+    return utxo?.inscriptions?.length > 0;
   }
 
   async function selectUtxos(utxos, amount, vins, vouts, recommendedFeeRate) {
     const selectedUtxos = [];
     let selectedAmount = 0;
-  //  console.log(amount, recommendedFeeRate);
-
-    // Sort descending by value, and filter out dummy utxos
-    utxos = utxos
-      .filter((x) => x.value > dummyUtxoValue)
-      .sort((a, b) => b.value - a.value);
-
-   console.log(
-      amount +
-        dummyUtxoValue +
-        calculateFee(vins + selectedUtxos.length, vouts, recommendedFeeRate)
-    );
 
     for (const utxo of utxos) {
       // Never spend a utxo that contains an inscription for cardinal purposes
@@ -41,7 +26,7 @@ export default function useUTXOs() {
         continue;
       }
       selectedUtxos.push(utxo);
-      selectedAmount += utxo.value;
+      selectedAmount += utxo.satoshis;
 
       if (
         selectedAmount >=
@@ -55,11 +40,11 @@ export default function useUTXOs() {
 
     if (selectedAmount < amount) {
       toast.error(`Not enough cardinal spendable funds.
-            Address has:  ${satoshisToBTC(selectedAmount)} ${coin}
-            Needed:          ${satoshisToBTC(amount)} ${coin}
+            Address has:  ${satoshisToBTC(selectedAmount)} 
+            Needed:          ${satoshisToBTC(amount)} 
             
             UTXOs:
-            ${utxos.map((x) => `${x.txid}:${x.vout}`).join("\n")}`);
+            ${utxos.map((x) => `${x.txId}:${x.satoshis}`).join("\n")}`);
     }
 
     return selectedUtxos;
@@ -70,17 +55,14 @@ export default function useUTXOs() {
       const res = await fetch(
         `https://litecoinspace.org/api/address/${address}/utxo`
       ).then((response) => response.json());
-      if (res?.length > 0) {
-        setUtxos(res);
-        setSortedUtxos(
-          res
-            .filter((x) => x.value > dummyUtxoValue)
-            .sort((a, b) => b.value - a.value)
-        );
+      const data = await openApi.getAddressUtxo(address);
+      if (res?.length > 0 && data) {
+        setUtxos(data);
+        setSortedUtxos(data.sort((a, b) => b.satoshis - a.satoshis));
         setDummyUTXOs(res.filter((x) => x.value == dummyUtxoValue));
       }
     } catch (error) {
-    //  console.log(error);
+      //  console.log(error);
     }
   };
 
@@ -96,5 +78,6 @@ export default function useUTXOs() {
     dummyUTXOs,
     selectUtxos: selectUtxos,
     refreshUTXOs: getUTXOs,
+    doesUtxoContainInscription: doesUtxoContainInscription,
   };
 }

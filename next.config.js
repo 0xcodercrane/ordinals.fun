@@ -32,6 +32,10 @@ const nextConfig = {
         source: "/searchInscription/:slug*",
         destination: "http://217.76.63.90:3000/:slug*",
       },
+      {
+        source: "/ordinalsExplorer/:slug*",
+        destination: "https://ordinalslite.com/:slug*",
+      },
     ];
   },
 };

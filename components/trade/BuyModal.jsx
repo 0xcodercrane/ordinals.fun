@@ -27,6 +27,8 @@ import BuyBills from "./BuyBills";
 import { feeAddress, service_fee_rate } from "../../configs/constants";
 import { Psbt } from "bitcoinjs-lib";
 import useActivities from "../../hooks/useActivities";
+import useUTXOs from "../../hooks/useUTXOs";
+import { MdOutlineCancel } from "react-icons/md";
 
 export default function BuyModal({
   modalIsOpen,
@@ -44,6 +46,7 @@ export default function BuyModal({
   const address = wallet.getAddress();
   const { psbt, networks } = usePSBT({ network: "litecoin" });
   const { addActiviyForBuy, updateListForSold } = useActivities();
+  const { doesUtxoContainInscription } = useUTXOs();
   const [pendingTx, setPendingTx] = useState(false);
   const [dummyTx, setDummyTx] = useState("");
   const [succeed, setSucceed] = useState(false);
@@ -125,8 +128,8 @@ export default function BuyModal({
       setPendingTx(true);
       let totalValue = 0;
       for (const utxo of utxos) {
-        if (utxo.txid) {
-          const txHEX = await getTxHexById(utxo.txid);
+        if (utxo.txId) {
+          const txHEX = await getTxHexById(utxo.txId);
           const tx = bitcoin.Transaction.fromHex(txHEX);
           for (const output in tx.outs) {
             try {
@@ -135,13 +138,13 @@ export default function BuyModal({
           }
 
           psbt.addInput({
-            hash: utxo.txid,
-            index: utxo.vout,
+            hash: utxo.txId,
+            index: utxo.outputIndex,
             nonWitnessUtxo: tx.toBuffer(),
             // witnessUtxo: tx.outs[utxo.vout],
           });
 
-          totalValue += utxo.value;
+          totalValue += utxo.satoshis;
         }
       }
 
@@ -273,11 +276,12 @@ export default function BuyModal({
       psbt.addOutput({
         ...sellerSignedPsbt.data.globalMap.unsignedTx.tx.outs[0],
       });
+      // console.log('market_fee')
 
       //  console.log(paymentUtxos);
       // Add payment utxo inputs
       for (const utxo of paymentUtxos) {
-        const tx = bitcoin.Transaction.fromHex(await getTxHexById(utxo.txid));
+        const tx = bitcoin.Transaction.fromHex(await getTxHexById(utxo.txId));
         for (const output in tx.outs) {
           try {
             tx.setWitness(parseInt(output), []);
@@ -285,14 +289,14 @@ export default function BuyModal({
         }
 
         psbt.addInput({
-          hash: utxo.txid,
-          index: utxo.vout,
+          hash: utxo.txId,
+          index: utxo.outputIndex,
           nonWitnessUtxo: tx.toBuffer(),
           // witnessUtxo: tx.outs[utxo.vout],
         });
 
-        totalValue += utxo.value;
-        totalPaymentValue += utxo.value;
+        totalValue += utxo.satoshis;
+        totalPaymentValue += utxo.satoshis;
       }
       // Service fee
       var market_fee = 0;
@@ -306,6 +310,7 @@ export default function BuyModal({
           });
         }
       }
+      // console.log(market_fee)
 
       // Create two new dummy utxos outputs for the next purchase
       psbt.addOutput({
@@ -322,6 +327,7 @@ export default function BuyModal({
 
       const changeValue =
         totalValue - dummyUtxoValue * 2 - price - market_fee - fee - 10000;
+      // console.log(changeValue)
 
       if (changeValue < 0) {
         toast.error(`Your wallet address doesn't have enough funds to buy this inscription.
@@ -341,19 +347,25 @@ export default function BuyModal({
       });
 
       const singedPSBT = await wallet.signPsbt(psbt, {});
+      // console.log(singedPSBT)
 
       const psbtHEX = singedPSBT.toHex();
 
+      // console.log(psbtHEX)
+
       const decodedPsbt = await wallet.decodePsbt(psbtHEX);
+      // console.log(decodedPsbt)
 
       if (decodedPsbt.warning) {
         toast.error("RawTx decoding is failed");
         return;
       }
+      // console.log(decodedPsbt)
 
       const newPSBT = Psbt.fromHex(psbtHEX);
       const rawtx = newPSBT.extractTransaction().toHex();
 
+      // console.log(rawtx)
       if (rawtx) {
         const txId = await wallet.pushTx(rawtx);
         if (txId.indexOf("Broadcast") >= 0) {
@@ -502,18 +514,24 @@ export default function BuyModal({
       )}
 
       {succeed && (
-        <div className="absolute top-0 left-0 w-full h-full bg-primary-light dark:bg-primary-dark flex justify-center items-center">
-          <div>
-            <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
-            <a
-              href={"https://litecoinspace.org/tx/" + buyTx}
-              className="underline"
-              target="_blank"
-            >
-              View Transaction
-            </a>
+        <>
+          <div className="absolute top-0 left-0 w-full h-full bg-primary-light dark:bg-primary-dark flex justify-center items-center">
+            <div>
+              <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
+              <a
+                href={"https://litecoinspace.org/tx/" + buyTx}
+                className="underline"
+                target="_blank"
+              >
+                View Transaction
+              </a>
+            </div>
           </div>
-        </div>
+          <MdOutlineCancel
+            className="absolute top-2 right-2 text-3xl cursor-pointer"
+            onClick={closeModal}
+          />
+        </>
       )}
     </Modal>
   );

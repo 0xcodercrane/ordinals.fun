@@ -29,7 +29,7 @@ export default function Inscribe() {
   const [inscriptionsFromDB, setInscriptionFromDB] = useState("");
   const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [bulkSelect, setBulkSelect] = useState(false);
-  const [type, setType] = useState("litemap");
+  const [type, setType] = useState("others");
   const [isOpen, setIsOpen] = useState(false);
   const [NFTSlug, setNFTSlug] = useState("");
   let pushing = false;
@@ -115,6 +115,7 @@ export default function Inscribe() {
       toast.error("Please select inscriptions");
       return;
     }
+    setBulkSelect(false);
     setIsOpen(true);
   };
 

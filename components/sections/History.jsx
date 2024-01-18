@@ -93,9 +93,17 @@ export default function History() {
                     className="grid grid-cols-9 sm:grid-cols-12 px-3 text-sm my-1 bg-[#19679d54] hover:bg-[#246da1cb] cursor-pointer items-center gap-2 py-1"
                   >
                     <div className="col-span-3">
-                      {activities[key].content.length > 15
-                        ? addressFormat(activities[key].content, 6)
-                        : activities[key].content}
+                      {activities[key].content.indexOf("tick") > -1 ? (
+                        <div className="text-sm font-bold px-3">
+                          {JSON.parse(activities[key].content).tick}
+                        </div>
+                      ) : (
+                        <div className="text-sm font-bold px-3">
+                          {activities[key].content.length > 15
+                            ? addressFormat(activities[key].content, 6)
+                            : activities[key].content}
+                        </div>
+                      )}
                     </div>
                     <div className="col-span-3 hidden sm:inline-block">
                       {activities[key]?.price} LTC
