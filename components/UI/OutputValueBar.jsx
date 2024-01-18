@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const FeeRateType = {
   CURRENT: 0,
@@ -40,7 +40,7 @@ export default function OutputValueBar({ defaultValue, onChange }) {
               onClick={() => {
                 setOptionIndex(index);
               }}
-              className={`cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3 ${
+              className={`cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3 items-center ${
                 selected && "dark:bg-[#103e5c] bg-primary-light/60"
               }`}
             >
@@ -55,7 +55,6 @@ export default function OutputValueBar({ defaultValue, onChange }) {
         <input
           className="w-full mt-3 bg-transparent py-2 px-2 rounded-md cs-border focus:outline-none"
           placeholder={"sats"}
-          defaultValue={inputVal}
           value={inputVal}
           onChange={async (e) => {
             const val = e.target.value + "";

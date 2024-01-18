@@ -457,6 +457,56 @@ const Wallet = (props) => {
     return psbt.toHex();
   };
 
+  const splitInscription = async ({ inscriptionId, feeRate, outputValue }) => {
+    const currentAccount = accountInfo?.account?.accounts[0];
+    if (!currentAccount) console.log("no current Account");
+
+    const psbtNetwork = toPsbtNetwork();
+
+    const utxo = await openApi.getInscriptionUtxo(inscriptionId);
+    if (!utxo) {
+      console.log("UTXO not found.");
+    }
+
+    let splitUTXOs = [];
+
+    const btc_utxos = await openApi.getAddressUtxo(currentAccount.address);
+    btc_utxos.map((btc_utxo) => {
+      if (btc_utxo.inscriptions.length !== utxo.inscriptions.length) {
+        splitUTXOs.push(btc_utxo);
+      }
+    });
+    const utxos = [utxo].concat(splitUTXOs);
+
+    const { psbt, splitedCount } = await createSplitOrdUtxoV2({
+      utxos: utxos.map((v) => {
+        return {
+          txId: v.txId,
+          outputIndex: v.outputIndex,
+          satoshis: v.satoshis,
+          scriptPk: v.scriptPk,
+          addressType: v.addressType,
+          address: currentAccount.address,
+          ords: v.inscriptions,
+        };
+      }),
+      wallet: { signPsbt: signPsbt },
+      network: psbtNetwork,
+      changeAddress: currentAccount.address,
+      pubkey: currentAccount.pubkey,
+      feeRate,
+      enableRBF: false,
+      outputValue,
+    });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    psbt.__CACHE.__UNSAFE_SIGN_NONSEGWIT = false;
+    return {
+      psbtHex: psbt.toHex(),
+      splitedCount,
+    };
+  };
+
   const createBitcoinTx = async (
     toAddressInfo,
     toAmount,
@@ -574,7 +624,24 @@ const Wallet = (props) => {
   };
 
   const createSplitTx = async (inscriptionId, feeRate, outputValue) => {
+    const fromAddress = accountInfo?.account?.accounts[0]?.address;
 
+    const { psbtHex, splitedCount } = await splitInscription({
+      inscriptionId,
+      feeRate,
+      outputValue,
+    });
+    const psbt = Psbt.fromHex(psbtHex);
+    const rawtx = psbt.extractTransaction().toHex();
+
+    const rawTxInfo = {
+      psbtHex,
+      rawtx,
+      toAddressInfo: {
+        address: fromAddress,
+      },
+    };
+    return { rawTxInfo, splitedCount };
   };
 
   const pushTx = async (rawTxInfo) => {
@@ -584,9 +651,9 @@ const Wallet = (props) => {
   };
 
   // useEffect(() => {
-  // //  console.log("---------current Key ring-------------");
-  // //  console.log(accountInfo);
-  // //  console.log("---------current Key ring-------------");
+  //  console.log("---------current Key ring-------------");
+  // console.log(accountInfo);
+  //  console.log("---------current Key ring-------------");
   // }, [accountInfo]);
 
   useEffect(() => {

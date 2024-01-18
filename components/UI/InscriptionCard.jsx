@@ -46,9 +46,32 @@ export default function InscriptionCard({
   const [inscriptionDetails, setInscriptionDetails] = useState();
   const [isNeedToSplit, setIsNeedToSplit] = useState(false);
   const [isMultiStuck, setIsMultiStuck] = useState(false);
+  const [checking, setChecking] = useState(true);
   const HIGH_BALANCE = 10000;
 
-  const openListModal = () => {
+  const checkInscription = async () => {
+    setChecking(true);
+
+    const utxo = await openApi.getInscriptionUtxoDetail(
+      inscription.inscriptionId
+    );
+
+    if (utxo) {
+      setInscriptionDetails(utxo);
+      if (utxo.inscriptions.length > 1) {
+        setIsNeedToSplit(true);
+        setIsMultiStuck(true);
+      }
+    }
+
+    if (inscription.outputValue > HIGH_BALANCE) {
+      setIsNeedToSplit(true);
+    }
+
+    setChecking(false);
+  };
+
+  const openListModal = async () => {
     if (isNeedToSplit || isMultiStuck) {
       setIsOpenSplit(true);
       return;
@@ -57,7 +80,7 @@ export default function InscriptionCard({
     setIsOpen(true);
   };
 
-  const openTransferModal = () => {
+  const openTransferModal = async () => {
     if (isNeedToSplit || isMultiStuck) {
       setIsOpenSplit(true);
       return;
@@ -80,21 +103,6 @@ export default function InscriptionCard({
           const textData = await data.text();
           setContent(textData);
         }
-
-        // const utxo = await openApi.getInscriptionUtxoDetail(inscription.inscriptionId);
-        // console.log('Bitcoin project: ', utxo )
-        // if (utxo) {
-        //   setInscriptionDetails(inscriptionData);
-        //   if (utxo.inscriptions.length > 1) {
-        //     setInscriptions(utxo.inscriptions);
-        //     setIsNeedToSplit(true);
-        //     setIsMultiStuck(true);
-        //   }
-        // }
-
-        // if (inscription.outputValue > HIGH_BALANCE) {
-        //   setIsNeedToSplit(true);
-        // }
       } catch (error) {
         //  console.log("content fetch", error);
       }
@@ -168,13 +176,6 @@ export default function InscriptionCard({
   };
 
   const AddList = async () => {
-    if (isNeedToSplit || isMultiStuck) {
-      toast.error(
-        "This inscription is mixed together. Please split them first."
-      );
-      return;
-    }
-
     if (!content) {
       toast.error("Please wait until feching content");
       return;
@@ -192,6 +193,24 @@ export default function InscriptionCard({
 
     try {
       setAdding(true);
+
+      if (isNeedToSplit || isMultiStuck) {
+        let error = "";
+        if (isNeedToSplit && isMultiStuck) {
+          error =
+            "Multiple inscriptions are mixed mixed together. Please split them first.";
+        } else {
+          error =
+            "This inscription carries a high balance! > " +
+            HIGH_BALANCE +
+            " sats";
+        }
+
+        toast.error(error);
+        setAdding(false);
+        return;
+      }
+
       if (tag === "litemap") {
         const validation = await validateInscription(
           content,
@@ -233,8 +252,13 @@ export default function InscriptionCard({
   };
 
   useEffect(() => {
-    getContent();
-  }, [inscription]);
+    if (inscription?.inscriptionId) {
+      checkInscription();
+      if (!content) {
+        getContent();
+      }
+    }
+  }, [inscription, inscriptionIndex]);
 
   useEffect(() => {
     const exist = selectedBlocks.filter(
@@ -280,10 +304,7 @@ export default function InscriptionCard({
               </>
             )}
 
-            <button
-              onClick={() => openTransferModal(true)}
-              className="in-transfer"
-            >
+            <button onClick={openTransferModal} className="in-transfer">
               Transfer
             </button>
           </div>
@@ -322,7 +343,7 @@ export default function InscriptionCard({
                     </button>
                   ) : (
                     <button
-                      disabled={adding || added}
+                      disabled={adding || added || checking}
                       className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
                       onClick={() => AddList()}
                     >
@@ -341,6 +362,7 @@ export default function InscriptionCard({
                 </>
               ) : (
                 <button
+                  disabled={checking}
                   className="main_btn py-1 h-8  rounded-md w-full"
                   onClick={openListModal}
                 >
@@ -374,10 +396,10 @@ export default function InscriptionCard({
         />
 
         <SpliteModal
-          isNeedToSplit={isNeedToSplit}
-          isMultiStuck={isMultiStuck}
           modalIsOpen={isOpenSplit}
+          isNeedToSplit={isNeedToSplit}
           setIsOpen={setIsOpenSplit}
+          isMultiStuck={isMultiStuck}
           inscriptionDetails={inscriptionDetails}
           inscription={inscription}
         />

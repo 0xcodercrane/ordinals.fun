@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { AiFillCheckCircle, AiOutlineLoading } from "react-icons/ai";
 import { useEffect } from "react";
 import OutputValueBar from "../UI/OutputValueBar";
+import { MdOutlineCancel } from "react-icons/md";
 
 export default function SpliteModal({
   isNeedToSplit,
@@ -18,8 +19,8 @@ export default function SpliteModal({
   inscriptionDetails,
   inscription,
 }) {
-  const defaultOutputValue = inscription ? inscription.outputValue : 10000;
-  const minOutputValue = 546;
+  const defaultOutputValue = 10000;
+  const minOutputValue = 10000;
   const wallet = useContext(WalletContext);
   const [feeRate, setFeeRate] = useState("economy");
   const [disabled, setDisabled] = useState(true);
@@ -38,6 +39,8 @@ export default function SpliteModal({
 
   function closeModal() {
     setIsOpen(false);
+    setSucceed(false);
+    setTxId(false);
   }
 
   const Split = async () => {
@@ -48,17 +51,21 @@ export default function SpliteModal({
 
     try {
       setPendingTx(true);
-      const txId = await wallet.pushTx(rawTxInfo);
+      const txId = await wallet.pushTx(rawTxInfo?.rawtx);
 
-      if (txId) {
-        setSucceed(true);
-        setTxId(txId);
-        toast.success("Splited Successfully. Please check tx.");
+      if (txId?.indexOf("postTransactionBroadcast") == -1) {
+        if (txId) {
+          setSucceed(true);
+          setTxId(txId);
+          toast.success("Splited Successfully. Please check tx.");
+        }
+      } else {
+        toast.error(txId);
       }
     } catch (error) {
       toast.error(`Spliting ERROR: ${error}`);
     }
-    pendingTx(false);
+    setPendingTx(false);
   };
 
   useEffect(() => {
@@ -85,7 +92,6 @@ export default function SpliteModal({
     wallet
       .createSplitTx(inscription.inscriptionId, feeRate, outputValue)
       .then((data) => {
-        console.log(data);
         setRawTxInfo(data.rawTxInfo);
         setSplitedCount(data.splitedCount);
         setDisabled(false);
@@ -108,11 +114,18 @@ export default function SpliteModal({
         Splite Inscriptoin.
       </div>
 
-      <div className="my-1 text-sm text-center text-red-500">
-        Multiple inscriptions are mixed mixed together. Please split them first.
-      </div>
+      {isNeedToSplit && isMultiStuck ? (
+        <p className="mt-2 text-center text-red-500">
+          Multiple inscriptions are mixed mixed together. Please split them
+          first.
+        </p>
+      ) : (
+        <p className="mt-2 text-center text-red-500">
+          {`This inscription carries a high balance! (> 10000 sats)`}
+        </p>
+      )}
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
         {inscriptionDetails &&
           inscriptionDetails?.inscriptions.map((splitIterm, key) => {
             return (
@@ -133,13 +146,14 @@ export default function SpliteModal({
 
                 {splitIterm?.contentType.indexOf("text") > -1 && (
                   <>
-                    {content.indexOf("tick") > -1 ? (
+                    {splitIterm?.inscriptionNumber}
+                    {/* {content.indexOf("tick") > -1 ? (
                       <div className="text-3xl font-bold px-3">
                         {JSON.parse(content).tick}
                       </div>
                     ) : (
                       <div className="text-3xl font-bold px-3">{content}</div>
-                    )}
+                    )} */}
                   </>
                 )}
               </div>
@@ -161,7 +175,7 @@ export default function SpliteModal({
       {inscriptionDetails &&
         inscriptionDetails.inscriptions.length > 1 &&
         splitedCount > 0 && (
-          <p className="mb-2"> {`Spliting to ${splitedCount} UTXO`} </p>
+          <p className="my-2 "> {`Spliting to ${splitedCount} UTXO`} </p>
         )}
 
       <div className="flex gap-2">
@@ -187,18 +201,24 @@ export default function SpliteModal({
       )}
 
       {succeed && (
-        <div className="absolute top-0 left-0 w-full h-full bg-primary-light dark:bg-primary-dark flex justify-center items-center">
-          <div>
-            <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
-            <a
-              href={"https://litecoinspace.org/tx/" + txId}
-              className="underline"
-              target="_blank"
-            >
-              View Transaction
-            </a>
+        <>
+          <div className="absolute top-0 left-0 w-full h-full bg-primary-light dark:bg-primary-dark flex justify-center items-center">
+            <div>
+              <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
+              <a
+                href={"https://litecoinspace.org/tx/" + txId}
+                className="underline"
+                target="_blank"
+              >
+                View Transaction
+              </a>
+            </div>
           </div>
-        </div>
+          <MdOutlineCancel
+            className="absolute top-2 right-2 text-3xl cursor-pointer"
+            onClick={closeModal}
+          />
+        </>
       )}
     </Modal>
   );
