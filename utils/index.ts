@@ -268,6 +268,7 @@ export const calculateFee = (
     vouts * outSize +
     Number(includeChangeOutput) * outSize;
   const fee = txSize * recommendedFeeRate;
+  console.log(fee)
 
   return fee;
 };

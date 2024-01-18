@@ -27,7 +27,7 @@ export default function Inscription(props) {
         setContent(textData);
         setLoading(false);
       } catch (error) {
-      //  console.log("content fetch", error);
+        //  console.log("content fetch", error);
         setLoading(false);
       }
     }
@@ -36,11 +36,10 @@ export default function Inscription(props) {
   const getData = async (id) => {
     setLoading(true);
     const data = await openAPI.getInscriptionUtxoDetail(id);
+    console.log(data);
 
     if (data) {
       setData(data?.inscriptions[0]);
-    } else {
-      router.push("/wallet");
     }
     getContent(id);
     setLoading(false);

@@ -46,7 +46,6 @@ export default function BuyModal({
   const address = wallet.getAddress();
   const { psbt, networks } = usePSBT({ network: "litecoin" });
   const { addActiviyForBuy, updateListForSold } = useActivities();
-  const { doesUtxoContainInscription } = useUTXOs();
   const [pendingTx, setPendingTx] = useState(false);
   const [dummyTx, setDummyTx] = useState("");
   const [succeed, setSucceed] = useState(false);
@@ -114,6 +113,8 @@ export default function BuyModal({
   }
 
   async function generatePSBTGeneratingDummyUtxos() {
+    console.log("running");
+
     if (!psbt) {
       toast.error("PSBT is not generated yet.");
       return;
@@ -147,6 +148,7 @@ export default function BuyModal({
           totalValue += utxo.satoshis;
         }
       }
+      console.log("running");
 
       for (let i = 0; i < 2; i++) {
         psbt.addOutput({
@@ -154,18 +156,22 @@ export default function BuyModal({
           value: 3000,
         });
       }
+      console.log("running");
 
       const fee = calculateFee(psbt.txInputs.length, psbt.txOutputs.length, 1);
+      console.log("running", totalValue);
 
       // Change utxo
       psbt.addOutput({
         address: address,
         value: totalValue - 2 * 3000 - fee,
       });
+      console.log("running");
 
       const singedPSBT = await wallet.signPsbt(psbt, {});
       const rawtx = singedPSBT.extractTransaction().toHex();
-      const txId = await wallet.pushTx(rawtx);
+    console.log("running");
+    const txId = await wallet.pushTx(rawtx);
       setDummyTx(txId);
       setPendingTx(false);
       refreshUTXOs();
