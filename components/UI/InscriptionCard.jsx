@@ -271,139 +271,139 @@ export default function InscriptionCard({
     }
   }, [selectedBlocks]);
 
-  if (tag === "litemap" && content.indexOf(".litemap") == -1) {
-    return;
-  } else {
-    return (
-      <div className="relative">
-        <div className={`${added && "cs-border"} in-card`}>
-          <div className="in-content overflow-hidden">
-            {inscription?.contentType.indexOf("image") > -1 && (
-              <>
-                <img
-                  src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
-                  className="w-full h-full object-contain"
-                  alt=""
-                />
-              </>
-            )}
-
-            {inscription?.contentType.indexOf("text") > -1 && (
-              <>
-                {content && (
-                  <>
-                    {content.indexOf("tick") > -1 ? (
-                      <div className="text-lg font-bold px-3">
-                        {JSON.parse(content).tick}
-                      </div>
-                    ) : (
-                      <div className="text-lg font-bold px-3">{content}</div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-
-            <button onClick={openTransferModal} className="in-transfer">
-              Transfer
-            </button>
-          </div>
-
-          <Link
-            href={"/inscription/" + inscription.inscriptionId}
-            className="in-link"
-          >
-            #{addressFormat(inscription?.inscriptionId, 4)}
-          </Link>
-
-          <hr className="mb-2" />
-
-          {inscription?.listed ? (
+  // if (tag === "litemap" && content.indexOf(".litemap") == -1) {
+  //   return;
+  // } else {
+  return (
+    <div className="relative">
+      <div className={`${added && "cs-border"} in-card`}>
+        <div className="in-content overflow-hidden">
+          {inscription?.contentType.indexOf("image") > -1 && (
             <>
-              <button
-                className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
-                onClick={() =>
-                  handleCancelList(inscription?.tag, inscriptionIndex)
-                }
-              >
-                <TbGiftOff /> Listed
-              </button>
+              <img
+                src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
+                className="w-full h-full object-contain"
+                alt=""
+              />
             </>
-          ) : (
+          )}
+
+          {inscription?.contentType.indexOf("text") > -1 && (
             <>
-              {bulkSelect ? (
+              {content && (
                 <>
-                  {added ? (
-                    <button
-                      className="main_btn cs-border bg-transparent py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
-                      onClick={() => removeFromList()}
-                    >
-                      <TbArticleOff />
-                      Added
-                    </button>
+                  {content.indexOf("tick") > -1 ? (
+                    <div className="text-lg font-bold px-3">
+                      {JSON.parse(content).tick}
+                    </div>
                   ) : (
-                    <button
-                      disabled={adding || added || checking}
-                      className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
-                      onClick={() => AddList()}
-                    >
-                      <>
-                        {adding ? (
-                          <AiOutlineLoading className="text-lg text-white font-semibold animate-spin" />
-                        ) : (
-                          <>
-                            <FaPlus />
-                            Add
-                          </>
-                        )}
-                      </>
-                    </button>
+                    <div className="text-lg font-bold px-3">{content}</div>
                   )}
                 </>
-              ) : (
-                <button
-                  disabled={checking}
-                  className="main_btn py-1 h-8  rounded-md w-full"
-                  onClick={openListModal}
-                >
-                  List
-                </button>
               )}
             </>
           )}
+
+          <button onClick={openTransferModal} className="in-transfer">
+            Transfer
+          </button>
         </div>
 
-        <ListModal
-          modalIsOpen={modalIsOpen}
-          setIsOpen={setIsOpen}
-          tag={tag}
-          content={
-            inscription?.contentType?.indexOf("image") > -1
-              ? inscription?.inscriptionId
-              : content
-          }
-          output={inscription?.outputValue}
-          inscription={inscription}
-          inscriptionIndex={inscriptionIndex}
-        />
+        <Link
+          href={"/inscription/" + inscription.inscriptionId}
+          className="in-link"
+        >
+          #{addressFormat(inscription?.inscriptionId, 4)}
+        </Link>
 
-        <TransferModal
-          modalIsOpen={isOpenTransfer}
-          setIsOpen={setIsOpenTransfer}
-          content={content}
-          id={inscription?.inscriptionId}
-          inscription={inscription}
-        />
+        <hr className="mb-2" />
 
-        <SpliteModal
-          modalIsOpen={isOpenSplit}
-          isNeedToSplit={isNeedToSplit}
-          setIsOpen={setIsOpenSplit}
-          isMultiStuck={isMultiStuck}
-          inscriptionDetails={inscriptionDetails}
-          inscription={inscription}
-        />
+        {inscription?.listed ? (
+          <>
+            <button
+              className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
+              onClick={() =>
+                handleCancelList(inscription?.tag, inscriptionIndex)
+              }
+            >
+              <TbGiftOff /> Listed
+            </button>
+          </>
+        ) : (
+          <>
+            {bulkSelect ? (
+              <>
+                {added ? (
+                  <button
+                    className="main_btn cs-border bg-transparent py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
+                    onClick={() => removeFromList()}
+                  >
+                    <TbArticleOff />
+                    Added
+                  </button>
+                ) : (
+                  <button
+                    disabled={adding || added || checking}
+                    className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
+                    onClick={() => AddList()}
+                  >
+                    <>
+                      {adding ? (
+                        <AiOutlineLoading className="text-lg text-white font-semibold animate-spin" />
+                      ) : (
+                        <>
+                          <FaPlus />
+                          Add
+                        </>
+                      )}
+                    </>
+                  </button>
+                )}
+              </>
+            ) : (
+              <button
+                disabled={checking}
+                className="main_btn py-1 h-8  rounded-md w-full"
+                onClick={openListModal}
+              >
+                List
+              </button>
+            )}
+          </>
+        )}
       </div>
-    );
-  }
+
+      <ListModal
+        modalIsOpen={modalIsOpen}
+        setIsOpen={setIsOpen}
+        tag={tag}
+        content={
+          inscription?.contentType?.indexOf("image") > -1
+            ? inscription?.inscriptionId
+            : content
+        }
+        output={inscription?.outputValue}
+        inscription={inscription}
+        inscriptionIndex={inscriptionIndex}
+      />
+
+      <TransferModal
+        modalIsOpen={isOpenTransfer}
+        setIsOpen={setIsOpenTransfer}
+        content={content}
+        id={inscription?.inscriptionId}
+        inscription={inscription}
+      />
+
+      <SpliteModal
+        modalIsOpen={isOpenSplit}
+        isNeedToSplit={isNeedToSplit}
+        setIsOpen={setIsOpenSplit}
+        isMultiStuck={isMultiStuck}
+        inscriptionDetails={inscriptionDetails}
+        inscription={inscription}
+      />
+    </div>
+  );
+  // }
 }
