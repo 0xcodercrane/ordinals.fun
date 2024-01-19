@@ -170,7 +170,7 @@ export default function NFTs({
                 />
               </>
             ) : (
-              <div className="flex flex-col justify-center items-center w-full mt-[10rem]">
+              <div className="flex flex-col justify-center items-center w-full sm:mt-[7rem] mt-[10rem]">
                 <h1 className="text-xl font-bold mb-8 animate-pulse text-center">
                   You don not have any NFTs.
                 </h1>
