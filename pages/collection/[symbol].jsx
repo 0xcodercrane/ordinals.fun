@@ -37,8 +37,13 @@ export default function Collection() {
   const [listedNFTs, setListedNFTs] = useState();
   const [listedNumber, setListedNumber] = useState(0);
   const [fetchingListings, setFetchingListings] = useState(true);
+  const [offsetListed, setOffsetListed] = useState(0);
 
   const [showAll, setShowAll] = useState(false);
+
+  const handlePageClickForListed = () => {
+    setOffsetListed(e.selected);
+  };
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
@@ -143,7 +148,7 @@ export default function Collection() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
                 {Object.keys(listedNFTs)
                   .reverse()
-                  .slice(offset * 12, offset * 12 + 12)
+                  .slice(offsetListed * 12, offsetListed * 12 + 12)
                   .map((key, index) => {
                     return (
                       <BuyCardForNFTs
@@ -178,7 +183,7 @@ export default function Collection() {
                 <ReactPaginate
                   breakLabel="..."
                   nextLabel=">"
-                  onPageChange={handlePageClick}
+                  onPageChange={handlePageClickForListed}
                   pageRangeDisplayed={2}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(listedNumber / 12)}

@@ -48,7 +48,7 @@ export default function NFTCollectionBanner({ collection, tag }) {
           }
         });
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
 
       // const dbTradesh = query(
