@@ -51,7 +51,7 @@ export default function Orders() {
         />
       </Head>
 
-      <p className="my-8 text-center text-3xl font-semibold">My orders</p>
+      <p className="my-16 text-center text-3xl font-semibold">My orders</p>
 
       <div className="w-full max-w-[700px] max-h-[1200px] rounded-lg shadow-lg shadow-black/30 mt-6">
         <div className="grid grid-cols-12 px-3 py-2 bg-primary-dark/20  rounded-t-lg">

@@ -24,42 +24,51 @@ export default function NFTCollectionBanner({ collection, tag }) {
         }
       });
 
-      const dbTradesQuery = query(
-        ref(db, "market/" + tag),
-        orderByChild("date"),
-        startAt(Date.now() - 86400000)
-      );
+      try {
+        const dbTradesQuery = query(
+          ref(db, "activities"),
+          orderByChild("tag"),
+          equalTo(tag),
+          limitToLast(100)
+        );
 
-      onValue(dbTradesQuery, async (snapshot) => {
-        const exist = snapshot.val();
-        if (exist) {
-          setTrades24(exist);
-          let TVL24 = 0;
-          Object.keys(exist).map((index) => {
-            TVL24 += Number(exist[index].price);
-          });
-          setVolume24(TVL24);
-        }
-      });
+        onValue(dbTradesQuery, async (snapshot) => {
+          const exist = snapshot.val();
+          if (exist) {
+            let TVL = 0;
+            let trades = 0;
+            Object.keys(exist).map((index) => {
+              if (exist[index].date > Date.now() - 86400000)
+                TVL += Number(exist[index].price);
+              trades += 1;
+            });
 
-      const dbTradesh = query(
-        ref(db, "market/" + tag),
-        orderByChild("date"),
-        startAt(Date.now() - 3600000)
-      );
+            setTrades24(trades);
+            setVolume24(TVL);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
 
-      onValue(dbTradesh, async (snapshot) => {
-        const exist = snapshot.val();
-        if (exist) {
-          let TVLh = 0;
-          Object.keys(exist).map((index) => {
-            if (exist.paid) {
-              TVLh += Number(exist[index].price);
-            }
-          });
-          setVolumeh(TVLh);
-        }
-      });
+      // const dbTradesh = query(
+      //   ref(db, "market/" + tag),
+      //   orderByChild("date"),
+      //   startAt(Date.now() - 3600000)
+      // );
+
+      // onValue(dbTradesh, async (snapshot) => {
+      //   const exist = snapshot.val();
+      //   if (exist) {
+      //     let TVLh = 0;
+      //     Object.keys(exist).map((index) => {
+      //       if (exist.paid) {
+      //         TVLh += Number(exist[index].price);
+      //       }
+      //     });
+      //     setVolumeh(TVLh);
+      //   }
+      // });
     }
     fetchStatus();
   }, [tag]);
@@ -169,11 +178,7 @@ export default function NFTCollectionBanner({ collection, tag }) {
           <div className="flex gap-1">
             <p className="text-gray-300">Trades (24h):</p>
             <p className="text-white font-semibold">
-              {trade24 ? (
-                <NumberFormat number={Object.keys(trade24)?.length} />
-              ) : (
-                0
-              )}
+              {trade24 ? <NumberFormat number={trade24} /> : 0}
             </p>
           </div>
           <div className="flex gap-1">

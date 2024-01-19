@@ -15,12 +15,15 @@ export default function collections() {
         />
       </Head>
 
-      <div className="text-4xl text-center py-4">
-        <h2>NFT Collections</h2>
-        <p className="text-sm text-center w-full max-w-[900px] my-3 mx-auto lg:px-[150px]">
+      <div>
+        <h2 className="text-4xl font-bold mt-16 mb-2 text-center sm:text-left">
+          NFT Collections
+        </h2>
+        <p className="text-sm text-center w-full max-w-[900px] mb-12 mx-auto lg:px-[150px]">
           NFT PSBT market place on Litecoin.
         </p>
       </div>
+      
       <div className="my-3 w-full">
         <table className="table-auto w-full">
           <thead>

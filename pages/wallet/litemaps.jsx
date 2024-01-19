@@ -137,7 +137,7 @@ export default function WalletLiteMap() {
         />
       </Head>
 
-      <h1 className="text-3xl font-semibold mb-8 my-8 text-center">
+      <h1 className="text-3xl font-semibold my-16 text-center">
         My Wallet
       </h1>
 

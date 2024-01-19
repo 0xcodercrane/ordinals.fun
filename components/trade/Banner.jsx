@@ -1,5 +1,13 @@
 import React from "react";
-import { onValue, orderByChild, query, ref, startAt } from "firebase/database";
+import {
+  equalTo,
+  limitToLast,
+  onValue,
+  orderByChild,
+  query,
+  ref,
+  startAt,
+} from "firebase/database";
 import { db } from "@/services/firebase";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -27,20 +35,25 @@ export default function Banner({ title, tag }) {
       });
 
       const dbTradesQuery = query(
-        ref(db, "market/" + tag),
-        orderByChild("date"),
-        startAt(Date.now() - 86400000)
+        ref(db, "activities"),
+        orderByChild("tag"),
+        equalTo(tag),
+        limitToLast(100)
       );
 
       onValue(dbTradesQuery, async (snapshot) => {
         const exist = snapshot.val();
         if (exist) {
-          setTrades24(exist);
-          let TVL24 = 0;
+          let TVL = 0;
+          let trades = 0;
           Object.keys(exist).map((index) => {
-            TVL24 += Number(exist[index].price);
+            if (exist[index].date > Date.now() - 86400000)
+              TVL += Number(exist[index].price);
+            trades += 1;
           });
-          setVolume24(TVL24);
+
+          setTrades24(trades);
+          setVolume24(TVL);
         }
       });
 
@@ -98,11 +111,7 @@ export default function Banner({ title, tag }) {
         </div>
         <div>
           <p className="font-semibold">
-            {trade24 ? (
-              <NumberFormat number={Object.keys(trade24)?.length} />
-            ) : (
-              0
-            )}
+            {trade24 ? <NumberFormat number={trade24} /> : 0}
           </p>
           <p className="text-sm text-gray-300 ">Trades (24h)</p>
         </div>

@@ -50,13 +50,13 @@ export default function Home() {
         setFetchingData(false);
       });
 
-      const dbQuery2 = query(ref(db, `status/others`));
+      const dbQuery2 = query(ref(db, `status/litemap`));
 
       const snapshot = await get(dbQuery2);
       const exist = snapshot.val();
 
       if (!exist) {
-        const dbRefStatus = ref(db, `/status/others`);
+        const dbRefStatus = ref(db, `/status/litemap`);
         await push(dbRefStatus, {
           TVL: Number(listingPrice),
           floor: Number(listingPrice),
