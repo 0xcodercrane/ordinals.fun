@@ -216,7 +216,7 @@ export default function WalletSend({ setContentType }) {
 
   if (step === 0) {
     return (
-      <div className="p-4 rounded-lg bg-[white]  backdrop-blur-xl relative">
+      <div className="p-4 rounded-lg  bg-[#031a2b] relative">
         <button
           className=" focus:outline-none"
           onClick={() => setContentType("main")}

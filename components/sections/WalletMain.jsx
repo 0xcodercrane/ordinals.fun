@@ -51,7 +51,7 @@ export default function WalletMain({ setContentType }) {
 
   return (
     <>
-      <div className="p-4 rounded-lg bg-[white]  backdrop-blur-xl">
+      <div className="p-4 rounded-lg bg-[#031a2b]">
         <div className="flex justify-between items-center">
           <div
             className="flex items-center gap-2 cursor-pointer rounded-lg"

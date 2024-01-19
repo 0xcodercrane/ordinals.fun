@@ -23,7 +23,7 @@ export default function WalletSecret({ setContentType }) {
 
   if (isSuccess) {
     return (
-      <div className="p-4 rounded-lg bg-[white]  backdrop-blur-xl">
+      <div className="p-4 rounded-lg  bg-[#031a2b]">
         <button
           className=" focus:outline-none"
           onClick={() => setContentType("main")}

@@ -80,27 +80,21 @@ export default function Banner({ title, tag }) {
             )}{" "}
             LTC
           </p>
-          <p className="text-sm text-gray-300 ">
-            Floor price
-          </p>
+          <p className="text-sm text-gray-300 ">Averge price</p>
         </div>
         <div>
           <p className="font-semibold">
             {status ? <NumberFormat number={status?.TVL?.toFixed(2)} /> : 0.0}{" "}
             LTC
           </p>
-          <p className="text-sm text-gray-300 ">
-            Total volume
-          </p>
+          <p className="text-sm text-gray-300 ">Total volume</p>
         </div>
         <div>
           <p className="font-semibold">
             {volume24 ? <NumberFormat number={volume24?.toFixed(2)} /> : "0.00"}{" "}
             LTC
           </p>
-          <p className="text-sm text-gray-300 ">
-            Volume (24h)
-          </p>
+          <p className="text-sm text-gray-300 ">Volume (24h)</p>
         </div>
         <div>
           <p className="font-semibold">
@@ -110,9 +104,7 @@ export default function Banner({ title, tag }) {
               0
             )}
           </p>
-          <p className="text-sm text-gray-300 ">
-            Trades (24h)
-          </p>
+          <p className="text-sm text-gray-300 ">Trades (24h)</p>
         </div>
         <div>
           <p className="font-semibold">
@@ -122,9 +114,7 @@ export default function Banner({ title, tag }) {
         </div>
         <div>
           <p className="font-semibold">{lastBlock ? lastBlock : 0}</p>
-          <p className="text-sm text-gray-300 ">
-            Latest Block
-          </p>
+          <p className="text-sm text-gray-300 ">Latest Block</p>
         </div>
         <div>
           <p className="font-semibold">

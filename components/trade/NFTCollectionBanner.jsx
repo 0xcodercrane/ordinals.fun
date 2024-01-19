@@ -138,7 +138,7 @@ export default function NFTCollectionBanner({ collection, tag }) {
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-sm">
           <div className="flex gap-1">
-            <p className="text-gray-300">Floor price:</p>
+            <p className="text-gray-300">Averge price:</p>
             <p className="text-white font-semibold">
               {status ? (
                 <NumberFormat number={status?.floor?.toFixed(2)} />
