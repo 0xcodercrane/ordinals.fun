@@ -17,12 +17,12 @@ const InscriptionList = () => {
       <p className="text-sm text-center">
         Please double check your block numbers below before continuing:
       </p>
-      <p className="text-[11px] dark:text-gray-300 text-gray-600 text-center">
+      <p className="text-[11px] text-gray-300  text-center">
         You are about to inscribe
-        <span className="dark:text-white font-semibold text-sky-500"> {inscribe?.selectedBlock?.length} </span>
+        <span className="text-white font-semibol"> {inscribe?.selectedBlock?.length} </span>
         litemap(s)
       </p>
-      <div className="flex flex-col mt-2 items-center rounded w-full max-h-[200px] dark:bg-primary-dark/20 bg-primary-light/20 px-3 py-2 cursor-pointer  overflow-y-auto overflow-x-hidden scroll-smooth	transition ease-in-out duration-150">
+      <div className="flex flex-col mt-2 items-center rounded w-full max-h-[200px] bg-primary-dark/20  px-3 py-2 cursor-pointer  overflow-y-auto overflow-x-hidden scroll-smooth	transition ease-in-out duration-150">
         {inscribe.selectedBlock.map((item, index) => {
           return (
             <div

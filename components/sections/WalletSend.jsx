@@ -216,7 +216,7 @@ export default function WalletSend({ setContentType }) {
 
   if (step === 0) {
     return (
-      <div className="p-4 rounded-lg dark:bg-[#091b2bed] bg-[white]   backdrop-blur-xl relative">
+      <div className="p-4 rounded-lg bg-[white]  backdrop-blur-xl relative">
         <button
           className=" focus:outline-none"
           onClick={() => setContentType("main")}
@@ -227,7 +227,7 @@ export default function WalletSend({ setContentType }) {
           Address:
         </label>
         <input
-          className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border dark:border-[white!important]  border-[black!important]"
+          className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border border-[white!important]  "
           type="text"
           placeholder="ltc1qdmy...0pqe5mzn"
           onChange={async (e) => {
@@ -253,7 +253,7 @@ export default function WalletSend({ setContentType }) {
 
         <div>
           <input
-            className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border dark:border-[white!important]  border-[black!important]"
+            className="w-full mt-1 rounded-lg py-2 px-2 bg-transparent border border-[white!important]  "
             type="number"
             placeholder="0.00 (LTC)"
             onChange={(e) => {

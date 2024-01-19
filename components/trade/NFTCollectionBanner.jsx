@@ -65,7 +65,10 @@ export default function NFTCollectionBanner({ collection, tag }) {
   }, [tag]);
 
   return (
-    <div className="text-4xl py-4 grid grid-cols-1 sm:grid-cols-12 w-full gap-3 items-center">
+    <div
+      className="text-4xl py-4 grid grid-cols-1 sm:grid-cols-12 w-full gap-3 items-center"
+      key={tag + "NFT collections"}
+    >
       {collection?.inscription_icon ===
       "9278bd914fdc07f866fc4b4e402c87a0aa04666cfc9f0c9dde6ead58b17abcf7i0" ? (
         <img

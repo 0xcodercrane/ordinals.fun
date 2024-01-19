@@ -2,7 +2,7 @@ import React from "react";
 
 export default function WalletWelcome({ setType }) {
   return (
-    <div className="p-4 rounded-lg dark:bg-[#091b2bed] bg-[white]   backdrop-blur-xl">
+    <div className="p-4 rounded-lg bg-[white]  backdrop-blur-xl">
       <p className="my-8 font-semibold text-center text-2xl">LiteMap Wallet</p>
 
       <p className="text-center">

@@ -170,11 +170,11 @@ const WaitingPayment = () => {
                     value={paymentType}
                     onChange={() => handlePaymentType('chain')}
                     name='default-LiteMap'
-                    className='w-4 h-4 dark:text-gray-300 text-gray-800 bg-gray-100 border-gray-300 focus:ring-blue-500'
+                    className='w-4 h-4 text-gray-300  bg-gray-100 border-gray-300 focus:ring-blue-500'
                   />
                   <label
                     htmlFor='default-LiteMap-1'
-                    className='ml-2 text-gray-900 dark:text-gray-700  cursor-pointer'
+                    className='ml-2 text-gray-700  cursor-pointer'
                   >
                     Pay on chain BTC
                   </label>
@@ -195,11 +195,11 @@ const WaitingPayment = () => {
                     value={paymentType}
                     name='default-LiteMap'
                     onChange={() => handlePaymentType('wallet')}
-                    className='w-4 h-4 dark:text-gray-300 text-gray-800 bg-gray-100 border-gray-300 focus:ring-blue-500'
+                    className='w-4 h-4 text-gray-300  bg-gray-100 border-gray-300 focus:ring-blue-500'
                   />
                   <label
                     htmlFor='default-LiteMap-2 '
-                    className='ml-2 text-gray-900 dark:text-gray-700  cursor-pointer'
+                    className='ml-2 text-gray-700  cursor-pointer'
                   >
                     Pay with Wallet
                   </label>

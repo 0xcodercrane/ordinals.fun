@@ -65,7 +65,7 @@ export default function FeeRecommend({ setFeeOption }) {
                       setFeeOptionIndex(index);
                     }}
                     className={`cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3 ${
-                      selected && "dark:bg-[#103e5c] bg-primary-light/60"
+                      selected && "bg-[#103e5c]"
                     }`}
                   >
                     <p className="text-center text-sm font-semibold">
@@ -83,10 +83,10 @@ export default function FeeRecommend({ setFeeOption }) {
             </>
           ) : (
             <>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
-              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] dark:bg-primary-dark/30 bg-primary-light/30 animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] bg-primary-dark/30  animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] bg-primary-dark/30  animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] bg-primary-dark/30  animate-pulse"></div>
+              <div className="cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3  h-[81px] bg-primary-dark/30  animate-pulse"></div>
             </>
           )}
         </>

@@ -40,7 +40,7 @@ export default function WalletUnlock({ isImport = false }) {
   }, [password]);
 
   return (
-    <div className="p-4 rounded-lg dark:bg-[#091b2bed] bg-[white]   backdrop-blur">
+    <div className="p-4 rounded-lg bg-[white]  backdrop-blur">
       <p className="my-8 font-semibold text-center text-2xl">
         Enter your wallet password
       </p>

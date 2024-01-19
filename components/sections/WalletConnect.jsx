@@ -87,9 +87,9 @@ export default function WalletConnect() {
     <>
       <Menu as="div" className="relative inline-block text-left">
         <div className="flex justify-center items-center">
-          <Menu.Button className="px-3 py-1  border text-lg dark:border-[#ffffff!important] border-[black!important] rounded-lg my-3 flex items-center gap-3">
+          <Menu.Button className="px-3 py-1  border text-lg border-[#ffffff!important] rounded-lg my-3 flex items-center gap-3">
             <FaWallet
-              className="-mr-1 h-5 w-5 text-black dark:text-white"
+              className="-mr-1 h-5 w-5 text-white"
               aria-hidden="true"
             />
             {account?.isUnlocked && account?.account?.addressType === 1

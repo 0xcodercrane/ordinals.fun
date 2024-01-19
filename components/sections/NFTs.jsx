@@ -7,7 +7,6 @@ import InscriptionCardSkelenton from "../UI/InscriptionCardSkelenton";
 import Link from "next/link";
 import InscriptionCard from "../UI/InscriptionCard";
 import ReactPaginate from "react-paginate";
-import Layout from "@/components/sections/Layout";
 
 export default function NFTs({
   inscriptionsFromDB,
@@ -16,6 +15,7 @@ export default function NFTs({
   setNFTSlug,
   setSelectedBlocks,
   selectedBlocks,
+  lastBlock,
 }) {
   const [index, setIndex] = useState(0);
   const [meta, setmeta] = useState();
@@ -40,7 +40,7 @@ export default function NFTs({
         (item) => item.id === inscription.inscriptionId
       );
       if (filter.length > 0) {
-        NFTs.push(inscription);
+        NFTs.push({ ...inscription, content: filter[0]?.meta?.name });
       }
     });
     setMyInscriptions(NFTs);
@@ -145,13 +145,14 @@ export default function NFTs({
                         return (
                           <InscriptionCard
                             inscription={inscription}
-                            key={key}
+                            key={inscription?.inscriptionId + "others"}
                             inscriptionIndex={key + offset * 10}
                             bulkSelect={bulkSelect}
                             tag={meta?.slug}
                             setSelectedBlocks={setSelectedBlocks}
                             selectedBlocks={selectedBlocks}
                             isNFT={true}
+                            lastBlock={lastBlock}
                           />
                         );
                       })}

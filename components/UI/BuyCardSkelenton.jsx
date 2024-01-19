@@ -1,13 +1,10 @@
-import Link from "next/link";
 import React from "react";
 
-export default function BuyCardSkelenton() {
+export default function BuyCardSkelenton({ isListed = true }) {
   return (
     <div className="in-card">
       <div className="in-content animate-pulse">
-        <button disabled className="in-transfer">
-          #000000
-        </button>
+        {!isListed && <p>Not listed</p>}
       </div>
       <hr className="mb-2" />
       <div className="flex justify-between gap-1 text-sm">
@@ -18,7 +15,14 @@ export default function BuyCardSkelenton() {
         <p>Price:</p>
         <p></p>
       </div>
-      <button className="main_btn py-1 rounded-md w-full h-8">Buy</button>
+      <button
+        disabled={true}
+        className={`main_btn py-1 rounded-md w-full h-8 ${
+          !isListed && "bg-transparent"
+        }`}
+      >
+        Buy
+      </button>
     </div>
   );
 }

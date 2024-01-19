@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, { useContext } from "react";
 import openApi from "@/services/openAPI";
 import { useState } from "react";
@@ -24,6 +23,7 @@ import { TbArticleOff } from "react-icons/tb";
 import { TbGiftOff } from "react-icons/tb";
 import useActivities from "../../hooks/useActivities";
 import SpliteModal from "../trade/SpliteModal";
+import { useRouter } from "next/router";
 
 export default function InscriptionCard({
   inscription,
@@ -32,7 +32,10 @@ export default function InscriptionCard({
   tag,
   setSelectedBlocks,
   selectedBlocks,
+  isNFT = false,
+  lastBlock,
 }) {
+  const router = useRouter();
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const { removeListFromMarket } = useActivities();
@@ -46,55 +49,54 @@ export default function InscriptionCard({
   const [inscriptionDetails, setInscriptionDetails] = useState();
   const [isNeedToSplit, setIsNeedToSplit] = useState(false);
   const [isMultiStuck, setIsMultiStuck] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const [checking, setChecking] = useState(false);
   const HIGH_BALANCE = 10000;
+
+  const empyImage = (e) => {
+    e.target.src = "/empty.png";
+  };
+
+  const goToDetails = (id) => {
+    router.push("/inscription/" + id);
+  };
 
   const checkInscription = async () => {
     setChecking(true);
+    if (!inscriptionDetails) {
+      const utxo = await openApi.getInscriptionUtxoDetail(
+        inscription.inscriptionId
+      );
 
-    const utxo = await openApi.getInscriptionUtxoDetail(
-      inscription.inscriptionId
-    );
-
-    if (utxo) {
-      setInscriptionDetails(utxo);
-      if (utxo.inscriptions.length > 1) {
-        setIsNeedToSplit(true);
-        setIsMultiStuck(true);
+      if (utxo) {
+        setInscriptionDetails(utxo);
+        if (utxo.inscriptions.length > 1) {
+          setIsNeedToSplit(true);
+          setIsMultiStuck(true);
+        }
       }
-    }
 
-    if (inscription.outputValue > HIGH_BALANCE) {
-      setIsNeedToSplit(true);
-    }
+      if (inscription.outputValue > HIGH_BALANCE) {
+        setIsNeedToSplit(true);
+      }
 
-    setChecking(false);
+      setChecking(false);
+    } else {
+      setChecking(false);
+    }
   };
 
   const openListModal = async () => {
-    if (isNeedToSplit || isMultiStuck) {
-      setIsOpenSplit(true);
-      return;
-    }
-
+    checkInscription();
     setIsOpen(true);
   };
 
   const openTransferModal = async () => {
-    if (isNeedToSplit || isMultiStuck) {
-      setIsOpenSplit(true);
-      return;
-    }
-
-    if (inscription?.listed) {
-      toast.error("Please cancel list before transfer");
-      return;
-    }
+    checkInscription();
     setIsOpenTransfer(true);
   };
 
   const getContent = async () => {
-    if (inscription.inscriptionId)
+    if (inscription.inscriptionId && !isNFT)
       try {
         if (inscription?.contentType.indexOf("text") > -1) {
           const url =
@@ -191,23 +193,38 @@ export default function InscriptionCard({
       return;
     }
 
+    if (tag === "litemap") {
+      const blockNumber = Number(content.split(".")[0]);
+      if (blockNumber > lastBlock) {
+        toast.error("Invalid Inscription");
+        return;
+      }
+    }
+
     try {
       setAdding(true);
 
-      if (isNeedToSplit || isMultiStuck) {
-        let error = "";
-        if (isNeedToSplit && isMultiStuck) {
+      let error = "";
+      const utxo = await openApi.getInscriptionUtxoDetail(
+        inscription.inscriptionId
+      );
+
+      if (utxo) {
+        if (utxo.inscriptions.length > 1) {
           error =
             "Multiple inscriptions are mixed mixed together. Please split them first.";
-        } else {
-          error =
-            "This inscription carries a high balance! > " +
-            HIGH_BALANCE +
-            " sats";
         }
+      }
 
+      if (inscription.outputValue > HIGH_BALANCE) {
+        error =
+          "This inscription carries a high balance! > " +
+          HIGH_BALANCE +
+          " sats";
+      }
+
+      if (error) {
         toast.error(error);
-        setAdding(false);
         return;
       }
 
@@ -225,7 +242,7 @@ export default function InscriptionCard({
       }
 
       const newBlock = {
-        content: content,
+        content: isNFT ? inscription?.content : content,
         output: inscription?.outputValue,
         inscription: inscription,
         inscriptionIndex: inscriptionIndex,
@@ -253,7 +270,6 @@ export default function InscriptionCard({
 
   useEffect(() => {
     if (inscription?.inscriptionId) {
-      checkInscription();
       if (!content) {
         getContent();
       }
@@ -276,14 +292,19 @@ export default function InscriptionCard({
   // } else {
   return (
     <div className="relative">
-      <div className={`${added && "cs-border"} in-card`}>
+      <div
+        className={`${added && "cs-border"} in-card`}
+        onClick={() => goToDetails(inscription.inscriptionId)}
+      >
         <div className="in-content overflow-hidden">
           {inscription?.contentType.indexOf("image") > -1 && (
             <>
               <img
+                key={inscription?.inscriptionId}
                 src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
                 className="w-full h-full object-contain"
                 alt=""
+                onError={(e) => empyImage(e)}
               />
             </>
           )}
@@ -304,17 +325,20 @@ export default function InscriptionCard({
             </>
           )}
 
-          <button onClick={openTransferModal} className="in-transfer">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openTransferModal();
+            }}
+            className="in-transfer"
+          >
             Transfer
           </button>
         </div>
 
-        <Link
-          href={"/inscription/" + inscription.inscriptionId}
-          className="in-link"
-        >
+        <p className="in-link">
           #{addressFormat(inscription?.inscriptionId, 4)}
-        </Link>
+        </p>
 
         <hr className="mb-2" />
 
@@ -322,9 +346,10 @@ export default function InscriptionCard({
           <>
             <button
               className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
-              onClick={() =>
-                handleCancelList(inscription?.tag, inscriptionIndex)
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCancelList(inscription?.tag, inscriptionIndex);
+              }}
             >
               <TbGiftOff /> Listed
             </button>
@@ -336,16 +361,22 @@ export default function InscriptionCard({
                 {added ? (
                   <button
                     className="main_btn cs-border bg-transparent py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
-                    onClick={() => removeFromList()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFromList();
+                    }}
                   >
                     <TbArticleOff />
                     Added
                   </button>
                 ) : (
                   <button
-                    disabled={adding || added || checking}
+                    disabled={adding || added}
                     className="main_btn py-1 h-8  rounded-md w-full flex justify-center items-center gap-2"
-                    onClick={() => AddList()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      AddList();
+                    }}
                   >
                     <>
                       {adding ? (
@@ -362,9 +393,11 @@ export default function InscriptionCard({
               </>
             ) : (
               <button
-                disabled={checking}
-                className="main_btn py-1 h-8  rounded-md w-full"
-                onClick={openListModal}
+                className="main_btn py-1 h-8 rounded-md w-full flex justify-center items-center gap-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openListModal();
+                }}
               >
                 List
               </button>
@@ -379,7 +412,9 @@ export default function InscriptionCard({
         tag={tag}
         content={
           inscription?.contentType?.indexOf("image") > -1
-            ? inscription?.inscriptionId
+            ? isNFT
+              ? inscription?.content
+              : inscription?.inscriptionId
             : content
         }
         output={inscription?.outputValue}
@@ -388,6 +423,10 @@ export default function InscriptionCard({
       />
 
       <TransferModal
+        setIsOpenSplit={setIsOpenSplit}
+        isNeedToSplit={isNeedToSplit}
+        isMultiStuck={isMultiStuck}
+        checking={checking}
         modalIsOpen={isOpenTransfer}
         setIsOpen={setIsOpenTransfer}
         content={content}
@@ -398,8 +437,8 @@ export default function InscriptionCard({
       <SpliteModal
         modalIsOpen={isOpenSplit}
         isNeedToSplit={isNeedToSplit}
-        setIsOpen={setIsOpenSplit}
         isMultiStuck={isMultiStuck}
+        setIsOpen={setIsOpenSplit}
         inscriptionDetails={inscriptionDetails}
         inscription={inscription}
       />

@@ -7,7 +7,7 @@ export default function CopyClip() {
   };
 
   return (
-    <div className="flex gap-2  items-center mt-3 p-2 dark:bg-primary-dark/30 bg-primary-light/30 w-full rounded overflow-x-hidden">
+    <div className="flex gap-2  items-center mt-3 p-2 bg-primary-dark/30  w-full rounded overflow-x-hidden">
       <FaCopy
         className="ml-1 cursor-pointer"
         onClick={() => copyToClipboard("ltc1qrn6eqzxdhaaq8t9jl58skcjkrcrfpwsch548c5")}

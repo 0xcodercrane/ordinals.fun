@@ -88,7 +88,51 @@ export default function useActivities() {
       type: "Buy",
       tx: tx,
     };
-    push(dbRef, newActivity);
+    await push(dbRef, newActivity);
+
+    const dbRefForActivities = ref(db, `activities`);
+    const activity = {
+      date: Date.now(),
+      tag: tag,
+      content: content,
+      id: inscriptionId,
+      price: price,
+      type: "Buy",
+      tx: tx,
+    };
+    await push(dbRefForActivities, activity);
+
+    await handleUpdateStatus(tag, price);
+  };
+
+  const handleUpdateStatus = async (tag, price) => {
+    const dbQuery = query(ref(db, `status/${tag}`));
+
+    const snapshot = await get(dbQuery);
+    const exist = snapshot.val();
+
+    if (!exist) {
+      const dbRefStatus = ref(db, `/status/${tag}`);
+      await push(dbRefStatus, {
+        TVL: Number(price),
+        floor: Number(price),
+        listed: 1,
+      });
+    } else {
+      const key = Object.keys(exist)[0];
+      const url = `/status/${tag}/${key}`;
+      const dbRefStatus = ref(db, url);
+
+      const updates = {};
+
+      updates[`TVL`] = Number(exist[key]?.TVL) - Number(price);
+      updates[`floor`] =
+        (Number(exist[key]?.TVL) - Number(price)) /
+        (Number(exist[key]?.listed) - 1);
+      updates[`listed`] = Number(exist[key]?.listed) - 1;
+
+      await update(dbRefStatus, updates);
+    }
   };
 
   const removeListFromMarket = async (inscriptionId) => {

@@ -1,6 +1,14 @@
 import React from "react";
 import Layout from "@/components/sections/Layout";
-import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
+import {
+  onValue,
+  ref,
+  query,
+  orderByChild,
+  equalTo,
+  get,
+  update,
+} from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -13,6 +21,7 @@ import Banner from "../components/trade/Banner";
 import Head from "next/head";
 
 export default function Home() {
+
   const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs, selectUtxos } =
     useUTXOs();
   const { price } = useWallet();
@@ -40,6 +49,34 @@ export default function Home() {
         }
         setFetchingData(false);
       });
+
+      const dbQuery2 = query(ref(db, `status/others`));
+
+      const snapshot = await get(dbQuery2);
+      const exist = snapshot.val();
+
+      if (!exist) {
+        const dbRefStatus = ref(db, `/status/others`);
+        await push(dbRefStatus, {
+          TVL: Number(listingPrice),
+          floor: Number(listingPrice),
+          listed: 1,
+        });
+      } else {
+        const key = Object.keys(exist)[0];
+        const url = `/status/others/${key}`;
+        const dbRefStatus = ref(db, url);
+
+        const updates = {};
+
+        // updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice);
+        // updates[`floor`] =
+        //   (Number(exist[key]?.TVL) + Number(listingPrice)) /
+        //   (Number(exist[key]?.listed) + 1);
+        // updates[`listed`] = Number(exist[key]?.listed) + 1;
+
+        // await update(dbRefStatus, {TVL: 3.5, floor: 0.3, listed: 12 });
+      }
     };
     fetchTotalItems();
   }, []);

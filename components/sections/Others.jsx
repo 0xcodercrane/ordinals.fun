@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import InscriptionCardSkelenton from "../UI/InscriptionCardSkelenton";
-import Link from "next/link";
 import InscriptionCard from "../UI/InscriptionCard";
 import ReactPaginate from "react-paginate";
 
@@ -10,17 +9,13 @@ export default function Others({
   bulkSelect,
   setSelectedBlocks,
   selectedBlocks,
-  setNFTSlug,
+  lastBlock,
 }) {
   const [offset, setOffset] = useState(0);
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
-
-  useEffect(() => {
-    setNFTSlug("others");
-  }, []);
 
   return (
     <div className={`w-full ${!inscriptionsFromDB && "my-auto"}`}>
@@ -43,13 +38,14 @@ export default function Others({
                         return (
                           <InscriptionCard
                             inscription={inscription}
-                            key={key}
+                            key={inscription?.inscriptionId + "others"}
                             inscriptionIndex={key + offset * 10}
                             bulkSelect={bulkSelect}
                             tag="others"
                             setSelectedBlocks={setSelectedBlocks}
                             selectedBlocks={selectedBlocks}
-                            isNFT={true}
+                            isNFT={false}
+                            lastBlock={lastBlock}
                           />
                         );
                       })}

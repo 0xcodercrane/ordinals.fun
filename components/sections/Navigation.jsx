@@ -35,7 +35,7 @@ export default function Navigation() {
         </Link>
       </div>
       <div className="md:flex md:justify-center md:items-center md:mx-0 lg:mx-1 md:text-sm lg:text-lg hidden ">
-        <Link className="font-semibold" href="/wallet">
+        <Link className="font-semibold" href="/wallet/litemaps">
           Wallet
         </Link>
       </div>
@@ -63,7 +63,7 @@ export default function Navigation() {
           leaveTo="transform opacity-0 scale-95"
         >
           <Menu.Items className="fixed right-0  w-full px-3 mt-3 origin-top-right z-50  divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="transition ease-in-out dark:bg-[#091b2bed] bg-primary-light backdrop-blur-3xl rounded-lg">
+            <div className="transition ease-in-out  backdrop-blur-3xl rounded-lg">
               <ul className="rounded drop-shadow-md shadow-black py-1">
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
                   <Link className="font-semibold" href="/">
@@ -91,7 +91,7 @@ export default function Navigation() {
                   </Link>
                 </li>
                 <li className="py-2 px-3 flex hover:bg-gray-400/20 transition ease-out cursor-pointer">
-                  <Link className="font-semibold" href="/wallet">
+                  <Link className="font-semibold" href="/wallet/litemaps">
                     Wallet
                   </Link>
                 </li>

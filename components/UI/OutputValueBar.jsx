@@ -41,7 +41,7 @@ export default function OutputValueBar({ defaultValue, onChange }) {
                 setOptionIndex(index);
               }}
               className={`cursor-pointer flex justify-center flex-col rounded-md cs-border px-2 w-full py-3 items-center ${
-                selected && "dark:bg-[#103e5c] bg-primary-light/60"
+                selected && "bg-[#103e5c]"
               }`}
             >
               <p>{v.title}</p>

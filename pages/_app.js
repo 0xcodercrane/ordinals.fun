@@ -42,15 +42,15 @@ function App({ Component, pageProps }) {
         <PersistGate loading={null} persistor={persistor}>
           <ThemeContextProvider>
             <ThemeProvider attribute="class">
-              <RefreshContextProvider>
-                <InscribeLiteMapContext>
-                  <WalletContext>
-                    <NextNProgress color="#185380" />
-                    <Component {...pageProps} />
-                    <ToastContainer />
-                  </WalletContext>
-                </InscribeLiteMapContext>
-              </RefreshContextProvider>
+              {/* <RefreshContextProvider> */}
+              <InscribeLiteMapContext>
+                <WalletContext>
+                  <NextNProgress color="#185380" />
+                  <Component {...pageProps} />
+                  <ToastContainer />
+                </WalletContext>
+              </InscribeLiteMapContext>
+              {/* </RefreshContextProvider> */}
             </ThemeProvider>
           </ThemeContextProvider>
         </PersistGate>

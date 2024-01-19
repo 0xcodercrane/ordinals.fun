@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "@/components/sections/Layout";
-import InscriptionCard from "../components/UI/InscriptionCard";
 import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
@@ -28,14 +27,6 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTotalItems = async () => {
-      const res = await fetch(
-        "https://api.chikun.market/api/address/collections?address=ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru"
-      );
-
-      const resJson = await res.json();
-
-      console.log(resJson);
-
       const dbQuery = query(
         ref(db, "market/litemap"),
         orderByChild("paid"),

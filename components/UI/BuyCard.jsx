@@ -26,6 +26,10 @@ export default function BuyCard({
     router.push(`/inscription/${id}`);
   };
 
+  const empyImage = (e) => {
+    e.target.src = "/empty.png";
+  };
+
   return (
     <>
       <div
@@ -36,9 +40,11 @@ export default function BuyCard({
           {list?.data?.contentType.indexOf("image") > -1 && (
             <>
               <img
+                key={list?.data?.inscriptionNumber}
                 src={`https://ordinalslite.com/content/${list?.data?.inscriptionId}`}
                 className="w-full h-full object-contain"
                 alt=""
+                onError={(e) => empyImage(e)}
               />
             </>
           )}
@@ -82,7 +88,7 @@ export default function BuyCard({
           </Link>
         ) : (
           <button
-            className="main_btn py-1 rounded-md dark:disabled:bg-primary-dark/10 disabled:bg-primary-light/10 w-full"
+            className="main_btn py-1 rounded-md disabled:bg-primary-dark/10  w-full"
             onClick={(e) => {
               e.stopPropagation(); // Prevent event bubbling
               setIsOpen(true);

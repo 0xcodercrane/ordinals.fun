@@ -173,7 +173,7 @@ export default function ControlPanel({ from, to }) {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         contentLabel="Example Modal"
-        className="bg-primary-dark dark:text-white border-[#dee2e654!important] rounded-lg sm:w-full sm:max-w-[500px] w-[] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black drop-shadow-xl drop-sahdow-black"
+        className="bg-primary-dark text-white border-[#dee2e654!important] rounded-lg sm:w-full sm:max-w-[500px] w-[] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black drop-shadow-xl drop-sahdow-black"
       >
         <h2 className="text-2xl text-center my-6 font-semibold mx-auto">
           Select the amount of blocks to inscribe.
@@ -215,7 +215,7 @@ export default function ControlPanel({ from, to }) {
             type="Number"
             min={to}
             max={from}
-            className="py-2 px-3 w-full bg-primary-light/30   dark:bg-[#0b314f66] rounded-lg focus:outline-none focus:border-white/50 border border-white/40 duration-300"
+            className="py-2 px-3 w-full bg-[#0b314f66] rounded-lg focus:outline-none focus:border-white/50 border border-white/40 duration-300"
             placeholder="Amount of blocks"
             onChange={(e) => setAmount(e.target.value)}
           />
@@ -232,7 +232,7 @@ export default function ControlPanel({ from, to }) {
             type="Number"
             min={to}
             max={from - 1}
-            className="py-2 px-3 bg-primary-light/30  dark:bg-[#0b314f66] w-full  rounded-lg focus:outline-none focus:border-white/50 border border-white/40 duration-300"
+            className="py-2 px-3 bg-[#0b314f66] w-full  rounded-lg focus:outline-none focus:border-white/50 border border-white/40 duration-300"
             placeholder="From (block number)"
             onChange={(e) => setFromNumber(e.target.value)}
           />
@@ -240,7 +240,7 @@ export default function ControlPanel({ from, to }) {
             type="Number"
             min={to + 1}
             max={from}
-            className="py-2 px-3 bg-primary-light/30  dark:bg-[#0b314f66] w-full  rounded-lg focus:outline-none focus:border-white/50 border border-white/40 duration-300"
+            className="py-2 px-3 :bg-[#0b314f66] w-full  rounded-lg focus:outline-none focus:border-white/50 border border-white/40 duration-300"
             placeholder="To (block number)"
             onChange={(e) => setToNumber(e.target.value)}
           />
@@ -252,7 +252,7 @@ export default function ControlPanel({ from, to }) {
           </button>
         </div>
 
-        <div className="mt-3 bg-primary-light/30  dark:bg-[#0b314f66] rounded-lg p-3 text-sm">
+        <div className="mt-3 :bg-[#0b314f66] rounded-lg p-3 text-sm">
           <div className="flex gap-2 justify-between w-full">
             <p> Available Blocks:</p> <p>{availableBlocks.length}</p>
           </div>

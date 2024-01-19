@@ -289,8 +289,9 @@ export default function ListModal({
         <div className="flex gap-1">
           <input
             onChange={(e) => setListingPrice(e.target.value)}
+            min={0.002}
             type="number"
-            className="py-1 rounded-md bg-primary-light/10 dark:bg-primary-dark/10 cs-border px-2 w-full"
+            className="py-1 rounded-md bg-primary-dark/10 cs-border px-2 w-full"
             placeholder="Input Price"
           />
           <div className="px-2 py-1 bg-primary-contentDark rounded-md text-sm flex justify-center items-center w-36 cs-border overflow-hidden ">
@@ -325,7 +326,7 @@ export default function ListModal({
       </div>
 
       {pendingTx && (
-        <div className="absolute top-0 left-0 w-full h-full bg-primary-light/60 dark:bg-primary-dark/60 flex justify-center items-center">
+        <div className="absolute top-0 left-0 w-full h-full bg-primary-dark/60 flex justify-center items-center">
           <AiOutlineLoading className="text-3xl font-semibold animate-spin" />
         </div>
       )}

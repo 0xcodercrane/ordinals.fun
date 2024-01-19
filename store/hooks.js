@@ -1,14 +1,6 @@
-import {
-  onValue,
-  query,
-  ref,
-  orderByValue,
-  orderByChild,
-  orderByKey,
-} from "firebase/database";
-import { useEffect, useState } from "react";
+import { onValue, query, ref, orderByChild } from "firebase/database";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useRefresh from "../hooks/useRefresh";
 import { db } from "@/services/firebase";
 import { setMintedBlocks } from "@/store/slices/blocks";
 import {
@@ -52,7 +44,6 @@ export const useAddress = () => {
 
 export const useMintedBlocks = () => {
   const dispatch = useDispatch();
-  const { fastRefresh } = useRefresh();
   const { mintedBlocks } = useBlocks();
   const { selectedBlock } = useInscribe();
 
@@ -94,7 +85,7 @@ export const useMintedBlocks = () => {
         }
       }
     });
-  }, [fastRefresh, dispatch]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (mintedBlocks.length > 0) {
@@ -108,7 +99,6 @@ export const useMintedBlocks = () => {
 
 export const useLastBlock = () => {
   const dispatch = useDispatch();
-  const { slowRefresh } = useRefresh();
   const { lastBlock } = useInscribe();
 
   const fetchLastBlock = async () => {
@@ -124,14 +114,13 @@ export const useLastBlock = () => {
 
   useEffect(() => {
     fetchLastBlock();
-  }, [slowRefresh, dispatch]);
+  }, [dispatch]);
 
   return { lastBlock: lastBlock };
 };
 
 export const useMintedBlocksFromAPI = () => {
   const dispatch = useDispatch();
-  const { slowRefresh } = useRefresh();
   const { mintedBlockNumber } = useInscribe();
 
   useEffect(() => {
@@ -143,12 +132,12 @@ export const useMintedBlocksFromAPI = () => {
           dispatch(updateMintedBlockNumber(resJson?.totalItems));
         }
       } catch (error) {
-      //  console.log(error);
+        //  console.log(error);
       }
     }
 
     searchBlocks();
-  }, [slowRefresh]);
+  }, []);
 
   return { mintedBlockNumber: mintedBlockNumber };
 };

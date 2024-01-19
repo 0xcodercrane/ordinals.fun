@@ -15,23 +15,23 @@ export default function Banner({ lastBlock }) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-lg">
         <div>
           <p className="font-semibold">{lastBlock}</p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Lastest Block
           </p>
         </div>
         <div>
           <p className="font-semibold">{lastBlock - mintedBlockNumber}</p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Available Blocks
           </p>
         </div>
         <div>
           <p className="font-semibold">{mintedBlockNumber}</p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">Minted</p>
+          <p className="text-sm text-gray-300 ">Minted</p>
         </div>
         <div>
           <p className="font-semibold"> ~$ {Number(price).toFixed(2)}</p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">LTC Price</p>
+          <p className="text-sm text-gray-300 ">LTC Price</p>
         </div>
       </div>
     </div>

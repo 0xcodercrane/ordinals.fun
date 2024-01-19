@@ -113,8 +113,6 @@ export default function BuyModal({
   }
 
   async function generatePSBTGeneratingDummyUtxos() {
-    console.log("running");
-
     if (!psbt) {
       toast.error("PSBT is not generated yet.");
       return;
@@ -148,7 +146,6 @@ export default function BuyModal({
           totalValue += utxo.satoshis;
         }
       }
-      console.log("running");
 
       for (let i = 0; i < 2; i++) {
         psbt.addOutput({
@@ -156,22 +153,19 @@ export default function BuyModal({
           value: 3000,
         });
       }
-      console.log("running");
 
       const fee = calculateFee(psbt.txInputs.length, psbt.txOutputs.length, 1);
-      console.log("running", totalValue);
 
       // Change utxo
       psbt.addOutput({
         address: address,
         value: totalValue - 2 * 3000 - fee,
       });
-      console.log("running");
 
       const singedPSBT = await wallet.signPsbt(psbt, {});
       const rawtx = singedPSBT.extractTransaction().toHex();
-    console.log("running");
-    const txId = await wallet.pushTx(rawtx);
+
+      const txId = await wallet.pushTx(rawtx);
       setDummyTx(txId);
       setPendingTx(false);
       refreshUTXOs();
@@ -514,14 +508,14 @@ export default function BuyModal({
       </div>
 
       {pendingTx && (
-        <div className="absolute top-0 left-0 w-full h-full bg-primary-light/60 dark:bg-primary-dark/60 flex justify-center items-center">
+        <div className="absolute top-0 left-0 w-full h-full bg-primary-dark/60 flex justify-center items-center">
           <AiOutlineLoading className="text-3xl font-semibold animate-spin" />
         </div>
       )}
 
       {succeed && (
         <>
-          <div className="absolute top-0 left-0 w-full h-full bg-primary-light dark:bg-primary-dark flex justify-center items-center">
+          <div className="absolute top-0 left-0 w-full h-full bg-primary-dark  flex justify-center items-center">
             <div>
               <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
               <a

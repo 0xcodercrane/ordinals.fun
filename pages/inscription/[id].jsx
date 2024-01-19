@@ -36,7 +36,6 @@ export default function Inscription(props) {
   const getData = async (id) => {
     setLoading(true);
     const data = await openAPI.getInscriptionUtxoDetail(id);
-    console.log(data);
 
     if (data) {
       setData(data?.inscriptions[0]);

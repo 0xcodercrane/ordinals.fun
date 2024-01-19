@@ -51,7 +51,7 @@ export default function Confirming({
           )}
           <p
             className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm ${
-              confirmed2 ? "text-green-500" : "dark:text-white text-black"
+              confirmed2 ? "text-green-500" : "text-white "
             }`}
           >
             Confirming
@@ -82,7 +82,7 @@ export default function Confirming({
           )}
           <p
             className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm ${
-              confirmed3 ? "text-green-500" : "dark:text-white text-black"
+              confirmed3 ? "text-green-500" : "text-white "
             }`}
           >
             Inscribing
@@ -113,7 +113,7 @@ export default function Confirming({
           )}
           <p
             className={`absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm ${
-              confirmed4 ? "text-green-500" : "dark:text-white text-black"
+              confirmed4 ? "text-green-500" : "text-white "
             }`}
           >
             Delivering

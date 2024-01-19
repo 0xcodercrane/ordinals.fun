@@ -42,7 +42,7 @@ export default function OutPutValue({ defaultValue, onChange }) {
                 setOptionIndex(index);
               }}
               className={`${
-                selected && "dark:bg-[#103e5c] bg-primary-light/60"
+                selected && "bg-[#103e5c]"
               } output-item`}
             >
               <p>{v.title}</p>
@@ -54,7 +54,7 @@ export default function OutPutValue({ defaultValue, onChange }) {
       {optionIndex === FeeRateType.CUSTOM && (
         <input
           type="number"
-          className="w-full mt-3 bg-transparent py-2 px-2 rounded-md border border-[black!important] dark:border-[white!important] focus:outline-none"
+          className="w-full mt-3 bg-transparent py-2 px-2 rounded-md border border-[white!important] focus:outline-none"
           preset="amount"
           placeholder={"lit/vB"}
           defaultValue={inputVal}

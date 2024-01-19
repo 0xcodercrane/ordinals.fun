@@ -82,7 +82,7 @@ export default function Block(props) {
 
   if (minted) {
     return (
-      <div className="dark:bg-[#00bbff0f] bg-[#dadddf] border border-[#00000046!important] w-[93%] h-[30px]  drop-shadow-lg dark:border-[#58829e2d!important] w-100 my-auto shadow-black rounded text-sm flex justify-center items-center font-extralight hover:drop-shadow-2xl transition-all ease-out">
+      <div className="bg-[#00bbff0f]  border  w-[93%] h-[30px]  drop-shadow-lg border-[#58829e2d!important] w-100 my-auto shadow-black rounded text-sm flex justify-center items-center font-extralight hover:drop-shadow-2xl transition-all ease-out">
         {props.blockNumber}
       </div>
     );
@@ -90,10 +90,10 @@ export default function Block(props) {
     return (
       <div
         onClick={(e) => handleClick(props.blockNumber)}
-        className={` shadow-black rounded text-[12px] flex justify-center items-center font-extralight  cursor-pointer hover:drop-shadow-2xl dark:hover:bg-[#00c7ffcf] hover:bg-[#737575cf] duration-200 mx-auto my-auto ${
+        className={` shadow-black rounded text-[12px] flex justify-center items-center font-extralight  cursor-pointer hover:drop-shadow-2xl hover:bg-[#00c7ffcf]  duration-200 mx-auto my-auto ${
           isSelected
-            ? "dark:bg-[#00c7ffcf] bg-[#737575cf] drop-shadow-2xl border dark:border-[#5ab1ccb0!important] w-[93%] h-[30px]"
-            : "dark:bg-[#19659fd1] bg-[#aeafb1d1]  drop-shadow-lg w-100 h-[35px]"
+            ? "bg-[#00c7ffcf] drop-shadow-2xl border border-[#5ab1ccb0!important] w-[93%] h-[30px]"
+            : "bg-[#19659fd1]  drop-shadow-lg w-100 h-[35px]"
         }`}
       >
         {props.blockNumber}

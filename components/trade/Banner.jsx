@@ -44,11 +44,9 @@ export default function Banner({ title, tag }) {
         }
       });
 
-      const dbTradesh = query(
-        ref(db, "market/" + tag),
-        orderByChild("date"),
-        startAt(Date.now() - 3600000)
-      );
+      const dbTradesh = query(ref(db, "market/" + tag), orderByChild("date"));
+
+      // startAt(Date.now() - 3600000)
 
       onValue(dbTradesh, async (snapshot) => {
         const exist = snapshot.val();
@@ -82,7 +80,7 @@ export default function Banner({ title, tag }) {
             )}{" "}
             LTC
           </p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Floor price
           </p>
         </div>
@@ -91,7 +89,7 @@ export default function Banner({ title, tag }) {
             {status ? <NumberFormat number={status?.TVL?.toFixed(2)} /> : 0.0}{" "}
             LTC
           </p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Total volume
           </p>
         </div>
@@ -100,7 +98,7 @@ export default function Banner({ title, tag }) {
             {volume24 ? <NumberFormat number={volume24?.toFixed(2)} /> : "0.00"}{" "}
             LTC
           </p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Volume (24h)
           </p>
         </div>
@@ -112,7 +110,7 @@ export default function Banner({ title, tag }) {
               0
             )}
           </p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Trades (24h)
           </p>
         </div>
@@ -120,11 +118,11 @@ export default function Banner({ title, tag }) {
           <p className="font-semibold">
             {mintedBlockNumber ? mintedBlockNumber : 0}
           </p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">Owners</p>
+          <p className="text-sm text-gray-300 ">Owners</p>
         </div>
         <div>
           <p className="font-semibold">{lastBlock ? lastBlock : 0}</p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">
+          <p className="text-sm text-gray-300 ">
             Latest Block
           </p>
         </div>
@@ -132,14 +130,14 @@ export default function Banner({ title, tag }) {
           <p className="font-semibold">
             {status?.listed ? <NumberFormat number={status?.listed} /> : 0}
           </p>
-          <p className="text-sm dark:text-gray-300 text-gray-800">Listed</p>
+          <p className="text-sm text-gray-300 ">Listed</p>
         </div>
       </div>
 
       <div className="w-full my-8 flex justify-between">
-        <div className="main_btn px-3 py-2 rounded-md w-fit">
+        {/* <div className="main_btn px-3 py-2 rounded-md w-fit">
           🔥 {volumeh} buys in last hour
-        </div>
+        </div> */}
         <Link href={"/wallet"} className="main_btn px-3 py-2 rounded-md w-fit">
           Create Listing
         </Link>

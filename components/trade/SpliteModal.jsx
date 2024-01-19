@@ -195,14 +195,14 @@ export default function SpliteModal({
       </div>
 
       {pendingTx && (
-        <div className="absolute top-0 left-0 w-full h-full bg-primary-light/60 dark:bg-primary-dark/60 flex justify-center items-center">
+        <div className="absolute top-0 left-0 w-full h-full bg-primary-dark/60 flex justify-center items-center">
           <AiOutlineLoading className="text-3xl font-semibold animate-spin" />
         </div>
       )}
 
       {succeed && (
         <>
-          <div className="absolute top-0 left-0 w-full h-full bg-primary-light dark:bg-primary-dark flex justify-center items-center">
+          <div className="absolute top-0 left-0 w-full h-full bg-primary-dark  flex justify-center items-center">
             <div>
               <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
               <a

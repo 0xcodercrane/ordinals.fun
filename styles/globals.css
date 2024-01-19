@@ -96,7 +96,7 @@
 
 html,
 body {
-  @apply bg-white dark:bg-dark;
+  @apply bg-dark;
   overflow-x: hidden;
   font-family: NippoBold, "opentype";
   -webkit-font-smoothing: antialiased;
@@ -760,7 +760,7 @@ section > .marquee {
 }
 
 .pagination li.selected {
-  @apply bg-[#d8d8d8] dark:bg-[#91d8ff];
+  @apply bg-[#91d8ff];
 }
 
 .pagination li::before {
@@ -787,15 +787,15 @@ section > .marquee {
 }
 
 .border {
-  @apply border-[black!important] dark:border-[white!important] border-[0.5px!important];
+  @apply  border-[white!important] ;
 }
 
 .cs-modal {
-  @apply dark:bg-primary-dark bg-primary-white  text-black dark:text-white  rounded-lg sm:w-full sm:max-w-[500px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black/60;
+  @apply bg-primary-dark text-white rounded-lg sm:w-full sm:max-w-[500px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 shadow-lg shadow-black/60;
 }
 
 .in-card {
-  @apply rounded-lg p-3 dark:bg-primary-dark/30 bg-primary-light/40 cursor-pointer  backdrop-blur-md shadow shadow-black/30 dark:hover:bg-primary-dark/30 hover:bg-primary-light/30  w-full duration-300;
+  @apply rounded-lg p-3 bg-primary-dark/30 cursor-pointer  backdrop-blur-md shadow shadow-black/30 hover:bg-primary-dark/30  w-full duration-300;
   border: 0.5px solid transparent!important;
 }
 
@@ -804,16 +804,16 @@ section > .marquee {
 }
 
 .in-content {
-  @apply dark:bg-primary-dark/60 relative bg-primary-light/60   text-xl text-center  mb-3 flex items-center p-2 justify-center font-semibold w-full h-[150px] lg:h-[180px] md:h-[170px] sm:h-[160px];
+  @apply bg-primary-dark/60 relative  text-xl text-center  mb-3 flex items-center p-2 justify-center font-semibold w-full h-[150px] lg:h-[180px] md:h-[170px] sm:h-[160px];
   overflow-wrap: anywhere !important;
 }
 
 .in-transfer {
-  @apply absolute bg-primary-light dark:bg-primary-dark border px-2 top-1 right-1 font-extralight text-sm rounded-sm;
+  @apply absolute bg-primary-dark border px-2 top-1 right-1 font-extralight text-sm rounded-sm;
 }
 
 .in-link {
-  @apply text-sm dark:text-gray-300 text-gray-800 flex justify-center;
+  @apply text-sm text-gray-300  flex justify-center;
 }
 
 .input-address {

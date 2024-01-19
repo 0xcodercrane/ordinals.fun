@@ -54,7 +54,7 @@ export default function Orders() {
       <p className="my-8 text-center text-3xl font-semibold">My orders</p>
 
       <div className="w-full max-w-[700px] max-h-[1200px] rounded-lg shadow-lg shadow-black/30 mt-6">
-        <div className="grid grid-cols-12 px-3 py-2 dark:bg-primary-dark/20 bg-primary-light/20 rounded-t-lg">
+        <div className="grid grid-cols-12 px-3 py-2 bg-primary-dark/20  rounded-t-lg">
           <div className="col-span-6">Order ID</div>
           <div className="col-span-3">Status</div>
           <div className="col-span-3">Date</div>
@@ -68,7 +68,7 @@ export default function Orders() {
                 return (
                   <div
                     key={index}
-                    className="grid grid-cols-12 px-3 mb-1.5 dark:hover:bg-primary-dark/30 hover:bg-primary-light/30 dark:bg-primary-dark/20 bg-primary-light/20 cursor-pointer items-center gap-2 py-1"
+                    className="grid grid-cols-12 px-3 mb-1.5 hover:bg-primary-dark/30  bg-primary-dark/20  cursor-pointer items-center gap-2 py-1"
                     onClick={() => goToPayment(orders[key].orderId)}
                   >
                     <div key={index + "id"} className="my-1 col-span-6 text-sm">
