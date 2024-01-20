@@ -9,6 +9,16 @@ export const litemap = "-Nnq0zmNxpK1WSYtHO2Q";
 
 export const collectionsData = [
   {
+    name: "Ordinal Smokes",
+    inscription_icon: "43e6d68b6504969b71414d63533363d33850667dfdfb43999423d8e3ffc12075i0",
+    supply: "111",
+    slug: "ordinal-smokes",
+    description: "Smokes chilling on the Bitcoin Blockchai",
+    twitter_link: "https://twitter.com/OrdinalsNFT",
+    discord_link: "",
+    website_link: "",
+  },
+  {
     name: "Banksy superstar set 1",
     inscription_icon:
       "6bbdf1a3434328660843aa276d4974e50cb6fb9f7f932182fff92fe8bb9e6901i0",
