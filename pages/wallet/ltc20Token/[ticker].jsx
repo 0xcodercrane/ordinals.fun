@@ -68,7 +68,7 @@ export default function LTC20Token() {
   const getTokenSummary = async (address, ticker) => {
     try {
       const res = await openApi.getAddressTokenSummary(
-        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
+        address,
         ticker
       );
       setTokenSummary(res);
@@ -80,15 +80,12 @@ export default function LTC20Token() {
   const fetchData = async () => {
     try {
       setFetchingData(true);
-      console.log("ddd");
-
       const { list, total } = await openApi.getTokenTransferableList(
-        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
+        address,
         ticker,
         offset + 1,
         pageSize
       );
-      console.log("ddd");
       setTransferableList(list);
       setTotal(total);
     } catch (e) {
@@ -98,25 +95,25 @@ export default function LTC20Token() {
     }
   };
 
-  // useEffect(() => {
-  //    if (router.asPath !== router.route) {
-  //     if (router?.query?.ticker) {
-  //        setTicker(router?.query?.ticker);
-  //      }
-  //    }
-  //  }, [router.isReady]);
-  //
-  //  useEffect(() => {
-  //    if (ticker && address) {
-  //     getTokenSummary(address, ticker);
-  //   }
-  // }, [ticker, address]);
+  useEffect(() => {
+    if (router.asPath !== router.route) {
+      if (router?.query?.ticker) {
+        setTicker(router?.query?.ticker);
+      }
+    }
+  }, [router.isReady]);
 
-  //   useEffect(() => {
-  //    if (ticker && address) {
-  //     fetchData();
-  //     }
-  //  }, [offset, ticker, address]);
+  useEffect(() => {
+    if (ticker && address) {
+      getTokenSummary(address, ticker);
+    }
+  }, [ticker, address]);
+
+  useEffect(() => {
+    if (ticker && address) {
+      fetchData();
+    }
+  }, [offset, ticker, address]);
 
   return (
     <Layout>
@@ -136,14 +133,14 @@ export default function LTC20Token() {
         {!bulkSelect ? (
           <button
             className="main_btn px-2 py-1 rounded-md hidden sm:inline-block"
-            // onClick={() => setBulkSelect(true)}
+          // onClick={() => setBulkSelect(true)}
           >
             Bulk Select
           </button>
         ) : (
           <button
             className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2  items-center hidden sm:flex"
-            // onClick={() => cancelBlocks()}
+          // onClick={() => cancelBlocks()}
           >
             <MdCancel /> Cancel
           </button>

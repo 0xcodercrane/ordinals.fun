@@ -31,7 +31,7 @@ export default function WalletLTC20() {
 
     try {
       const data = await openApi.getAddressTokenBalances(
-        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
+        address,
         0,
         1000
       );
@@ -61,7 +61,7 @@ export default function WalletLTC20() {
       </Head>
 
       <h1 className="text-3xl font-semibold my-16 text-center">My Wallet</h1>
-{/* 
+      {/* 
       {!bulkSelect ? (
         <button
           className="main_btn px-2 py-1 rounded-md sm:hidden inline-block mb-1"
@@ -84,14 +84,14 @@ export default function WalletLTC20() {
         {!bulkSelect ? (
           <button
             className="main_btn px-2 py-1 rounded-md hidden sm:inline-block"
-            // onClick={() => setBulkSelect(true)}
+          // onClick={() => setBulkSelect(true)}
           >
             Bulk Select
           </button>
         ) : (
           <button
             className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2  items-center hidden sm:flex"
-            // onClick={() => cancelBlocks()}
+          // onClick={() => cancelBlocks()}
           >
             <MdCancel /> Cancel
           </button>
