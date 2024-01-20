@@ -16,6 +16,7 @@ import ReactPaginate from "react-paginate";
 import { toast } from "react-hot-toast";
 import Ltc20tokenCard from "../../../components/UI/ltc20tokenCard";
 import { LuPencilLine } from "react-icons/lu";
+import { MdCancel } from "react-icons/md";
 
 export default function LTC20Token() {
   const wallet = useContext(WalletContext);
