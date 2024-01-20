@@ -15,7 +15,7 @@ export default function collections() {
         />
       </Head>
 
-      <div>
+      <div className="">
         <h2 className="text-4xl font-bold mt-16 mb-2 text-center sm:text-left">
           NFT Collections
         </h2>
@@ -23,7 +23,17 @@ export default function collections() {
           NFT PSBT market place on Litecoin.
         </p>
       </div>
-      
+
+      <div className="w-full flex justify-end my-2">
+        <a
+          href="https://t.me/AVAXLEWIS2"
+          target={"_blank"}
+          className="main_btn px-2 py-2 rounded-md"
+        >
+          Create Collection
+        </a>
+      </div>
+
       <div className="my-3 w-full">
         <table className="table-auto w-full">
           <thead>
