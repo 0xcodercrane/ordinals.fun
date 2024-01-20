@@ -193,6 +193,14 @@ export default function InscriptionCard({
       return;
     }
 
+    if (
+      tag === "others" &&
+      (content.indexOf(".litemap") > -1 || content.indexOf(".litmap") > -1)
+    ) {
+      toast.error("Please list this inscription on litemap Tab");
+      return;
+    }
+
     if (tag === "litemap") {
       const blockNumber = Number(content.split(".")[0]);
       if (blockNumber > lastBlock) {
@@ -314,11 +322,19 @@ export default function InscriptionCard({
               {content && (
                 <>
                   {content.indexOf("tick") > -1 ? (
-                    <div className="text-lg font-bold px-3">
+                    <div
+                      className="text-lg font-bold px-3"
+                      key={inscription?.inscriptionId + "content"}
+                    >
                       {JSON.parse(content).tick}
                     </div>
                   ) : (
-                    <div className="text-lg font-bold px-3">{content}</div>
+                    <div
+                      className="text-lg font-bold px-3"
+                      key={inscription?.inscriptionId + "content"}
+                    >
+                      {content}
+                    </div>
                   )}
                 </>
               )}

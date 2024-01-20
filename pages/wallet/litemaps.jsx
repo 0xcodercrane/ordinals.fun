@@ -137,9 +137,7 @@ export default function WalletLiteMap() {
         />
       </Head>
 
-      <h1 className="text-3xl font-semibold my-16 text-center">
-        My Wallet
-      </h1>
+      <h1 className="text-3xl font-semibold my-16 text-center">My Wallet</h1>
 
       {!bulkSelect ? (
         <button
@@ -214,7 +212,7 @@ export default function WalletLiteMap() {
                         return (
                           <InscriptionCard
                             inscription={inscription}
-                            key={key + "litemaps"}
+                            key={inscription.inscriptionId + "litemaps"}
                             inscriptionIndex={key + offset * 10}
                             bulkSelect={bulkSelect}
                             tag={"litemap"}

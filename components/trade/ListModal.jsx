@@ -143,6 +143,11 @@ export default function ListModal({
       return;
     }
 
+    if (tag === "others" && (content.indexOf(".litemap") > -1 || content.indexOf(".litmap") > -1)) {
+      toast.error("Please list this inscription on litemap Tab");
+      return;
+    }
+
     if (tag === "litemap") {
       if (content.indexOf(tag) <= -1) {
         toast.error("Invalid Inscription");

@@ -8,6 +8,7 @@ import {
   equalTo,
   get,
   update,
+  remove,
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
@@ -21,7 +22,6 @@ import Banner from "../components/trade/Banner";
 import Head from "next/head";
 
 export default function Home() {
-
   const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs, selectUtxos } =
     useUTXOs();
   const { price } = useWallet();
@@ -50,33 +50,56 @@ export default function Home() {
         setFetchingData(false);
       });
 
-      const dbQuery2 = query(ref(db, `status/litemap`));
+      // const dbQuery2 = query(ref(db, `market/others`));
 
-      const snapshot = await get(dbQuery2);
-      const exist = snapshot.val();
+      // const snapshot = await get(dbQuery2);
+      // const exist = snapshot.val();
 
-      if (!exist) {
-        const dbRefStatus = ref(db, `/status/litemap`);
-        await push(dbRefStatus, {
-          TVL: Number(listingPrice),
-          floor: Number(listingPrice),
-          listed: 1,
-        });
-      } else {
-        const key = Object.keys(exist)[0];
-        const url = `/status/others/${key}`;
-        const dbRefStatus = ref(db, url);
+      // let volume = 0;
+      // let number = 0;
+      // let updatedOthers = {};
 
-        const updates = {};
+      // if (!exist) {
+      // const dbRefStatus = ref(db, `/status/litemap`);
+      // await push(dbRefStatus, {
+      //   TVL: Number(listingPrice),
+      //   floor: Number(listingPrice),
+      //   listed: 1,
+      // });
+      // } else {
+      // Object.keys(exist).map(async (index) => {
+      // if (exist[index]?.content.indexOf(".litmap") == -1) {
+      //   updatedOthers[index] = exist[index];
+      // } else
 
-        // updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice);
-        // updates[`floor`] =
-        //   (Number(exist[key]?.TVL) + Number(listingPrice)) /
-        //   (Number(exist[key]?.listed) + 1);
-        // updates[`listed`] = Number(exist[key]?.listed) + 1;
+      // if (exist[index]?.content.indexOf(".litemap") == -1) {
+      //   updatedOthers[index] = exist[index];
+      // } else {
+      //   const refd = ref(db, `market/others/` + index);
+      //   await remove(refd);
+      //   volume += Number(exist[index]?.price);
+      //   number += 1;
+      // }
+      // });
+      // console.log(volume, number, updatedOthers, "---");
+      // const url1 = `/market/litemap`;
+      // const dbRefStatus1 = ref(db, url1);
 
-        // await update(dbRefStatus, {TVL: 3.5, floor: 0.3, listed: 12 });
-      }
+      // const url = `/status/litemap/-NoR-tEeuDRkVSEfHKx6`;
+      // const dbRefStatus = ref(db, url);
+
+      // const updates = {};
+
+      // updates[`TVL`] = 1802.57 - Number(volume);
+      // updates[`floor`] = (1802.57 - Number(volume)) / 368 - number;
+      // updates[`listed`] = 368 - number;
+
+      // updates[`TVL`] =  45;
+      // updates[`floor`] = 0.67;
+      // updates[`listed`] = 71;
+
+      // await update(dbRefStatus, updates);
+      // }
     };
     fetchTotalItems();
   }, []);
