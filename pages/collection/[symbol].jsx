@@ -50,11 +50,15 @@ export default function Collection() {
   };
 
   async function getCollection(collectionSlug) {
-    const [inscriptions] = await Promise.all([
+    const [meta, inscriptions] = await Promise.all([
+      fetch(
+        `https://raw.githubusercontent.com/nextidearly/collections/main/collections/${collectionSlug}/meta.json`
+      ).then((response) => response.json()),
       fetch(
         `https://raw.githubusercontent.com/nextidearly/collections/main/collections/${collectionSlug}/inscriptions.json`
       ).then((response) => response.json()),
     ]);
+    setCollection(meta);
     setInscriptions(inscriptions);
     setFetchingData(false);
   }
@@ -94,10 +98,6 @@ export default function Collection() {
 
   useEffect(() => {
     if (slug) {
-      const filter = collectionsData.filter((item) => item.slug === slug);
-      if (filter.length > 0) {
-        setCollection(filter[0]);
-      }
       getCollection(slug);
       fetchList();
     }

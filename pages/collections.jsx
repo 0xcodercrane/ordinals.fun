@@ -1,10 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import Layout from "@/components/sections/Layout";
-import { collectionsData } from "../configs/constants";
 import CollectionTr from "../components/UI/CollectionTr";
 import Head from "next/head";
+import { useEffect } from "react";
+import { useState } from "react";
 
 export default function collections() {
+  const [collections, setColections] = useState();
+
+  async function getCollection(collectionSlug) {
+    const [collectionsFromGithub] = await Promise.all([
+      fetch(
+        `https://raw.githubusercontent.com/nextidearly/collections/main/collections/metas/metas.json`
+      ).then((response) => response.json()),
+    ]);
+    setColections(collectionsFromGithub);
+  }
+
+  useEffect(() => {
+    getCollection();
+  }, []);
+
   return (
     <Layout>
       <Head>
@@ -47,11 +63,12 @@ export default function collections() {
             </tr>
           </thead>
           <tbody>
-            {collectionsData.map((collection, key) => {
-              return (
-                <CollectionTr key={key} collection={collection} index={key} />
-              );
-            })}
+            {collections &&
+              collections.map((collection, key) => {
+                return (
+                  <CollectionTr key={key} collection={collection} index={key} />
+                );
+              })}
           </tbody>
         </table>
       </div>
