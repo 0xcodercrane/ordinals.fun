@@ -30,7 +30,7 @@ export default function NFTs({
   async function getCollection(collectionSlug) {
     const [inscriptions] = await Promise.all([
       fetch(
-        `https://raw.githubusercontent.com/litecoinlabs/collections/main/collections/${collectionSlug}/inscriptions.json`
+        `https://raw.githubusercontent.com/nextidearly/collections/main/collections/${collectionSlug}/inscriptions.json`
       ).then((response) => response.json()),
     ]);
     let NFTs = [];

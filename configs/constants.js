@@ -33,8 +33,8 @@ export const collectionsData = [
   },
   {
     description:
-      "Litecoin Moonbirds are a collection of 9200 early Litecoin Ordinals crated by LitecoinLabs",
-    discord_link: "https://discord.com/invite/litecoinlabs",
+      "Litecoin Moonbirds are a collection of 9200 early Litecoin Ordinals crated by nextidearly",
+    discord_link: "https://discord.com/invite/nextidearly",
     inscription_icon:
       "13f9e646cf1ab2a3679420a49dbaf7aff0a1fd3a47f274b7202664777b589790i0",
     name: "Litecoin Moonbirds",
