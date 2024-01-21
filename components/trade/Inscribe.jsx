@@ -1,13 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import Modal from "react-modal";
-import { AiOutlineLoading } from "react-icons/ai";
+import { AiFillCheckCircle, AiOutlineLoading } from "react-icons/ai";
 import FeeRecommend from "../UI/FeeRecommend";
 import { useContext } from "react";
 import { WalletContext } from "../../context/wallet";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { LuPenLine } from "react-icons/lu";
+import { sleep } from "@/utils";
 
 export default function InscribeModal({
   modalIsOpen,
@@ -25,6 +26,7 @@ export default function InscribeModal({
   const [succeed, setSucceed] = useState(false);
   const [tx, setTx] = useState();
   const [disabled, setDisabled] = useState(true);
+  const [creatingTx, setCreatingTx] = useState(false);
 
   function closeModal() {
     setIsOpen(false);
@@ -57,10 +59,11 @@ export default function InscribeModal({
     }
 
     if (address && ticker && amount.toString() && feeRate) {
+      setCreatingTx(true);
       try {
         wallet
           .inscribeBRC20Transfer(
-            "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
+            address,
             ticker,
             amount.toString(),
             feeRate
@@ -75,11 +78,14 @@ export default function InscribeModal({
               .then((rawTxInfo) => {
                 setRawTx(rawTxInfo);
                 setDisabled(false);
+                setCreatingTx(false);
               });
           });
       } catch (error) {
-        toast.error(`${erro}r`);
+        toast.error(`${error}`);
+        setError(error?.message);
       }
+    
     }
   }, [inputAmount, feeRate, tokenSummary.tokenBalance, address, ticker]);
 
@@ -117,7 +123,7 @@ export default function InscribeModal({
         Inscribe {ticker}
       </div>
 
-      <div className="mt-1">
+      <div className="my-8">
         <div className="mb-1 w-full flex justify-between">
           <p className="text-gray-300"> Available:</p>{" "}
           <span
@@ -143,6 +149,11 @@ export default function InscribeModal({
         {error && <p className="text-red-400">{error}</p>}
       </div>
 
+      <p className="my-3 text-center">
+        * To send & List LTC-20, You have to inscribe a TRANSFER inscription
+        first.
+      </p>
+
       <FeeRecommend feeOption={feeRate} setFeeOption={setFeeRate} />
 
       <div className="flex gap-2">
@@ -153,11 +164,17 @@ export default function InscribeModal({
           Close
         </button>
         <button
-          disabled={disabled}
+          disabled={disabled || creatingTx}
           className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600 flex justify-center items-center gap-2"
           onClick={handleInscribe}
         >
-          <LuPenLine /> Inscribe
+          {creatingTx ? (
+            <AiOutlineLoading className="text-lg font-semibold animate-spin" />
+          ) : (
+            <>
+              <LuPenLine /> Inscribe
+            </>
+          )}
         </button>
       </div>
 
