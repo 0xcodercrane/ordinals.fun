@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { LuPenLine } from "react-icons/lu";
 import { sleep } from "@/utils";
+import { MdOutlineCancel } from "react-icons/md";
 
 export default function InscribeModal({
   modalIsOpen,
@@ -19,7 +20,7 @@ export default function InscribeModal({
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const [pendingTx, setPendingTx] = useState(false);
-  const [inputAmount, setAmount] = useState();
+  const [inputAmount, setAmount] = useState("");
   const [feeRate, setFeeRate] = useState("economy");
   const [rawTx, setRawTx] = useState();
   const [error, setError] = useState("");
@@ -30,6 +31,8 @@ export default function InscribeModal({
 
   function closeModal() {
     setIsOpen(false);
+    setSucceed(false);
+    setTx();
   }
 
   useEffect(() => {
@@ -69,23 +72,24 @@ export default function InscribeModal({
             feeRate
           )
           .then((order) => {
-            wallet
-              .createBitcoinTx(
-                { address: order.payAddress, domain: "" },
-                order.totalFee,
-                feeRate
-              )
-              .then((rawTxInfo) => {
-                setRawTx(rawTxInfo);
-                setDisabled(false);
-                setCreatingTx(false);
-              });
+            if (order?.payAddress) {
+              wallet
+                .createBitcoinTx(
+                  { address: order.payAddress, domain: "" },
+                  order.totalFee,
+                  feeRate
+                )
+                .then((rawTxInfo) => {
+                  setRawTx(rawTxInfo);
+                  setDisabled(false);
+                  setCreatingTx(false);
+                });
+            }
           });
       } catch (error) {
         toast.error(`${error}`);
         setError(error?.message);
       }
-    
     }
   }, [inputAmount, feeRate, tokenSummary.tokenBalance, address, ticker]);
 
@@ -185,18 +189,24 @@ export default function InscribeModal({
       )}
 
       {succeed && (
-        <div className="absolute top-0 left-0 w-full h-full bg-primary-dark  flex justify-center items-center">
-          <div>
-            <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
-            <a
-              href={"https://litecoinspace.org/tx/" + tx}
-              className="underline"
-              target="_blank"
-            >
-              View Transaction
-            </a>
+        <>
+          <div className="absolute top-0 left-0 w-full h-full bg-primary-dark  flex justify-center items-center">
+            <div>
+              <AiFillCheckCircle className="text-6xl font-semibold mx-auto text-green-600" />
+              <a
+                href={"https://litecoinspace.org/tx/" + tx}
+                className="underline"
+                target="_blank"
+              >
+                View Transaction
+              </a>
+            </div>
           </div>
-        </div>
+          <MdOutlineCancel
+            className="absolute top-2 right-2 text-3xl cursor-pointer"
+            onClick={closeModal}
+          />
+        </>
       )}
     </Modal>
   );

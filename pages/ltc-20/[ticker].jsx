@@ -11,6 +11,8 @@ import BuyCardSkelenton from "../../components/UI/BuyCardSkelenton";
 import NFTCollectionBanner from "../../components/trade/NFTCollectionBanner";
 import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
+import BuyCardForLTC20 from "../../components/UI/BuyCardForLTC20";
+import LTCBuyCardSkelenton from "../../components/UI/LTCBuyCardSkelenton";
 
 export default function Collection() {
   const router = useRouter();
@@ -42,6 +44,12 @@ export default function Collection() {
   }
 
   const fetchList = async () => {
+    // let dbQuery = query(
+    //   ref(db, "market/" + slug),
+    //   orderByChild("paid"),
+    //   equalTo(false)
+    // );
+
     let dbQuery = query(
       ref(db, "market/" + slug),
       orderByChild("paid"),
@@ -94,8 +102,8 @@ export default function Collection() {
 
       {fetchingListings ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
-          {Array.from({ length: 6 }, (_, index) => {
-            return <BuyCardSkelenton key={index} />;
+          {Array.from({ length: 24 }, (_, index) => {
+            return <LTCBuyCardSkelenton key={index} />;
           })}
         </div>
       ) : (
@@ -105,10 +113,10 @@ export default function Collection() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
                 {Object.keys(listedNFTs)
                   .reverse()
-                  .slice(offsetListed * 12, offsetListed * 12 + 12)
+                  .slice(offsetListed * 24, offsetListed * 24 + 24)
                   .map((key, index) => {
                     return (
-                      <BuyCardForNFTs
+                      <BuyCardForLTC20
                         key={index}
                         inscription={listedNFTs[key]}
                         price={price}
@@ -130,7 +138,7 @@ export default function Collection() {
                 onPageChange={handlePageClickForListed}
                 pageRangeDisplayed={2}
                 marginPagesDisplayed={1}
-                pageCount={Math.ceil(listedNumber / 12)}
+                pageCount={Math.ceil(listedNumber / 24)}
                 previousLabel="<"
                 renderOnZeroPageCount={null}
                 className="pagination"
@@ -140,7 +148,7 @@ export default function Collection() {
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full relative">
                 {Array.from({ length: 6 }, (_, index) => {
-                  return <BuyCardSkelenton key={index} />;
+                  return <LTCBuyCardSkelenton key={index} />;
                 })}
 
                 <div className="absolute w-full h-full rounded-md flex justify-center items-center ">

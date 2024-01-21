@@ -29,7 +29,7 @@ import { Psbt } from "bitcoinjs-lib";
 import useActivities from "../../hooks/useActivities";
 import { MdOutlineCancel } from "react-icons/md";
 
-export default function BuyModal({
+export default function LTCBuyModal({
   modalIsOpen,
   setIsOpen,
   list,
@@ -67,7 +67,7 @@ export default function BuyModal({
 
   function validateSellerPSBTAndExtractPrice(
     sellerSignedPsbtBase64,
-    utxo = list?.data?.output
+    utxo = list?.inscriptionId
   ) {
     try {
       const sellerSignedPsbt = bitcoin.Psbt.fromBase64(sellerSignedPsbtBase64, {
@@ -78,7 +78,7 @@ export default function BuyModal({
         .reverse()
         .toString("hex")}:${sellerInput.index}`;
 
-      if (sellerSignedPsbtInput != utxo) {
+      if (sellerSignedPsbtInput.slice(0, 64) != utxo) {
         toast.error(
           `Seller signed PSBT does not match this inscription\n\n${sellerSignedPsbtInput}\n!=\n${utxo}`
         );
@@ -436,29 +436,9 @@ export default function BuyModal({
         className="mx-auto w-40 h-32  rounded-md bg-primary-contentDark text-xl flex justify-center items-center my-3 relative px-2"
         style={{ overflowWrap: "anywhere" }}
       >
-        {list?.data?.contentType.indexOf("image") > -1 && (
-          <>
-            <img
-              src={`https://ordinalslite.com/content/${list?.data?.inscriptionId}`}
-              className="w-full h-full object-contain mx-auto max-w-[300px]"
-              alt=""
-            />
-          </>
-        )}
-
-        {list?.data?.contentType.indexOf("text") > -1 && (
-          <>
-            {" "}
-            {list?.content.indexOf("tick") > -1 ? (
-              <div className="text-sm font-bold px-3">
-                {JSON.parse(list?.content).tick}
-              </div>
-            ) : (
-              <div className="text-sm font-bold px-3">{list?.content}</div>
-            )}
-          </>
-        )}
-
+        <div className="text-sm font-bold px-3">
+          {list?.content} {list?.tag}
+        </div>
         <div className="in-transfer">#{list?.data?.inscriptionNumber}</div>
       </div>
 

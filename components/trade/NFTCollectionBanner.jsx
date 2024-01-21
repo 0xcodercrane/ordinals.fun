@@ -13,6 +13,10 @@ export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
   const [volumeh, setVolumeh] = useState(0);
   const [trade24, setTrades24] = useState(0);
 
+  const empyImage = (e) => {
+    e.target.src = "/empty.png";
+  };
+
   useState(() => {
     async function fetchStatus() {
       const dbQuery = query(ref(db, "status/" + tag));
@@ -84,6 +88,7 @@ export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
           src={`/litecoin.png`}
           className="rounded-md w-full col-span-12 sm:col-span-2 mx-auto max-w-[150px]"
           alt="logo"
+          onError={(e) => empyImage(e)}
         />
       ) : (
         <img
@@ -94,6 +99,7 @@ export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
           }`}
           className="rounded-md w-full col-span-12 sm:col-span-2 mx-auto max-w-[150px]"
           alt="logo"
+          onError={(e) => empyImage(e)}
         />
       )}
       <div className="col-span-12 sm:col-span-10">

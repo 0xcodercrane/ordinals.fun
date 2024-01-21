@@ -130,7 +130,6 @@ export default function LTCBulkListModal({
       toast.error("PSBT is not generated yet.");
       return;
     }
-    await handleUpdateStatus(tag);
 
     try {
       setPendingTx(true);
