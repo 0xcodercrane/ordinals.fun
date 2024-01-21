@@ -98,7 +98,7 @@ export default function LTCTransferModal({
       >
         <div>
           <div className="text-3xl font-bold px-3">{content}</div>
-          <p>{ticker}</p>
+          <p className="text-center">{ticker}</p>
         </div>
       </div>
 

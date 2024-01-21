@@ -15,7 +15,7 @@ import { useLastBlock, useMintedBlocksFromAPI } from "../../store/hooks";
 import NumberFormat from "../UI/NumberFormatter";
 import Link from "next/link";
 
-export default function Banner({ title, tag }) {
+export default function Banner({ title, tag, setListedNumber }) {
   const { mintedBlockNumber } = useMintedBlocksFromAPI();
   const { lastBlock } = useLastBlock();
   const [status, setStatus] = useState(0);
@@ -31,6 +31,7 @@ export default function Banner({ title, tag }) {
         if (exist) {
           const data = exist[Object.keys(exist)[0]];
           setStatus(data);
+          setListedNumber(data.listed);
         }
       });
 

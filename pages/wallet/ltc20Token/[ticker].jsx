@@ -79,7 +79,7 @@ export default function LTC20Token() {
   const getTokenSummary = async (address, ticker) => {
     try {
       const res = await openApi.getAddressTokenSummary(
-        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
+        address,
         ticker
       );
       setTokenSummary(res);
@@ -92,7 +92,7 @@ export default function LTC20Token() {
     try {
       setFetchingData(true);
       const { list, total } = await openApi.getTokenTransferableList(
-        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
+        address,
         ticker,
         offset + 1,
         pageSize
