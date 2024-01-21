@@ -5,10 +5,10 @@ import Head from "next/head";
 import { useEffect } from "react";
 import { useState } from "react";
 
-export default function collections() {
+export default function NFTCollections() {
   const [collections, setColections] = useState();
 
-  async function getCollection(collectionSlug) {
+  async function getCollection() {
     const [collectionsFromGithub] = await Promise.all([
       fetch(
         `https://raw.githubusercontent.com/nextidearly/collections/main/collections/metas/metas.json`
