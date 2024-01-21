@@ -135,7 +135,7 @@ export default function useActivities() {
     }
   };
 
-  const removeListFromMarket = async (inscriptionId) => {
+  const updateActivity = async (inscriptionId) => {
     if (!address) {
       toast.error("Please connect your wallet.");
       return;
@@ -153,7 +153,12 @@ export default function useActivities() {
       const key = Object.keys(existedActivity)[0];
       if (existedActivity[key]?.type === "Listed") {
         const dbRefForUpdate = ref(db, `wallet/${address}/activities/${key}`);
-        await remove(dbRefForUpdate);
+        await update(dbRefForUpdate, {
+          ...existedActivity[key],
+          type: "Unlist",
+          listed: false,
+          date: Date.now(),
+        });
       }
     }
   };
@@ -162,6 +167,6 @@ export default function useActivities() {
     addlistForSale: addListForSale,
     updateListForSold: updateListForSold,
     addActiviyForBuy: addActiviyForBuy,
-    removeListFromMarket: removeListFromMarket,
+    removeListFromMarket: updateActivity,
   };
 }

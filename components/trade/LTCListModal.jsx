@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import { useWallet } from "../../store/hooks";
 import * as bitcoin from "bitcoinjs-lib";
 import usePSBT from "../../hooks/usePSBT";
-import { getTxHexById, btcTosatoshis, sleep } from "@/utils";
+import { getTxHexById, btcTosatoshis, validateInscription } from "@/utils";
 import { toast } from "react-hot-toast";
 import ReceiveAddress from "../UI/ReceiveAddress";
 import { useContext } from "react";
@@ -21,17 +21,15 @@ import {
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { AiOutlineLoading } from "react-icons/ai";
-import { FaTimes } from "react-icons/fa";
 import { Psbt } from "bitcoinjs-lib";
 import useActivities from "../../hooks/useActivities";
 
-export default function BulkListModal({
+export default function LTCListModal({
   modalIsOpen,
   setIsOpen,
-  blocks,
-  setSelectedBlocks,
-  tag = "litemap",
-  cancelBlocks,
+  ticker,
+  amount,
+  inscription,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -44,19 +42,36 @@ export default function BulkListModal({
 
   function closeModal() {
     setIsOpen(false);
-    cancelBlocks();
   }
 
-  const removeFromList = (id) => {
-    //  console.log(id);
-    const filter = blocks.filter(
-      (block) => block.inscription.inscriptionId !== id
-    );
-    setSelectedBlocks(filter);
-  };
+  const handleUpdateStatus = async () => {
+    const dbQuery = query(ref(db, `status/${ticker}`));
 
-  const handleUpdateStatus = async (tag, inscriptionIndex) => {
-    //  console.log("running");
+    const snapshot = await get(dbQuery);
+    const exist = snapshot.val();
+
+    if (!exist) {
+      const dbRefStatus = ref(db, `/status/${ticker}`);
+      await push(dbRefStatus, {
+        TVL: Number(listingPrice),
+        floor: Number(listingPrice),
+        listed: 1,
+      });
+    } else {
+      const key = Object.keys(exist)[0];
+      const url = `/status/${ticker}/${key}`;
+      const dbRefStatus = ref(db, url);
+
+      const updates = {};
+
+      updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice);
+      updates[`floor`] =
+        (Number(exist[key]?.TVL) + Number(listingPrice)) /
+        (Number(exist[key]?.listed) + 1);
+      updates[`listed`] = Number(exist[key]?.listed) + 1;
+
+      await update(dbRefStatus, updates);
+    }
 
     const dbQueryForWallet = query(ref(db, `wallet/${address}`));
 
@@ -65,32 +80,40 @@ export default function BulkListModal({
 
     if (walletExist) {
       const key = Object.keys(walletExist)[0];
-      const dbQueryForWalletUpdate = ref(
-        db,
-        `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
+
+      const dbRefInscription = ref(db, `wallet/${address}/${key}`);
+      const dbQueryForInscription = query(
+        dbRefInscription,
+        orderByChild("inscriptionId"),
+        equalTo(inscription.inscriptionId)
       );
 
-      await update(dbQueryForWalletUpdate, {
-        ...walletExist[key]["inscriptions"][inscriptionIndex],
+      const inscriptionSnapshot = await get(dbQueryForInscription);
+      const inscriptionData = inscriptionSnapshot.val();
+
+      const keyInscription = Object.keys(inscriptionData)[0];
+
+      const dbQueryForWallet = ref(
+        db,
+        `wallet/${address}/${key}/inscriptions/${keyInscription}`
+      );
+
+      await update(dbQueryForWallet, {
+        ...walletExist[key]["inscriptions"][keyInscription],
         listed: true,
-        tag: tag,
+        tag: ticker,
       });
     }
   };
 
-  async function generatePSBTListingInscriptionForSale(
-    inscription,
-    content,
-    listingPrice,
-    toInfoAddress,
-    inscriptionIndex
-  ) {
+  async function generatePSBTListingInscriptionForSale() {
     const psbt = new Psbt({
       network: networks["litecoin"],
     });
+
     let listed = false;
     const dbQuery = query(
-      ref(db, "market/" + tag),
+      ref(db, "market/" + ticker),
       orderByChild("data/inscriptionId"),
       equalTo(inscription?.inscriptionId)
     );
@@ -102,13 +125,13 @@ export default function BulkListModal({
       }
     });
 
-    if (listed) {
-      toast.error("Already listed");
+    if (!address) {
+      toast.error("Please connect your wallet");
       return;
     }
 
-    if (!inscription?.output) {
-      toast.error("Unkown ordinal output ");
+    if (listed) {
+      toast.error("Already listed");
       return;
     }
 
@@ -117,9 +140,21 @@ export default function BulkListModal({
       return;
     }
 
+    if (!listingPrice) {
+      toast.error("Please input price to list");
+      return;
+    }
+
+    if (!toInfo?.address) {
+      toast.error("Please input receive address.");
+      return;
+    }
+
     try {
       setPendingTx(true);
-      const [ordinalUtxoTxId, ordinalUtxoVout] = inscription?.output.split(":");
+      const sliceNumber = inscription?.inscriptionId.length - 65;
+      const ordinalUtxoTxId = inscription?.inscriptionId.slice(0, 64);
+      const ordinalUtxoVout = inscription?.inscriptionId.slice(-sliceNumber);
       const tx = bitcoin.Transaction.fromHex(
         await getTxHexById(ordinalUtxoTxId)
       );
@@ -136,7 +171,7 @@ export default function BulkListModal({
       psbt.addInput(input);
 
       psbt.addOutput({
-        address: toInfoAddress,
+        address: toInfo.address,
         value: btcTosatoshis(listingPrice),
       });
 
@@ -144,7 +179,7 @@ export default function BulkListModal({
 
       if (singedPSBT) {
         const dbQueryForInscriptions = query(
-          ref(db, `market/${tag}`),
+          ref(db, `market/${ticker}`),
           orderByChild("data/inscriptionId"),
           equalTo(inscription?.inscriptionId)
         );
@@ -154,115 +189,49 @@ export default function BulkListModal({
 
         if (inscriptionExist) {
           const key = Object.keys(inscriptionExist)[0];
-          const updateInscriptionRef = ref(db, `market/${tag}/${key}`);
+          const updateInscriptionRef = ref(db, `market/${ticker}/${key}`);
           await update(updateInscriptionRef, {
             psbt: singedPSBT.toBase64(),
             data: inscription,
             date: Date.now(),
             price: listingPrice,
-            seller: toInfoAddress,
-            content: content,
+            seller: toInfo.address,
+            content: amount,
             paid: false,
             txId: "",
-            tag: tag,
+            tag: ticker,
           });
           toast.success("Successfully listed");
         } else {
-          const dbRef = ref(db, "/market/" + tag);
+          const dbRef = ref(db, "/market/" + ticker);
           push(dbRef, {
             psbt: singedPSBT.toBase64(),
             data: inscription,
             date: Date.now(),
             price: listingPrice,
-            seller: toInfoAddress,
-            content: content,
+            seller: toInfo.address,
+            content: amount,
             paid: false,
             txId: "",
-            tag: tag,
+            tag: ticker,
           }).then(async () => {
             toast.success("Successfully listed");
           });
         }
-
+        await handleUpdateStatus();
         await addlistForSale(
-          tag,
+          ticker,
           inscription?.inscriptionId,
-          content,
+          amount,
           listingPrice
         );
-        await handleUpdateStatus(tag, inscriptionIndex);
-        await sleep(0.2);
+        closeModal();
       }
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
       //  console.log(error);
-      toast.error(
-        "Something went wrong when creating PSBT. Please try again after some mins."
-      );
-    }
-  }
-
-  async function generatePSBTsListingInscriptionForSale() {
-    if (!address) {
-      toast.error("Please connect your wallet");
-      return;
-    }
-
-    if (listingPrice <= 0) {
-      toast.error("Please input price to list");
-      return;
-    }
-
-    if (!toInfo?.address) {
-      toast.error("Please input receive address.");
-      return;
-    }
-
-    try {
-      await Promise.all(
-        blocks.map(async (block) => {
-          await generatePSBTListingInscriptionForSale(
-            block.inscription,
-            block.content,
-            listingPrice,
-            toInfo.address,
-            block.inscriptionIndex
-          );
-        })
-      );
-
-      const dbQuery = query(ref(db, `status/${tag}`));
-
-      const snapshot = await get(dbQuery);
-      const exist = snapshot.val();
-
-      if (!exist) {
-        const dbRefStatus = ref(db, `/status/${tag}`);
-        await push(dbRefStatus, {
-          TVL: Number(listingPrice),
-          floor: Number(listingPrice),
-          listed: 1,
-        });
-      } else {
-        const key = Object.keys(exist)[0];
-        const url = `/status/${tag}/${key}`;
-        const dbRefStatus = ref(db, url);
-
-        const updates = {};
-
-        updates[`TVL`] =
-          Number(exist[key]?.TVL) + Number(listingPrice) * blocks.length;
-        updates[`floor`] =
-          (Number(exist[key]?.TVL) + Number(listingPrice) * blocks.length) /
-          (Number(exist[key]?.listed) + blocks.length);
-        updates[`listed`] = Number(exist[key]?.listed) + blocks.length;
-
-        await update(dbRefStatus, updates);
-      }
-      closeModal();
-    } catch (error) {
-      //  console.log(error);
+      toast.error("Something went wrong when creating PSBT");
     }
   }
 
@@ -274,50 +243,17 @@ export default function BulkListModal({
       className="cs-modal relative"
     >
       <div className="text-center text-2xl font-semibold">
-        List {tag} for sale
+        List {ticker} for sale
       </div>
 
-      <div className="mx-auto  grid grid-cols-3 gap-1">
-        {blocks.map((block, key) => {
-          return (
-            <div
-              key={key}
-              className="w-full h-24 rounded-md bg-primary-contentDark text-sm flex justify-center items-center my-3 relative p-3"
-              style={{ overflowWrap: "anywhere" }}
-            >
-              {block?.inscription?.contentType.indexOf("image") > -1 && (
-                <>
-                  <img
-                    src={`https://ordinalslite.com/content/${block?.inscription?.inscriptionId}`}
-                    className="w-full h-full object-contain"
-                    alt=""
-                  />
-                </>
-              )}
-
-              {block?.inscription?.contentType.indexOf("text") > -1 && (
-                <>
-                  {block?.content.indexOf("tick") > -1 ? (
-                    <div className="text-sm font-bold px-3">
-                      {JSON.parse(block?.content).tick}
-                    </div>
-                  ) : (
-                    <div className="text-sm font-bold px-3">
-                      {block?.content}
-                    </div>
-                  )}
-                </>
-              )}
-
-              <button
-                className="absolute rounded-full p-1 top-1 right-1"
-                onClick={() => removeFromList(block.inscription.inscriptionId)}
-              >
-                <FaTimes className="text-2xl" />
-              </button>
-            </div>
-          );
-        })}
+      <div
+        className="mx-auto w-full h-32 rounded-md bg-primary-contentDark text-3xl flex justify-center items-center my-3"
+        style={{ overflowWrap: "anywhere" }}
+      >
+        <div className="font-bold px-3 text-center text-sm">
+          <p className="text-lg text-center">{amount}</p>
+          <p className="text-center">{ticker}</p>
+        </div>
       </div>
 
       <div className="mt-1">
@@ -355,7 +291,7 @@ export default function BulkListModal({
         </button>
         <button
           className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600"
-          onClick={generatePSBTsListingInscriptionForSale}
+          onClick={generatePSBTListingInscriptionForSale}
         >
           Sign & Create PSBT Listing
         </button>

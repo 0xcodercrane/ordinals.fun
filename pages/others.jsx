@@ -5,10 +5,7 @@ import {
   ref,
   query,
   orderByChild,
-  equalTo,
-  get,
-  update,
-  remove,
+  equalTo
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
@@ -39,7 +36,7 @@ export default function Home() {
       const dbQuery = query(
         ref(db, "market/others"),
         orderByChild("paid"),
-        equalTo(false)
+        equalTo(false),
       );
       onValue(dbQuery, async (snapshot) => {
         const exist = snapshot.val();

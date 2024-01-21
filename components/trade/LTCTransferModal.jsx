@@ -12,16 +12,13 @@ import { sleep } from "@/utils";
 import { toast } from "react-hot-toast";
 import { FaScissors } from "react-icons/fa6";
 
-export default function TransferModal({
+export default function LTCTransferModal({
   modalIsOpen,
   setIsOpen,
-  content,
+  amount,
   id,
-  inscription,
-  isNeedToSplit,
-  isMultiStuck,
-  setIsOpenSplit,
-  checking,
+  ticker,
+  content,
 }) {
   const wallet = useContext(WalletContext);
   const defaultOutputValue = 10000;
@@ -93,46 +90,16 @@ export default function TransferModal({
       contentLabel="Example Modal"
       className="cs-modal relative"
     >
-      <div className="text-center text-2xl font-semibold">Send Inscription</div>
-
-      {isNeedToSplit && isMultiStuck && (
-        <p className="my-2 text-center text-red-500">
-          Multiple inscriptions are mixed mixed together. Please split them
-          first.
-        </p>
-      )}
-
-      {isNeedToSplit && !isMultiStuck && (
-        <p className="my-2 text-center text-red-500">
-          This inscription carries a high balance {`>`} 10000 sats
-        </p>
-      )}
+      <div className="text-center text-2xl font-semibold">Send {ticker}</div>
 
       <div
         className="mx-auto w-full h-32 rounded-md bg-primary-contentDark text-xl flex justify-center items-center my-3 p-2"
         style={{ overflowWrap: "anywhere" }}
       >
-        {inscription?.contentType.indexOf("image") > -1 && (
-          <>
-            <img
-              src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
-              className="w-full h-full object-contain mx-auto max-w-[300px]"
-              alt=""
-            />
-          </>
-        )}
-
-        {inscription?.contentType.indexOf("text") > -1 && (
-          <>
-            {content.indexOf("tick") > -1 ? (
-              <div className="text-3xl font-bold px-3">
-                {JSON.parse(content).tick}
-              </div>
-            ) : (
-              <div className="text-3xl font-bold px-3">{content}</div>
-            )}
-          </>
-        )}
+        <div>
+          <div className="text-3xl font-bold px-3">{content}</div>
+          <p>{ticker}</p>
+        </div>
       </div>
 
       <SendAddress
@@ -141,14 +108,8 @@ export default function TransferModal({
         }}
       />
 
-      <OutPutValue
-        defaultValue={defaultOutputValue}
-        onChange={(val) => {
-          setOutputValue(val);
-        }}
-      />
-
       <FeeRecommend feeOption={feeRate} setFeeOption={setFeeRate} />
+
       <div className="flex gap-2">
         <button
           className="main_btn w-full py-2 px-3 rounded-md mt-3"
@@ -156,39 +117,20 @@ export default function TransferModal({
         >
           Close
         </button>
-        {checking ? (
-          <button className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600">
-            <AiOutlineLoading className="text-lg font-semibold animate-spin mx-auto" />
-          </button>
-        ) : (
-          <>
-            {isNeedToSplit || isMultiStuck ? (
-              <button
-                className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600 flex justify-center gap-2 items-center"
-                onClick={() => {
-                  closeModal();
-                  setIsOpenSplit(true);
-                }}
-              >
-                <FaScissors className="text-lg" /> Split
-              </button>
-            ) : (
-              <button
-                disabled={!rawTxInfo}
-                className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600"
-                onClick={handleSignAndPay}
-              >
-                {creatingTx ? (
-                  <>
-                    <AiOutlineLoading className="text-lg font-semibold animate-spin mx-auto" />
-                  </>
-                ) : (
-                  "Sign & Pay"
-                )}
-              </button>
-            )}
-          </>
-        )}
+
+        <button
+          disabled={!rawTxInfo}
+          className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600"
+          onClick={handleSignAndPay}
+        >
+          {creatingTx ? (
+            <>
+              <AiOutlineLoading className="text-lg font-semibold animate-spin mx-auto" />
+            </>
+          ) : (
+            "Sign & Pay"
+          )}
+        </button>
       </div>
 
       {pending && (

@@ -25,7 +25,7 @@ import { FaTimes } from "react-icons/fa";
 import { Psbt } from "bitcoinjs-lib";
 import useActivities from "../../hooks/useActivities";
 
-export default function BulkListModal({
+export default function LTCBulkListModal({
   modalIsOpen,
   setIsOpen,
   blocks,
@@ -282,36 +282,14 @@ export default function BulkListModal({
           return (
             <div
               key={key}
-              className="w-full h-24 rounded-md bg-primary-contentDark text-sm flex justify-center items-center my-3 relative p-3"
+              className="w-full h-24 rounded-md bg-primary-contentDark flex justify-center items-center my-3 relative p-3"
               style={{ overflowWrap: "anywhere" }}
             >
-              {block?.inscription?.contentType.indexOf("image") > -1 && (
-                <>
-                  <img
-                    src={`https://ordinalslite.com/content/${block?.inscription?.inscriptionId}`}
-                    className="w-full h-full object-contain"
-                    alt=""
-                  />
-                </>
-              )}
-
-              {block?.inscription?.contentType.indexOf("text") > -1 && (
-                <>
-                  {block?.content.indexOf("tick") > -1 ? (
-                    <div className="text-sm font-bold px-3">
-                      {JSON.parse(block?.content).tick}
-                    </div>
-                  ) : (
-                    <div className="text-sm font-bold px-3">
-                      {block?.content}
-                    </div>
-                  )}
-                </>
-              )}
+              <div className=" font-bold px-3">{block?.amount}</div>
 
               <button
                 className="absolute rounded-full p-1 top-1 right-1"
-                onClick={() => removeFromList(block.inscription.inscriptionId)}
+                onClick={() => removeFromList(block.inscriptionId)}
               >
                 <FaTimes className="text-2xl" />
               </button>

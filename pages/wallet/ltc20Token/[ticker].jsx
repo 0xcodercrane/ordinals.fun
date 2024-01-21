@@ -10,19 +10,25 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { WalletContext } from "@/context/wallet";
 import { useMemo } from "react";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaList } from "react-icons/fa";
 import { AiOutlineLoading } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import { toast } from "react-hot-toast";
 import Ltc20tokenCard from "../../../components/UI/ltc20tokenCard";
 import { LuPencilLine } from "react-icons/lu";
 import { MdCancel } from "react-icons/md";
+import Ltc20SummaryBar from "../../../components/UI/Ltc20SummaryBar";
+import LTCBulkListModal from "../../../components/trade/LTCBulkListModal";
 
 export default function LTC20Token() {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const router = useRouter();
+
+  const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [bulkSelect, setBulkSelect] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
   const [ticker, setTicker] = useState();
   const [fetchingData, setFetchingData] = useState(true);
   const [tokenSummary, setTokenSummary] = useState({
@@ -61,6 +67,11 @@ export default function LTC20Token() {
     return tokenSummary?.tokenBalance.overallBalance;
   }, [tokenSummary]);
 
+  const cancelBlocks = () => {
+    setSelectedBlocks([]);
+    setBulkSelect(false);
+  };
+
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
@@ -68,7 +79,7 @@ export default function LTC20Token() {
   const getTokenSummary = async (address, ticker) => {
     try {
       const res = await openApi.getAddressTokenSummary(
-        address,
+        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
         ticker
       );
       setTokenSummary(res);
@@ -81,7 +92,7 @@ export default function LTC20Token() {
     try {
       setFetchingData(true);
       const { list, total } = await openApi.getTokenTransferableList(
-        address,
+        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
         ticker,
         offset + 1,
         pageSize
@@ -93,6 +104,15 @@ export default function LTC20Token() {
     } finally {
       setFetchingData(false);
     }
+  };
+
+  const BulkList = () => {
+    if (selectedBlocks.length <= 0) {
+      toast.error("Please select inscriptions");
+      return;
+    }
+    setBulkSelect(false);
+    setIsOpen(true);
   };
 
   useEffect(() => {
@@ -127,20 +147,36 @@ export default function LTC20Token() {
 
       <h1 className="text-3xl font-semibold my-16 text-center">My Wallet</h1>
 
+      {!bulkSelect ? (
+        <button
+          className="main_btn px-2 py-1 rounded-md sm:hidden inline-block mb-1"
+          onClick={() => setBulkSelect(true)}
+        >
+          Bulk Select
+        </button>
+      ) : (
+        <button
+          className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2 items-center sm:hidden flex  mb-1"
+          onClick={() => cancelBlocks()}
+        >
+          <MdCancel /> Cancel
+        </button>
+      )}
+
       <div className="flex justify-center sm:justify-between w-full">
         <Tabs type={"ltc20"} loading={false} />
 
         {!bulkSelect ? (
           <button
             className="main_btn px-2 py-1 rounded-md hidden sm:inline-block"
-          // onClick={() => setBulkSelect(true)}
+            onClick={() => setBulkSelect(true)}
           >
             Bulk Select
           </button>
         ) : (
           <button
             className=" bg-red-500 main_btn px-2 py-1 rounded-md gap-2  items-center hidden sm:flex"
-          // onClick={() => cancelBlocks()}
+            onClick={() => cancelBlocks()}
           >
             <MdCancel /> Cancel
           </button>
@@ -160,32 +196,7 @@ export default function LTC20Token() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-3 gap-2 w-full cs-border rounded-sm">
-        <div className="flex gap-2 justify-center">
-          <p className="text-gray-300">Ticker:</p>
-          <p>{tokenSummary?.tokenBalance?.ticker || "--"}</p>
-        </div>
-        <div className="flex gap-2 justify-center">
-          <p className="text-gray-300">Transferable:</p>
-          <p>{tokenSummary?.tokenBalance.transferableBalance || "--"}</p>
-        </div>
-        <div className="flex gap-2 justify-center">
-          <p className="text-gray-300">Available:</p>
-          <p>{tokenSummary?.tokenBalance.availableBalance || "--"}</p>
-        </div>
-        <div className="flex gap-2 justify-center">
-          <p className="text-gray-300">Overall:</p>
-          <p>{tokenSummary?.tokenBalance?.overallBalance || "--"}</p>
-        </div>
-        <div className="flex gap-2 justify-center">
-          <p className="text-gray-300">Supply:</p>
-          <p>{tokenSummary?.tokenInfo?.totalSupply || "--"}</p>
-        </div>
-        <div className="flex gap-2 justify-center">
-          <p className="text-gray-300">Minted:</p>
-          <p>{tokenSummary?.tokenInfo?.totalMinted || "--"}</p>
-        </div>
-      </div>
+      <Ltc20SummaryBar tokenSummary={tokenSummary} />
 
       {fetchingData ? (
         <div className="my-auto flex  justify-center gap-2 items-center">
@@ -197,7 +208,17 @@ export default function LTC20Token() {
             <>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full">
                 {transferableList.map((item, index) => {
-                  return <Ltc20tokenCard data={item} key={index + offset} />;
+                  return (
+                    <Ltc20tokenCard
+                      data={item}
+                      key={index + offset}
+                      ticker={ticker}
+                      bulkSelect={bulkSelect}
+                      setSelectedBlocks={setSelectedBlocks}
+                      selectedBlocks={selectedBlocks}
+                      cancelBlocks={cancelBlocks}
+                    />
+                  );
                 })}
               </div>
               <ReactPaginate
@@ -221,6 +242,37 @@ export default function LTC20Token() {
           )}
         </>
       )}
+
+      <div
+        className={`fixed z-50  left-1/2 border border-transparent ${
+          !bulkSelect ? "-bottom-64 border-[#ffffff1a]" : "bottom-6 sm:bottom-6"
+        }   -translate-x-1/2 px-6 py-3 rounded-lg bg-white/10 backdrop-blur-2xl duration-200 flex items-center gap-3 flex-wrap shadow-black shadow-lg`}
+      >
+        <p>{selectedBlocks.length} inscriptions selected.</p>
+        <div className="flex gap-3 sm:justify-end justify-center">
+          <button
+            className="main_btn py-2 px-4 rounded-lg flex items-center gap-2 bg-transparent"
+            onClick={() => cancelBlocks()}
+          >
+            <MdCancel /> Cancel
+          </button>
+          <button
+            className="main_btn py-2 px-4 rounded-lg flex items-center gap-2 bg-sky-600"
+            onClick={BulkList}
+          >
+            List <FaList />
+          </button>
+        </div>
+      </div>
+
+      <LTCBulkListModal
+        modalIsOpen={isOpen}
+        setIsOpen={setIsOpen}
+        tag={ticker}
+        blocks={selectedBlocks}
+        setSelectedBlocks={setSelectedBlocks}
+        cancelBlocks={cancelBlocks}
+      />
     </Layout>
   );
 }
