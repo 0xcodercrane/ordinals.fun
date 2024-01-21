@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useState } from "react";
 import Modal from "react-modal";
 import { useWallet } from "../../store/hooks";
@@ -30,7 +30,7 @@ export default function LTCBulkListModal({
   setIsOpen,
   blocks,
   setSelectedBlocks,
-  tag = "litemap",
+  tag,
   cancelBlocks,
 }) {
   const wallet = useContext(WalletContext);
@@ -41,6 +41,13 @@ export default function LTCBulkListModal({
   const [listingPrice, setListingPrice] = useState("");
   const [toInfo, setToInfo] = useState();
   const [pendingTx, setPendingTx] = useState(false);
+
+  const amount = useMemo(() => {
+    const sum = blocks.reduce((accumulator, currentValue) => {
+      return accumulator + Number(currentValue.amount);
+    }, 0);
+    return sum;
+  }, [blocks]);
 
   function closeModal() {
     setIsOpen(false);
@@ -55,7 +62,7 @@ export default function LTCBulkListModal({
     setSelectedBlocks(filter);
   };
 
-  const handleUpdateStatus = async (tag, inscriptionIndex) => {
+  const handleUpdateStatus = async (tag) => {
     //  console.log("running");
 
     const dbQueryForWallet = query(ref(db, `wallet/${address}`));
@@ -65,13 +72,26 @@ export default function LTCBulkListModal({
 
     if (walletExist) {
       const key = Object.keys(walletExist)[0];
+
+      const dbRefInscription = ref(db, `wallet/${address}/${key}`);
+      const dbQueryForInscription = query(
+        dbRefInscription,
+        orderByChild("inscriptionId"),
+        equalTo(inscription.inscriptionId)
+      );
+
+      const inscriptionSnapshot = await get(dbQueryForInscription);
+      const inscriptionData = inscriptionSnapshot.val();
+
+      const keyInscription = Object.keys(inscriptionData)[0];
+
       const dbQueryForWalletUpdate = ref(
         db,
-        `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
+        `wallet/${address}/${key}/inscriptions/${keyInscription}`
       );
 
       await update(dbQueryForWalletUpdate, {
-        ...walletExist[key]["inscriptions"][inscriptionIndex],
+        ...walletExist[key]["inscriptions"][keyInscription],
         listed: true,
         tag: tag,
       });
@@ -82,8 +102,7 @@ export default function LTCBulkListModal({
     inscription,
     content,
     listingPrice,
-    toInfoAddress,
-    inscriptionIndex
+    toInfoAddress
   ) {
     const psbt = new Psbt({
       network: networks["litecoin"],
@@ -107,19 +126,18 @@ export default function LTCBulkListModal({
       return;
     }
 
-    if (!inscription?.output) {
-      toast.error("Unkown ordinal output ");
-      return;
-    }
-
     if (!psbt) {
       toast.error("PSBT is not generated yet.");
       return;
     }
+    await handleUpdateStatus(tag);
 
     try {
       setPendingTx(true);
-      const [ordinalUtxoTxId, ordinalUtxoVout] = inscription?.output.split(":");
+      const sliceNumber = inscription?.inscriptionId.length - 65;
+      const ordinalUtxoTxId = inscription?.inscriptionId.slice(0, 64);
+      const ordinalUtxoVout = inscription?.inscriptionId.slice(-sliceNumber);
+
       const tx = bitcoin.Transaction.fromHex(
         await getTxHexById(ordinalUtxoTxId)
       );
@@ -137,7 +155,7 @@ export default function LTCBulkListModal({
 
       psbt.addOutput({
         address: toInfoAddress,
-        value: btcTosatoshis(listingPrice),
+        value: btcTosatoshis(listingPrice * content),
       });
 
       const singedPSBT = await wallet.signPsbt(psbt, {});
@@ -159,7 +177,7 @@ export default function LTCBulkListModal({
             psbt: singedPSBT.toBase64(),
             data: inscription,
             date: Date.now(),
-            price: listingPrice,
+            price: listingPrice * content,
             seller: toInfoAddress,
             content: content,
             paid: false,
@@ -173,7 +191,7 @@ export default function LTCBulkListModal({
             psbt: singedPSBT.toBase64(),
             data: inscription,
             date: Date.now(),
-            price: listingPrice,
+            price: listingPrice * content,
             seller: toInfoAddress,
             content: content,
             paid: false,
@@ -188,9 +206,9 @@ export default function LTCBulkListModal({
           tag,
           inscription?.inscriptionId,
           content,
-          listingPrice
+          listingPrice * amount
         );
-        await handleUpdateStatus(tag, inscriptionIndex);
+        await handleUpdateStatus(tag);
         await sleep(0.2);
       }
       setPendingTx(false);
@@ -223,11 +241,10 @@ export default function LTCBulkListModal({
       await Promise.all(
         blocks.map(async (block) => {
           await generatePSBTListingInscriptionForSale(
-            block.inscription,
-            block.content,
+            block,
+            block.amount,
             listingPrice,
-            toInfo.address,
-            block.inscriptionIndex
+            toInfo.address
           );
         })
       );
@@ -240,8 +257,8 @@ export default function LTCBulkListModal({
       if (!exist) {
         const dbRefStatus = ref(db, `/status/${tag}`);
         await push(dbRefStatus, {
-          TVL: Number(listingPrice),
-          floor: Number(listingPrice),
+          TVL: Number(listingPrice * amount),
+          floor: Number(listingPrice * amount),
           listed: 1,
         });
       } else {
@@ -252,9 +269,11 @@ export default function LTCBulkListModal({
         const updates = {};
 
         updates[`TVL`] =
-          Number(exist[key]?.TVL) + Number(listingPrice) * blocks.length;
+          Number(exist[key]?.TVL) +
+          Number(listingPrice * amount) * blocks.length;
         updates[`floor`] =
-          (Number(exist[key]?.TVL) + Number(listingPrice) * blocks.length) /
+          (Number(exist[key]?.TVL) +
+            Number(listingPrice * amount) * blocks.length) /
           (Number(exist[key]?.listed) + blocks.length);
         updates[`listed`] = Number(exist[key]?.listed) + blocks.length;
 
@@ -274,7 +293,7 @@ export default function LTCBulkListModal({
       className="cs-modal relative"
     >
       <div className="text-center text-2xl font-semibold">
-        List {tag} for sale
+        List {amount} {tag} for sale
       </div>
 
       <div className="mx-auto  grid grid-cols-3 gap-1">
@@ -285,7 +304,11 @@ export default function LTCBulkListModal({
               className="w-full h-24 rounded-md bg-primary-contentDark flex justify-center items-center my-3 relative p-3"
               style={{ overflowWrap: "anywhere" }}
             >
-              <div className=" font-bold px-3">{block?.amount}</div>
+              <div className=" font-bold px-3">
+                {" "}
+                <p className="text-center">{block?.amount}</p>
+                <p className="text-center">{tag}</p>
+              </div>
 
               <button
                 className="absolute rounded-full p-1 top-1 right-1"
@@ -310,7 +333,7 @@ export default function LTCBulkListModal({
           />
           <div className="px-2 py-1 bg-primary-contentDark rounded-md text-sm flex justify-center items-center w-36 cs-border overflow-hidden ">
             {listingPrice ? (
-              <>~$ {(listingPrice * price).toFixed(1)}</>
+              <>~$ {(listingPrice * price * amount).toFixed(1)}</>
             ) : (
               "~$ 0.00"
             )}

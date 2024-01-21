@@ -17,7 +17,6 @@ import {
   orderByChild,
   equalTo,
   query,
-  onValue,
   update,
   get,
 } from "firebase/database";
@@ -27,7 +26,6 @@ import BuyBills from "./BuyBills";
 import { feeAddress, service_fee_rate } from "../../configs/constants";
 import { Psbt } from "bitcoinjs-lib";
 import useActivities from "../../hooks/useActivities";
-import useUTXOs from "../../hooks/useUTXOs";
 import { MdOutlineCancel } from "react-icons/md";
 
 export default function BuyModal({

@@ -53,8 +53,8 @@ export default function LTCListModal({
     if (!exist) {
       const dbRefStatus = ref(db, `/status/${ticker}`);
       await push(dbRefStatus, {
-        TVL: Number(listingPrice),
-        floor: Number(listingPrice),
+        TVL: Number(listingPrice * amount),
+        floor: Number(listingPrice * amount),
         listed: 1,
       });
     } else {
@@ -64,9 +64,9 @@ export default function LTCListModal({
 
       const updates = {};
 
-      updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice);
+      updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice * amount);
       updates[`floor`] =
-        (Number(exist[key]?.TVL) + Number(listingPrice)) /
+        (Number(exist[key]?.TVL) + Number(listingPrice * amount)) /
         (Number(exist[key]?.listed) + 1);
       updates[`listed`] = Number(exist[key]?.listed) + 1;
 
@@ -172,7 +172,7 @@ export default function LTCListModal({
 
       psbt.addOutput({
         address: toInfo.address,
-        value: btcTosatoshis(listingPrice),
+        value: btcTosatoshis(listingPrice * amount),
       });
 
       const singedPSBT = await wallet.signPsbt(psbt, {});
@@ -194,7 +194,7 @@ export default function LTCListModal({
             psbt: singedPSBT.toBase64(),
             data: inscription,
             date: Date.now(),
-            price: listingPrice,
+            price: listingPrice * amount,
             seller: toInfo.address,
             content: amount,
             paid: false,
@@ -208,7 +208,7 @@ export default function LTCListModal({
             psbt: singedPSBT.toBase64(),
             data: inscription,
             date: Date.now(),
-            price: listingPrice,
+            price: listingPrice * amount,
             seller: toInfo.address,
             content: amount,
             paid: false,
@@ -223,7 +223,7 @@ export default function LTCListModal({
           ticker,
           inscription?.inscriptionId,
           amount,
-          listingPrice
+          listingPrice * amount
         );
         closeModal();
       }
@@ -268,7 +268,7 @@ export default function LTCListModal({
           />
           <div className="px-2 py-1 bg-primary-contentDark rounded-md text-sm flex justify-center items-center w-36 cs-border overflow-hidden ">
             {listingPrice ? (
-              <>~$ {(listingPrice * price).toFixed(1)}</>
+              <>~$ {(listingPrice * price * amount).toFixed(1)}</>
             ) : (
               "~$ 0.00"
             )}

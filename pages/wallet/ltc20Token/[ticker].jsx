@@ -19,11 +19,14 @@ import { LuPencilLine } from "react-icons/lu";
 import { MdCancel } from "react-icons/md";
 import Ltc20SummaryBar from "../../../components/UI/Ltc20SummaryBar";
 import LTCBulkListModal from "../../../components/trade/LTCBulkListModal";
+import InscribeModal from "../../../components/trade/Inscribe";
 
 export default function LTC20Token() {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
   const router = useRouter();
+
+  const [isOpenInscribe, setIsOpenInscribe] = useState(false);
 
   const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [bulkSelect, setBulkSelect] = useState(false);
@@ -191,7 +194,10 @@ export default function LTC20Token() {
           <FaArrowLeft className="text-xl" />
         </Link>
 
-        <button className="main_btn px-3 py-2 rounded-md flex gap-2 items-center justify-center">
+        <button
+          className="main_btn px-3 py-2 rounded-md flex gap-2 items-center justify-center"
+          onClick={() => setIsOpenInscribe(true)}
+        >
           <LuPencilLine /> Inscribe
         </button>
       </div>
@@ -272,6 +278,13 @@ export default function LTC20Token() {
         blocks={selectedBlocks}
         setSelectedBlocks={setSelectedBlocks}
         cancelBlocks={cancelBlocks}
+      />
+
+      <InscribeModal
+        modalIsOpen={isOpenInscribe}
+        setIsOpen={setIsOpenInscribe}
+        ticker={ticker}
+        tokenSummary={tokenSummary}
       />
     </Layout>
   );

@@ -644,6 +644,16 @@ const Wallet = (props) => {
     return { rawTxInfo, splitedCount };
   };
 
+  const inscribeBRC20Transfer = async (address, tick, amount, feeRate) => {
+    const res = await openApi.inscribeBRC20Transfer(
+      address,
+      tick,
+      amount,
+      feeRate
+    );
+    return res;
+  };
+
   const pushTx = async (rawTxInfo) => {
     const txid = await openApi.pushTx(rawTxInfo);
     fetchbalance();
@@ -700,6 +710,7 @@ const Wallet = (props) => {
         decodePsbt,
         getInscriptionUtxoDetail,
         createSplitTx,
+        inscribeBRC20Transfer,
       }}
     >
       {props.children}
