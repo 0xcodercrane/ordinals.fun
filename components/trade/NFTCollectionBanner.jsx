@@ -3,11 +3,11 @@ import { RiGlobalFill } from "react-icons/ri";
 import { FaTwitter } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
 import { useState } from "react";
-import { onValue, orderByChild, query, ref, startAt } from "firebase/database";
+import { onValue, orderByChild, query, ref } from "firebase/database";
 import { db } from "@/services/firebase";
 import NumberFormat from "../UI/NumberFormatter";
 
-export default function NFTCollectionBanner({ collection, tag }) {
+export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
   const [status, setStatus] = useState(0);
   const [volume24, setVolume24] = useState(0);
   const [volumeh, setVolumeh] = useState(0);
@@ -87,7 +87,11 @@ export default function NFTCollectionBanner({ collection, tag }) {
         />
       ) : (
         <img
-          src={`https://ordinalslite.com/content/${collection?.inscription_icon}`}
+          src={`${
+            isLTC20
+              ? collection?.logo
+              : `https://ordinalslite.com/content/${collection?.inscription_icon}`
+          }`}
           className="rounded-md w-full col-span-12 sm:col-span-2 mx-auto max-w-[150px]"
           alt="logo"
         />
@@ -189,7 +193,9 @@ export default function NFTCollectionBanner({ collection, tag }) {
           </div>
           <div className="flex gap-1">
             <p className="text-gray-300">Supply:</p>
-            <p className="text-white font-semibold">{collection?.supply}</p>
+            <p className="text-white font-semibold">
+              {isLTC20 ? collection?.totalSupply : collection?.supply}
+            </p>
           </div>
         </div>
       </div>

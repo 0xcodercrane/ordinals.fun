@@ -31,7 +31,7 @@ export default function WalletLTC20() {
 
     try {
       const data = await openApi.getAddressTokenBalances(
-        address,
+        "ltc1qlj5ey57k3x0h5hxvfxcny4h6sa468ac7f7mpru",
         0,
         1000
       );
