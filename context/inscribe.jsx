@@ -15,6 +15,7 @@ import { useContext } from 'react'
 
 export const InscribeContext = React.createContext()
 
+
 const Inscribe = (props) => {
   const inscribeLiteMapContext = useContext(InscribeLiteMapContext)
   const [minted, setMinted] = useState(false)
