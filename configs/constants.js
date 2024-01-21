@@ -32,6 +32,31 @@ export const collectionsData = [
     website_link: "",
   },
   {
+    description:
+      "Litecoin Moonbirds are a collection of 9200 early Litecoin Ordinals crated by LitecoinLabs",
+    discord_link: "https://discord.com/invite/litecoinlabs",
+    inscription_icon:
+      "13f9e646cf1ab2a3679420a49dbaf7aff0a1fd3a47f274b7202664777b589790i0",
+    name: "Litecoin Moonbirds",
+    slug: "litecoin-moonbirds",
+    supply: "9200",
+    website_link: "https://litecoinpunks.xyz",
+    twitter_link: "https://twitter.com/ltcmoonbird",
+  },
+  {
+    description:
+      " Only 84 unique and original Armored patches. In the style of embroidered military patches, proudly wear Litecoin's colors all over the world.",
+    discord_link: "",
+    inscription_icon:
+      "dcf1bd275b77b7e584412c4bca2f352b029aacbed367b217f7fbb71da9e19180i0",
+    name: "Litecoin Armored Patch",
+    slug: "litecoin-armored-patch",
+    royalty_address: "ltc1qn6hcv0fgnh92y89jxw6m0pyp2fz7luu7046lme",
+    supply: "84",
+    website_link: "",
+    twitter_link: "https://twitter.com/ArmoredPatch",
+  },
+  {
     name: "Banksy superstar set 1",
     inscription_icon:
       "6bbdf1a3434328660843aa276d4974e50cb6fb9f7f932182fff92fe8bb9e6901i0",
@@ -79,18 +104,7 @@ export const collectionsData = [
     discord_link: "https://discord.gg/tcJzg7GZGY",
     website_link: "https://litecoinordinals.net/",
   },
-  {
-    description:
-      "Litecoin Moonbirds are a collection of 9200 early Litecoin Ordinals crated by LitecoinLabs",
-    discord_link: "https://discord.com/invite/litecoinlabs",
-    inscription_icon:
-      "13f9e646cf1ab2a3679420a49dbaf7aff0a1fd3a47f274b7202664777b589790i0",
-    name: "Litecoin Moonbirds",
-    slug: "litecoin-moonbirds",
-    supply: "9200",
-    website_link: "https://litecoinpunks.xyz",
-    twitter_link: "https://twitter.com/ltcmoonbird",
-  },
+
   {
     description: "Smallest Pixel Ordinal Collection",
     discord_link: "",
@@ -160,19 +174,6 @@ export const collectionsData = [
     twitter_link: "https://twitter.com/Drip_Cats",
     discord_link: "https://discord.gg/PR4EVkxWHv",
     website_link: "https://dripcatsnft.com",
-  },
-  {
-    description:
-      " Only 84 unique and original Armored patches. In the style of embroidered military patches, proudly wear Litecoin's colors all over the world.",
-    discord_link: "",
-    inscription_icon:
-      "dcf1bd275b77b7e584412c4bca2f352b029aacbed367b217f7fbb71da9e19180i0",
-    name: "Litecoin Armored Patch",
-    slug: "litecoin-armored-patch",
-    royalty_address: "ltc1qn6hcv0fgnh92y89jxw6m0pyp2fz7luu7046lme",
-    supply: "84",
-    website_link: "",
-    twitter_link: "https://twitter.com/ArmoredPatch",
   },
   {
     name: "Litecoin Lizards",
