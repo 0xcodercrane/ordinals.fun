@@ -9,8 +9,21 @@ export const litemap = "-Nnq0zmNxpK1WSYtHO2Q";
 
 export const collectionsData = [
   {
+    description: "Lite Pandas - 1000 pixelated pandas on Litecoin Ordinals!",
+    inscription_icon:
+      "cb42f3eeb3e3be91614730a7eecbf8d25d27a11a079d5c0ed5c6059a44c42de0i0",
+    name: "Litecoin Pandas",
+    slug: "litecoin-panda",
+    supply: "9200",
+    discord_link: "",
+    website_link: "",
+    twitter_link: "",
+    royalty_address: "",
+  },
+  {
     name: "Ordinal Smokes",
-    inscription_icon: "43e6d68b6504969b71414d63533363d33850667dfdfb43999423d8e3ffc12075i0",
+    inscription_icon:
+      "43e6d68b6504969b71414d63533363d33850667dfdfb43999423d8e3ffc12075i0",
     supply: "111",
     slug: "ordinal-smokes",
     description: "Smokes chilling on the Bitcoin Blockchai",
