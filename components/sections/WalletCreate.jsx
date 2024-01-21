@@ -175,7 +175,7 @@ export default function WalletCreate({ setType, isImport }) {
               onKeyDown={handleKeyDown}
             />
             <input
-              type="password2"
+              type="password"
               placeholder="Confirm password."
               className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
               onChange={(e) => {
@@ -227,7 +227,7 @@ export default function WalletCreate({ setType, isImport }) {
           onKeyDown={handleKeyDown}
         />
         <input
-          type="password2"
+          type="password"
           placeholder="Confirm password."
           className="mt-3 bg-transparent border border-white/20 rounded-lg w-full py-2 px-3"
           onChange={(e) => {
