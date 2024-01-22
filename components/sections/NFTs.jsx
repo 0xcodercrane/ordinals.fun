@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { collectionsData } from "../../configs/constants";
 import { CgWebsite } from "react-icons/cg";
 import { FaTwitter } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
@@ -22,10 +21,20 @@ export default function NFTs({
   const [myInscriptions, setMyInscriptions] = useState([]);
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [collectionsData, setcollectionsData] = useState();
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
+
+  async function getCollectionData() {
+    const [collectionsFromGithub] = await Promise.all([
+      fetch(
+        `https://raw.githubusercontent.com/nextidearly/collections/main/collections/metas/metas.json`
+      ).then((response) => response.json()),
+    ]);
+    setcollectionsData(collectionsFromGithub);
+  }
 
   async function getCollection(collectionSlug) {
     const [inscriptions] = await Promise.all([
@@ -48,9 +57,11 @@ export default function NFTs({
   }
 
   useEffect(() => {
-    setmeta(collectionsData[index]);
-    setNFTSlug(collectionsData[index].slug);
-  }, [index]);
+    if (collectionsData) {
+      setmeta(collectionsData[index]);
+      setNFTSlug(collectionsData[index].slug);
+    }
+  }, [index, collectionsData]);
 
   useEffect(() => {
     if (meta?.slug && !loading && inscriptionsFromDB) {
@@ -61,6 +72,10 @@ export default function NFTs({
       setFetchingData(false);
     }
   }, [meta, inscriptionsFromDB, loading]);
+
+  useEffect(() => {
+    getCollectionData();
+  }, []);
 
   return (
     <div className="my-3 w-full">
