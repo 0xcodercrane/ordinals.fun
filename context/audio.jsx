@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-export const AudioContext = React.createContext()
+export const AudioContext = React.createContext();
 
 const Audio = (props) => {
   const [state, setState] = useState({
     isPlay: false,
-  })
-  const [currentBlock, setCurrenctBlock] = useState()
+  });
+  const [currentBlock, setCurrenctBlock] = useState();
 
   return (
     <AudioContext.Provider
@@ -14,7 +14,7 @@ const Audio = (props) => {
     >
       {props.children}
     </AudioContext.Provider>
-  )
-}
+  );
+};
 
-export default Audio
+export default Audio;

@@ -20,6 +20,7 @@ export default function Home() {
   const [totalItems, setTotalItems] = useState(0);
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [listedNumber, setListedNumber] = useState(0);
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
@@ -51,7 +52,11 @@ export default function Home() {
         <meta name="description" content="Litemap - Litemap Market" />
       </Head>
 
-      <Banner title="Litemaps" tag="litemap" />
+      <Banner
+        title="Litemaps"
+        tag="litemap"
+        setListedNumber={setListedNumber}
+      />
 
       {fetchingData ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">

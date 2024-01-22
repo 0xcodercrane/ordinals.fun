@@ -53,7 +53,8 @@ export default function BuyCard({
             <>
               {list?.content.indexOf("tick") > -1 ? (
                 <div className="text-lg font-bold px-3">
-                  {JSON.parse(list?.content).tick}
+                  <p>{JSON.parse(content).tick}</p>
+                  <p>{JSON.parse(content).amt}</p>
                 </div>
               ) : (
                 <div className="text-lg font-bold px-3">{list?.content}</div>

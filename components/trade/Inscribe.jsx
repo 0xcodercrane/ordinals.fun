@@ -65,12 +65,7 @@ export default function InscribeModal({
       setCreatingTx(true);
       try {
         wallet
-          .inscribeBRC20Transfer(
-            address,
-            ticker,
-            amount.toString(),
-            feeRate
-          )
+          .inscribeBRC20Transfer(address, ticker, amount.toString(), feeRate)
           .then((order) => {
             if (order?.payAddress) {
               wallet
@@ -103,7 +98,7 @@ export default function InscribeModal({
       const txid = await wallet.pushTx(rawTx);
       await sleep(1); // Wait for transaction synchronization
 
-      if (txid) {
+      if (txid.indexOf("Broadcast") == -1) {
         setSucceed(true);
         setTx(txid);
         toast.success("Your transaction has been sent successfully.");

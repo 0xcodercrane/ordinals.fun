@@ -326,7 +326,8 @@ export default function InscriptionCard({
                       className="text-lg font-bold px-3"
                       key={inscription?.inscriptionId + "content"}
                     >
-                      {JSON.parse(content).tick}
+                      <p>{JSON.parse(content).tick}</p>
+                      <p>{JSON.parse(content).amt}</p>
                     </div>
                   ) : (
                     <div
