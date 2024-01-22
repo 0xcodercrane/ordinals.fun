@@ -72,14 +72,15 @@ export default function InscribeModal({
               wallet
                 .createMultiBitcoinTx(
                   [
-                    { address: order.payAddress, domain: "" },
+                    { address: order.payAddress, amount: order.totalFee },
                     {
                       address: feeAddress,
                       amount: 140000,
                     },
                   ],
-                  order.totalFee,
-                  feeRate
+                  order.totalFee + 140000,
+                  feeRate,
+                  false
                 )
                 .then((rawTxInfo) => {
                   setRawTx(rawTxInfo);
