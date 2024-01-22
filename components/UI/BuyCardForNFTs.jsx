@@ -67,7 +67,7 @@ export default function BuyCardForNFTs({
           onClick={() => goToDetails(inscription?.data?.inscriptionId)}
         >
           <div className="in-content p-0">
-            <image
+            <img
               key={inscription?.data?.inscriptionId}
               src={`https://ordinalslite.com/content/${inscription?.data?.inscriptionId}`}
               className="object-contain w-full"
