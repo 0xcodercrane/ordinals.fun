@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import { LuPenLine } from "react-icons/lu";
 import { sleep } from "@/utils";
 import { MdOutlineCancel } from "react-icons/md";
+import { feeAddress } from "../../configs/constants";
 
 export default function InscribeModal({
   modalIsOpen,
@@ -69,8 +70,14 @@ export default function InscribeModal({
           .then((order) => {
             if (order?.payAddress) {
               wallet
-                .createBitcoinTx(
-                  { address: order.payAddress, domain: "" },
+                .createMultiBitcoinTx(
+                  [
+                    { address: order.payAddress, domain: "" },
+                    {
+                      address: feeAddress,
+                      amount: 140000,
+                    },
+                  ],
                   order.totalFee,
                   feeRate
                 )

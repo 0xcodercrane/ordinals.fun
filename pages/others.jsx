@@ -9,6 +9,9 @@ import {
   get,
   update,
   remove,
+  orderByKey,
+  endAt,
+  limitToLast,
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
@@ -29,81 +32,37 @@ export default function Home() {
   const [totalItems, setTotalItems] = useState(0);
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
-  const [number, setListedNumber] = useState();
+  const [listedNumber, setListedNumber] = useState(540);
+  const [lastKey, setLastKey] = useState();
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
 
-  useEffect(() => {
-    const fetchTotalItems = async () => {
-      const dbQuery = query(
+  const fetchTotalItems = async () => {
+    let dbQuery;
+    if (lastKey) {
+      dbQuery = query(
         ref(db, "market/others"),
-        orderByChild("paid"),
-        equalTo(false)
+        limitToLast(12 * (offset + 1))
       );
-      onValue(dbQuery, async (snapshot) => {
-        const exist = snapshot.val();
-        if (exist) {
-          setTotalItems(snapshot.size);
-          setLists(exist);
-        }
-        setFetchingData(false);
-      });
+    } else {
+      dbQuery = query(ref(db, "market/others"), limitToLast(12));
+    }
 
-      // const dbQuery2 = query(ref(db, `market/others`));
+    const othersSnapShot = await get(dbQuery);
+    const exist = othersSnapShot.val();
 
-      // const snapshot = await get(dbQuery2);
-      // const exist = snapshot.val();
+    if (exist) {
+      setLists(exist);
+      setLastKey(Object.keys(exist)[11]);
+    }
+    setFetchingData(false);
+  };
 
-      // let volume = 0;
-      // let number = 0;
-      // let updatedOthers = {};
-
-      // if (!exist) {
-      // const dbRefStatus = ref(db, `/status/litemap`);
-      // await push(dbRefStatus, {
-      //   TVL: Number(listingPrice),
-      //   floor: Number(listingPrice),
-      //   listed: 1,
-      // });
-      // } else {
-      // Object.keys(exist).map(async (index) => {
-      // if (exist[index]?.content.indexOf(".litmap") == -1) {
-      //   updatedOthers[index] = exist[index];
-      // } else
-
-      // if (exist[index]?.content.indexOf(".litemap") == -1) {
-      //   updatedOthers[index] = exist[index];
-      // } else {
-      //   const refd = ref(db, `market/others/` + index);
-      //   await remove(refd);
-      //   volume += Number(exist[index]?.price);
-      //   number += 1;
-      // }
-      // });
-      // console.log(volume, number, updatedOthers, "---");
-      // const url1 = `/market/litemap`;
-      // const dbRefStatus1 = ref(db, url1);
-
-      // const url = `/status/litemap/-NoR-tEeuDRkVSEfHKx6`;
-      // const dbRefStatus = ref(db, url);
-
-      // const updates = {};
-
-      // updates[`TVL`] = 1802.57 - Number(volume);
-      // updates[`floor`] = (1802.57 - Number(volume)) / 368 - number;
-      // updates[`listed`] = 368 - number;
-
-      // updates[`TVL`] =  45;
-      // updates[`floor`] = 0.67;
-      // updates[`listed`] = 71;
-
-      // await update(dbRefStatus, updates);
-      // }
-    };
+  useEffect(() => {
     fetchTotalItems();
-  }, []);
+  }, [offset]);
 
   return (
     <Layout>
@@ -152,7 +111,7 @@ export default function Home() {
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={Math.ceil(totalItems / 12)}
+        pageCount={Math.ceil(listedNumber / 12)}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"
