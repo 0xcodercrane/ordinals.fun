@@ -66,11 +66,11 @@ export default function BuyCardForNFTs({
           className="in-card"
           onClick={() => goToDetails(inscription?.data?.inscriptionId)}
         >
-          <div className="in-content p-0">
+          <div className="in-content overflow-hidden">
             <img
               key={inscription?.data?.inscriptionId}
               src={`https://ordinalslite.com/content/${inscription?.data?.inscriptionId}`}
-              className="object-contain w-full"
+              className="object-contain w-full h-full"
               alt=""
               onError={(e) => empyImage(e)}
             />
@@ -120,13 +120,11 @@ export default function BuyCardForNFTs({
     return (
       <>
         <div className="in-card" onClick={() => goToDetails(inscription.id)}>
-          <div className="in-content p-0">
-            <Image
-              width={160}
-              height={160}
+          <div className="in-content overflow-hidden">
+            <img
               key={inscription.id}
               src={`https://ordinalslite.com/content/${inscription.id}`}
-              className="object-contain"
+              className="w-full h-full object-contain"
               alt=""
             />
           </div>
