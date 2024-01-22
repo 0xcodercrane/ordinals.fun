@@ -41,7 +41,7 @@ export default function Collection() {
 
   const [showAll, setShowAll] = useState(false);
 
-  const handlePageClickForListed = () => {
+  const handlePageClickForListed = (e) => {
     setOffsetListed(e.selected);
   };
 
