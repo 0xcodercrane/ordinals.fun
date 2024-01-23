@@ -30,11 +30,7 @@ export default function WalletLTC20() {
     setfetchingData(true);
 
     try {
-      const data = await openApi.getAddressTokenBalances(
-        address,
-        0,
-        1000
-      );
+      const data = await openApi.getAddressTokenBalances(address, 0, 1000);
       setfetchingData(false);
       if (data) {
         setTokenList(data);
@@ -47,6 +43,8 @@ export default function WalletLTC20() {
   useEffect(() => {
     if (address) {
       getTransferableBalance(address);
+    } else {
+      setfetchingData(false);
     }
   }, [address]);
 
