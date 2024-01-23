@@ -15,7 +15,7 @@ import { useLastBlock, useMintedBlocksFromAPI } from "../../store/hooks";
 import NumberFormat from "../UI/NumberFormatter";
 import Link from "next/link";
 
-export default function Banner({ title, tag, setListedNumber }) {
+export default function Banner({ title, tag, setListedNumber, setLastSales }) {
   const { mintedBlockNumber } = useMintedBlocksFromAPI();
   const { lastBlock } = useLastBlock();
   const [status, setStatus] = useState(0);
@@ -47,12 +47,15 @@ export default function Banner({ title, tag, setListedNumber }) {
         if (exist) {
           let TVL = 0;
           let trades = 0;
+          let lastSales = [];
           Object.keys(exist).map((index) => {
-            if (exist[index].date > Date.now() - 86400000)
-              TVL += Number(exist[index].price);
+            // if (exist[index].date > Date.now() - 86400000)
+            TVL += Number(exist[index].price);
             trades += 1;
+            lastSales.push(exist[index]);
           });
-
+          const sortedSales = lastSales.sort((a, b) => b.price - a.price);
+          setLastSales(sortedSales.slice(0, 12));
           setTrades24(trades);
           setVolume24(TVL);
         }

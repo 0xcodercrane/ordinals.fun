@@ -14,6 +14,7 @@ import { db } from "@/services/firebase";
 import BuyCardForLTC20 from "../../components/UI/BuyCardForLTC20";
 import LTCBuyCardSkelenton from "../../components/UI/LTCBuyCardSkelenton";
 import Link from "next/link";
+import LastSales from "../../components/sections/LastSales";
 
 export default function Collection() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function Collection() {
   const [listedNumber, setListedNumber] = useState(0);
   const [fetchingListings, setFetchingListings] = useState(true);
   const [offsetListed, setOffsetListed] = useState(0);
+  const [lastSales, setLastSales] = useState();
 
   const handlePageClickForListed = () => {
     setOffsetListed(e.selected);
@@ -95,6 +97,7 @@ export default function Collection() {
         collection={collection}
         tag={slug}
         isLTC20={true}
+        setLastSales={setLastSales}
       />
 
       <h1 className="my-3 w-full flex justify-end">
@@ -167,6 +170,13 @@ export default function Collection() {
           )}
         </>
       )}
+
+      <LastSales
+        slug={slug}
+        lastSales={lastSales}
+        price={price}
+        isLTC20={true}
+      />
     </Layout>
   );
 }

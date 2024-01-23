@@ -14,7 +14,12 @@ import {
 import { db } from "@/services/firebase";
 import NumberFormat from "../UI/NumberFormatter";
 
-export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
+export default function NFTCollectionBanner({
+  collection,
+  tag,
+  isLTC20,
+  setLastSales,
+}) {
   const [status, setStatus] = useState(0);
   const [volume24, setVolume24] = useState(0);
   const [volumeh, setVolumeh] = useState(0);
@@ -45,18 +50,18 @@ export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
 
         onValue(dbTradesQuery, async (snapshot) => {
           const exist = snapshot.val();
-          console.log("ssd");
           if (exist) {
             let TVL = 0;
             let trades = 0;
-            console.log("ssdddddddddddddd");
-
+            let lastSales = [];
             Object.keys(exist).map((index) => {
               // if (exist[index].date > Date.now() - 86400000)
               TVL += Number(exist[index].price);
               trades += 1;
+              lastSales.push(exist[index]);
             });
-
+            const sortedSales = lastSales.sort((a, b) => b.price - a.price);
+            setLastSales(sortedSales.slice(0, 12));
             setTrades24(trades);
             setVolume24(TVL);
           }

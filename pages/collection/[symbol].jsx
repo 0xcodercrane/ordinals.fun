@@ -21,6 +21,7 @@ import {
 import { db } from "@/services/firebase";
 import BuyCardShowAll from "../../components/UI/BuyCardShowAll";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import LastSales from "../../components/sections/LastSales";
 
 export default function Collection() {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function Collection() {
 
   const [showAll, setShowAll] = useState(false);
   const [pageSize, setPageSize] = useState();
+  const [lastSales, setLastSales] = useState();
 
   const handlePageClickForListed = (e) => {
     setOffsetListed(e.selected);
@@ -118,7 +120,12 @@ export default function Collection() {
         />
       </Head>
 
-      <NFTCollectionBanner key={slug} collection={collection} tag={slug} />
+      <NFTCollectionBanner
+        key={slug}
+        collection={collection}
+        tag={slug}
+        setLastSales={setLastSales}
+      />
 
       {showAll && (
         <div className="w-full my-3 ml-1">
@@ -265,6 +272,8 @@ export default function Collection() {
           )}
         </>
       )}
+
+      <LastSales slug={slug} lastSales={lastSales} price={price} />
     </Layout>
   );
 }

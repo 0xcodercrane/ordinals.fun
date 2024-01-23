@@ -23,6 +23,7 @@ import { useWallet } from "../store/hooks";
 import useUTXOs from "../hooks/useUTXOs";
 import Banner from "../components/trade/Banner";
 import Head from "next/head";
+import LastSales from "../components/sections/LastSales";
 
 export default function Home() {
   const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs, selectUtxos } =
@@ -34,6 +35,7 @@ export default function Home() {
   const [offset, setOffset] = useState(0);
   const [listedNumber, setListedNumber] = useState(540);
   const [lastKey, setLastKey] = useState();
+  const [lastSales, setLastSales] = useState();
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
@@ -42,10 +44,7 @@ export default function Home() {
   const fetchTotalItems = async () => {
     let dbQuery;
     if (lastKey) {
-      dbQuery = query(
-        ref(db, "market/others"),
-        limitToLast(12 * (offset + 1))
-      );
+      dbQuery = query(ref(db, "market/others"), limitToLast(12 * (offset + 1)));
     } else {
       dbQuery = query(ref(db, "market/others"), limitToLast(12));
     }
@@ -75,6 +74,7 @@ export default function Home() {
         title="Any Inscriptions"
         tag="others"
         setListedNumber={setListedNumber}
+        setLastSales={setLastSales}
       />
 
       {fetchingData ? (
@@ -116,6 +116,8 @@ export default function Home() {
         renderOnZeroPageCount={null}
         className="pagination"
       />
+
+      <LastSales slug={"others"} lastSales={lastSales} price={price} />
     </Layout>
   );
 }

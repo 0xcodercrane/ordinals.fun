@@ -11,6 +11,7 @@ import { useWallet } from "../store/hooks";
 import useUTXOs from "../hooks/useUTXOs";
 import Banner from "../components/trade/Banner";
 import Head from "next/head";
+import LastSales from "../components/sections/LastSales";
 
 export default function Home() {
   const { utxos, sortedUtxos, dummyUTXOs, refreshUTXOs, selectUtxos } =
@@ -21,6 +22,7 @@ export default function Home() {
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
   const [listedNumber, setListedNumber] = useState(0);
+  const [lastSales, setLastSales] = useState();
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
@@ -56,6 +58,7 @@ export default function Home() {
         title="Litemaps"
         tag="litemap"
         setListedNumber={setListedNumber}
+        setLastSales={setLastSales}
       />
 
       {fetchingData ? (
@@ -97,6 +100,8 @@ export default function Home() {
         renderOnZeroPageCount={null}
         className="pagination"
       />
+
+      <LastSales slug={"litemap"} lastSales={lastSales} price={price} />
     </Layout>
   );
 }
