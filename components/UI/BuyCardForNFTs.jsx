@@ -70,7 +70,7 @@ export default function BuyCardForNFTs({
             <img
               key={inscription?.data?.inscriptionId}
               src={`https://ordinalslite.com/content/${inscription?.data?.inscriptionId}`}
-              className="object-contain w-full h-full"
+              className="object-cover w-full h-full"
               alt=""
               onError={(e) => empyImage(e)}
             />

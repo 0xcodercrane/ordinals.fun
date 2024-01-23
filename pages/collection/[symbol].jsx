@@ -40,6 +40,7 @@ export default function Collection() {
   const [offsetListed, setOffsetListed] = useState(0);
 
   const [showAll, setShowAll] = useState(false);
+  const [pageSize, setPageSize] = useState();
 
   const handlePageClickForListed = (e) => {
     setOffsetListed(e.selected);
@@ -104,9 +105,7 @@ export default function Collection() {
   }, [slug]);
 
   useEffect(() => {
-    if (showAll) {
-      fetchList();
-    }
+    fetchList();
   }, [showAll]);
 
   return (
