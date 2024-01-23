@@ -44,12 +44,16 @@ export default function NFTs({
     ]);
     let NFTs = [];
     // console.log(inscriptionsFromDB, inscriptions);
-    inscriptionsFromDB.map((inscription) => {
+    inscriptionsFromDB.map((inscription, key) => {
       const filter = inscriptions.filter(
         (item) => item.id === inscription.inscriptionId
       );
       if (filter.length > 0) {
-        NFTs.push({ ...inscription, content: filter[0]?.meta?.name });
+        NFTs.push({
+          ...inscription,
+          content: filter[0]?.meta?.name,
+          inscriptionIndex: key,
+        });
       }
     });
     setMyInscriptions(NFTs);
@@ -160,8 +164,8 @@ export default function NFTs({
                         return (
                           <InscriptionCard
                             inscription={inscription}
-                            key={inscription?.inscriptionId + "others"}
-                            inscriptionIndex={key + offset * 10}
+                            key={inscription?.inscriptionId + "nfts"}
+                            inscriptionIndex={inscription.inscriptionIndex}
                             bulkSelect={bulkSelect}
                             tag={meta?.slug}
                             setSelectedBlocks={setSelectedBlocks}

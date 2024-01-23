@@ -180,7 +180,8 @@ export default function Ltc20tokenCard({
       const inscriptionSnapshot = await get(dbQueryForInscription);
       const inscriptionData = inscriptionSnapshot.val();
       if (inscriptionData) {
-        setIsListed(true);
+        if (inscriptionData[Object.keys(inscriptionData)[0]]?.listed)
+          setIsListed(true);
       }
     }
     setCheckingListed(false);
