@@ -179,7 +179,7 @@ export default function WalletMain({ setContentType }) {
   }, []);
 
   useEffect(() => {
-    if (account?.accounts[0]?.address) {
+    if (account && account.accounts) {
       fetchLists();
     }
   }, [account]);
@@ -370,7 +370,7 @@ export default function WalletMain({ setContentType }) {
                 </>
               ) : (
                 <>
-                  {ltc20.total > 0 ? (
+                  {ltc20?.total > 0 ? (
                     <div className="grid grid-cols-2 gap-2 px-2">
                       {ltc20.list.map((list) => {
                         return (
@@ -426,13 +426,10 @@ export default function WalletMain({ setContentType }) {
         </div>
 
         <div className="flex gap-2">
-          <button
-            className="main_btn h-8 w-full bg-red-500"
-            onClick={closeModal}
-          >
+          <button className="main_btn h-8 w-full " onClick={closeModal}>
             No
           </button>
-          <button className="main_btn h-8 w-full " onClick={confirm}>
+          <button className="main_btn h-8 w-full bg-red-500" onClick={confirm}>
             Yes
           </button>
         </div>

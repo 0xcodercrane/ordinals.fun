@@ -137,7 +137,7 @@ export default function WalletCreate({ setType, isImport }) {
     return (
       <>
         {created ? (
-          <div className="p-4 rounded-lg bg-[white]  backdrop-blur-xl">
+          <div className="p-4 rounded-lg  bg-[#031a2b]">
             <p className="my-8 font-semibold text-center text-2xl">
               Secret Recovery Phrase
             </p>
