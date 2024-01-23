@@ -51,6 +51,7 @@ export default function LTCListModal({
     const exist = snapshot.val();
 
     if (!exist) {
+      console.log('ddd')
       const dbRefStatus = ref(db, `/status/${ticker}`);
       await push(dbRefStatus, {
         TVL: Number(listingPrice * amount),
@@ -58,45 +59,57 @@ export default function LTCListModal({
         listed: 1,
       });
     } else {
+      console.log('ddd', exist)
+
       const key = Object.keys(exist)[0];
       const url = `/status/${ticker}/${key}`;
       const dbRefStatus = ref(db, url);
 
       const updates = {};
+      console.log('ddd', exist)
 
       updates[`TVL`] = Number(exist[key]?.TVL) + Number(listingPrice * amount);
       updates[`floor`] =
         (Number(exist[key]?.TVL) + Number(listingPrice * amount)) /
         (Number(exist[key]?.listed) + 1);
       updates[`listed`] = Number(exist[key]?.listed) + 1;
+      console.log('ddd', exist)
 
       await update(dbRefStatus, updates);
+      console.log('ddd', exist)
+
     }
 
     const dbQueryForWallet = query(ref(db, `wallet/${address}`));
 
     const walletSnapshot = await get(dbQueryForWallet);
     const walletExist = walletSnapshot.val();
+    console.log('ddd', exist)
 
     if (walletExist) {
       const key = Object.keys(walletExist)[0];
+      console.log('ddd', key)
 
-      const dbRefInscription = ref(db, `wallet/${address}/${key}`);
+      const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
       const dbQueryForInscription = query(
         dbRefInscription,
         orderByChild("inscriptionId"),
         equalTo(inscription.inscriptionId)
       );
+      console.log('ddd', key)
 
       const inscriptionSnapshot = await get(dbQueryForInscription);
       const inscriptionData = inscriptionSnapshot.val();
+      console.log('ddd', inscriptionData)
 
       const keyInscription = Object.keys(inscriptionData)[0];
+      console.log('ddd', exist)
 
       const dbQueryForWallet = ref(
         db,
         `wallet/${address}/${key}/inscriptions/${keyInscription}`
       );
+      console.log('ddd', exist)
 
       await update(dbQueryForWallet, {
         ...walletExist[key]["inscriptions"][keyInscription],
@@ -187,7 +200,10 @@ export default function LTCListModal({
         const inscriptionSnapshot = await get(dbQueryForInscriptions);
         const inscriptionExist = inscriptionSnapshot.val();
 
+        console.log("running");
         if (inscriptionExist) {
+          console.log("running");
+
           const key = Object.keys(inscriptionExist)[0];
           const updateInscriptionRef = ref(db, `market/${ticker}/${key}`);
           await update(updateInscriptionRef, {
@@ -201,8 +217,12 @@ export default function LTCListModal({
             txId: "",
             tag: ticker,
           });
+          console.log("running");
+
           toast.success("Successfully listed");
         } else {
+          console.log("running");
+
           const dbRef = ref(db, "/market/" + ticker);
           push(dbRef, {
             psbt: singedPSBT.toBase64(),
@@ -218,19 +238,25 @@ export default function LTCListModal({
             toast.success("Successfully listed");
           });
         }
+        console.log("running");
+
         await handleUpdateStatus();
+        console.log("running");
+
         await addlistForSale(
           ticker,
           inscription?.inscriptionId,
           amount,
           listingPrice * amount
         );
+        console.log("running");
+
         closeModal();
       }
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-      //  console.log(error);
+      console.log(error);
       toast.error("Something went wrong when creating PSBT");
     }
   }

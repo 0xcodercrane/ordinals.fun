@@ -73,7 +73,7 @@ export default function LTCBulkListModal({
     if (walletExist) {
       const key = Object.keys(walletExist)[0];
 
-      const dbRefInscription = ref(db, `wallet/${address}/${key}`);
+      const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
       const dbQueryForInscription = query(
         dbRefInscription,
         orderByChild("inscriptionId"),

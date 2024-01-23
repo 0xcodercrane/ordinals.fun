@@ -80,7 +80,7 @@ export default function Ltc20tokenCard({
 
     const key = Object.keys(walletData)[0];
 
-    const dbRefInscription = ref(db, `wallet/${address}/${key}`);
+    const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
     const dbQueryForInscription = query(
       dbRefInscription,
       orderByChild("inscriptionId"),
@@ -170,7 +170,7 @@ export default function Ltc20tokenCard({
     if (walletExist) {
       const key = Object.keys(walletExist)[0];
 
-      const dbRefInscription = ref(db, `wallet/${address}/${key}`);
+      const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
       const dbQueryForInscription = query(
         dbRefInscription,
         orderByChild("inscriptionId"),
