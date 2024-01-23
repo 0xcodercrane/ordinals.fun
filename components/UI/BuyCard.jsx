@@ -42,7 +42,7 @@ export default function BuyCard({
               <img
                 key={list?.data?.inscriptionNumber}
                 src={`https://ordinalslite.com/content/${list?.data?.inscriptionId}`}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
                 alt=""
                 onError={(e) => empyImage(e)}
               />
@@ -53,8 +53,8 @@ export default function BuyCard({
             <>
               {list?.content.indexOf("tick") > -1 ? (
                 <div className="text-lg font-bold px-3">
-                  <p>{JSON.parse(content).tick}</p>
-                  <p>{JSON.parse(content).amt}</p>
+                  <p>{JSON.parse(list?.content).tick}</p>
+                  <p>{JSON.parse(list?.content).amt}</p>
                 </div>
               ) : (
                 <div className="text-lg font-bold px-3">{list?.content}</div>

@@ -124,6 +124,9 @@ export default function useActivities() {
       const dbRefStatus = ref(db, url);
 
       const updates = {};
+      console.log(Number(price));
+      console.log(Number(exist[key]?.TVL));
+      console.log(Number(exist[key]?.listed));
 
       updates[`TVL`] = Number(exist[key]?.TVL) - Number(price);
       updates[`floor`] =

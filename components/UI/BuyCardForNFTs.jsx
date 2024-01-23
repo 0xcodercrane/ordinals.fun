@@ -124,7 +124,7 @@ export default function BuyCardForNFTs({
             <img
               key={inscription.id}
               src={`https://ordinalslite.com/content/${inscription.id}`}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
               alt=""
             />
           </div>

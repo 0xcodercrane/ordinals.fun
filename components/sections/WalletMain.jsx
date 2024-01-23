@@ -371,11 +371,11 @@ export default function WalletMain({ setContentType }) {
               ) : (
                 <>
                   {ltc20.total > 0 ? (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2 px-2">
                       {ltc20.list.map((list) => {
                         return (
                           <div
-                            className="in-card mt-2 mb-3"
+                            className="in-card"
                             key={list.ticker}
                             onClick={() => goToDetails(list.ticker)}
                           >

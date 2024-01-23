@@ -3,7 +3,14 @@ import { RiGlobalFill } from "react-icons/ri";
 import { FaTwitter } from "react-icons/fa";
 import { BsDiscord } from "react-icons/bs";
 import { useState } from "react";
-import { onValue, orderByChild, query, ref } from "firebase/database";
+import {
+  equalTo,
+  onValue,
+  orderByChild,
+  query,
+  ref,
+  limitToLast,
+} from "firebase/database";
 import { db } from "@/services/firebase";
 import NumberFormat from "../UI/NumberFormatter";
 
@@ -38,12 +45,15 @@ export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
 
         onValue(dbTradesQuery, async (snapshot) => {
           const exist = snapshot.val();
+          console.log("ssd");
           if (exist) {
             let TVL = 0;
             let trades = 0;
+            console.log("ssdddddddddddddd");
+
             Object.keys(exist).map((index) => {
-              if (exist[index].date > Date.now() - 86400000)
-                TVL += Number(exist[index].price);
+              // if (exist[index].date > Date.now() - 86400000)
+              TVL += Number(exist[index].price);
               trades += 1;
             });
 
@@ -52,29 +62,12 @@ export default function NFTCollectionBanner({ collection, tag, isLTC20 }) {
           }
         });
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
-
-      // const dbTradesh = query(
-      //   ref(db, "market/" + tag),
-      //   orderByChild("date"),
-      //   startAt(Date.now() - 3600000)
-      // );
-
-      // onValue(dbTradesh, async (snapshot) => {
-      //   const exist = snapshot.val();
-      //   if (exist) {
-      //     let TVLh = 0;
-      //     Object.keys(exist).map((index) => {
-      //       if (exist.paid) {
-      //         TVLh += Number(exist[index].price);
-      //       }
-      //     });
-      //     setVolumeh(TVLh);
-      //   }
-      // });
     }
-    fetchStatus();
+    if (tag) {
+      fetchStatus();
+    }
   }, [tag]);
 
   return (

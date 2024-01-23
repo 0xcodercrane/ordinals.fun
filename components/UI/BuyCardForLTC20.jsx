@@ -60,7 +60,7 @@ export default function BuyCardForLTC20({
         <div className="flex justify-between gap-1 mb-2 text-[12px]">
           <p>Price:</p>
           <p>
-            {inscription?.price}{" "}
+            {inscription?.price.toFixed(3)}{" "}
             <span className="text-gray-300">
               ~$ {(inscription?.price * price).toFixed(3)}
             </span>

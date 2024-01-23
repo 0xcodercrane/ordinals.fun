@@ -289,7 +289,7 @@ export default function BulkListModal({
                 <>
                   <img
                     src={`https://ordinalslite.com/content/${block?.inscription?.inscriptionId}`}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                     alt=""
                   />
                 </>

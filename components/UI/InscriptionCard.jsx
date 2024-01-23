@@ -310,7 +310,7 @@ export default function InscriptionCard({
               <img
                 key={inscription?.inscriptionId}
                 src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
                 alt=""
                 onError={(e) => empyImage(e)}
               />
