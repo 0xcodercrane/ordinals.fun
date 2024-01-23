@@ -13,6 +13,7 @@ import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "@/services/firebase";
 import BuyCardForLTC20 from "../../components/UI/BuyCardForLTC20";
 import LTCBuyCardSkelenton from "../../components/UI/LTCBuyCardSkelenton";
+import Link from "next/link";
 
 export default function Collection() {
   const router = useRouter();
@@ -96,8 +97,13 @@ export default function Collection() {
         isLTC20={true}
       />
 
-      <h1 className="my-3 text-xl font-semibold">
-        Listed <span className=" uppercase"> {slug}</span>
+      <h1 className="my-3 w-full flex justify-end">
+        <Link
+          href={"/wallet/ltc20Token/" + slug}
+          className="main_btn px-4 py-2 rounded-md"
+        >
+          Create List ({slug})
+        </Link>
       </h1>
 
       {fetchingListings ? (
