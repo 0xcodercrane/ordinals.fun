@@ -31,7 +31,8 @@ const initialState = {
       total: 0,
       list: [],
     },
-    price: 71
+    ltc20: { total: 0, list: [] },
+    price: 71,
   },
 };
 
@@ -72,6 +73,11 @@ export const wallet = createSlice({
     updatePrice: (state, action) => {
       state.value.price = action.payload;
     },
+    updateBalance: (state, action) => {
+      state.value.inscriptions = action.payload.inscriptions;
+      state.value.balance = action.payload.ltcBalance;
+      state.value.ltc20 = action.payload.ltc20;
+    },
   },
 });
 
@@ -86,6 +92,7 @@ export const {
   setCurrentKeyRing,
   updateBitcoinTx,
   updateInscriptions,
-  updatePrice
+  updatePrice,
+  updateBalance
 } = wallet.actions;
 export default wallet.reducer;

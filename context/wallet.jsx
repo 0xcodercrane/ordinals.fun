@@ -12,6 +12,7 @@ import {
   balance,
   setCurrentKeyRing,
   updateInscriptions,
+  updateBalance
 } from "../store/slices/wallet";
 import { deviceId } from "../store/slices/openApi";
 import { updatePrice } from "../store/slices/wallet";
@@ -140,7 +141,7 @@ const Wallet = (props) => {
   const fetchbalance = async () => {
     try {
       if (accountInfo?.account) {
-        const newBalance = await openApi.getAddressBalance(
+        const ltcBalance = await openApi.getAddressBalance(
           accountInfo?.account?.accounts[0]?.address
         );
         const inscriptions = await openApi.getAddressInscriptions(
@@ -148,8 +149,12 @@ const Wallet = (props) => {
           0,
           10000
         );
-        dispatch(updateInscriptions(inscriptions));
-        dispatch(balance(newBalance));
+        const ltc20 = await openApi.getAddressTokenBalances(
+          accountInfo?.account?.accounts[0]?.address,
+          0,
+          1000
+        );
+        dispatch(updateBalance({inscriptions: inscriptions, ltcBalance: ltcBalance, ltc20: ltc20}))
       }
     } catch (error) {
       //  console.log(error);
