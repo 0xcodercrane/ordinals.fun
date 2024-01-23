@@ -29,7 +29,6 @@ export default function LastSales({ slug, lastSales, price, isLTC20 }) {
   };
 
   const content = (slug, sale) => {
-    console.log(sale);
 
     if (isLTC20) {
       return (
