@@ -424,6 +424,10 @@ export default function InscriptionCard({
       </div>
 
       <ListModal
+        setIsOpenSplit={setIsOpenSplit}
+        isNeedToSplit={isNeedToSplit}
+        isMultiStuck={isMultiStuck}
+        checking={checking}
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
         tag={tag}

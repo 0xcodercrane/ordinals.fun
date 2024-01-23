@@ -23,6 +23,7 @@ import { db } from "@/services/firebase";
 import { AiOutlineLoading } from "react-icons/ai";
 import { Psbt } from "bitcoinjs-lib";
 import useActivities from "../../hooks/useActivities";
+import { FaScissors } from "react-icons/fa6";
 
 export default function ListModal({
   modalIsOpen,
@@ -31,6 +32,10 @@ export default function ListModal({
   inscription,
   tag = "litemap",
   inscriptionIndex,
+  setIsOpenSplit,
+  isNeedToSplit,
+  isMultiStuck,
+  checking,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -143,7 +148,10 @@ export default function ListModal({
       return;
     }
 
-    if (tag === "others" && (content.indexOf(".litemap") > -1 || content.indexOf(".litmap") > -1)) {
+    if (
+      tag === "others" &&
+      (content.indexOf(".litemap") > -1 || content.indexOf(".litmap") > -1)
+    ) {
       toast.error("Please list this inscription on litemap Tab");
       return;
     }
@@ -246,7 +254,7 @@ export default function ListModal({
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-       console.log(error);
+      console.log(error);
       toast.error("Something went wrong when creating PSBT");
     }
   }
@@ -322,12 +330,33 @@ export default function ListModal({
         >
           Close
         </button>
-        <button
-          className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600"
-          onClick={generatePSBTListingInscriptionForSale}
-        >
-          Sign & Create PSBT Listing
-        </button>
+
+        {checking ? (
+          <button className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600">
+            <AiOutlineLoading className="text-lg font-semibold animate-spin mx-auto" />
+          </button>
+        ) : (
+          <>
+            {isNeedToSplit || isMultiStuck ? (
+              <button
+                className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600 flex justify-center gap-2 items-center"
+                onClick={() => {
+                  closeModal();
+                  setIsOpenSplit(true);
+                }}
+              >
+                <FaScissors className="text-lg" /> Split
+              </button>
+            ) : (
+              <button
+                className="main_btn w-full py-2 px-3 rounded-md mt-3 bg-sky-600"
+                onClick={generatePSBTListingInscriptionForSale}
+              >
+                Sign & Create PSBT Listing
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {pendingTx && (
