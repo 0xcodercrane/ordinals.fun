@@ -28,21 +28,6 @@ export default function Orders() {
     router.push("/order/" + id);
   };
 
-  const updateDB = async () => {
-    const dbQuerydd = ref(
-      db,
-      "wallet/ltc1qwp9y684jzt56892s6neaukrgpcppgdkf0l07mj/-NoZCAtnjN72pLSDa_Kj/inscriptions"
-    );
-    remove(dbQuerydd);
-    return;
-    const snapshot = await get(dbQuerydd);
-    const exist = snapshot.val();
-
-    if (exist) {
-      console.log(exist);
-    }
-  };
-
   useEffect(() => {
     if (address) {
       setFetchingData(true);
@@ -59,8 +44,6 @@ export default function Orders() {
         }
         setFetchingData(false);
       });
-
-      updateDB();
     } else {
       setFetchingData(false);
     }
