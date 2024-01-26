@@ -62,13 +62,10 @@ export default function BuyCardForNFTs({
   if (isListed) {
     return (
       <>
-        <div
-          className="in-card"
-          onClick={() => goToDetails(inscription?.data?.inscriptionId)}
-        >
+        <div className="in-card" onClick={() => goToDetails(inscription.id)}>
           <div className="in-content overflow-hidden">
             {"71e0f6dc87a473aa69787fff8e09e5eddfdca96e587928a5b1a25c0ae16dc0eei0" ==
-            inscription?.data?.inscriptionId ? (
+            inscription.id ? (
               <img
                 key={inscription?.data?.inscriptionId}
                 src={`/0.jpg`}
@@ -132,12 +129,24 @@ export default function BuyCardForNFTs({
       <>
         <div className="in-card" onClick={() => goToDetails(inscription.id)}>
           <div className="in-content overflow-hidden">
-            <img
-              key={inscription.id}
-              src={`https://ordinalslite.com/content/${inscription.id}`}
-              className="w-full h-full object-cover"
-              alt=""
-            />
+            {"71e0f6dc87a473aa69787fff8e09e5eddfdca96e587928a5b1a25c0ae16dc0eei0" ==
+            inscription.id ? (
+              <img
+                key={inscription.id}
+                src={`/0.jpg`}
+                className="object-cover w-full h-full"
+                alt=""
+                onError={(e) => empyImage(e)}
+              />
+            ) : (
+              <img
+                key={inscription.id}
+                src={`https://ordinalslite.com/content/${inscription.id}`}
+                className="object-cover w-full h-full"
+                alt=""
+                onError={(e) => empyImage(e)}
+              />
+            )}
           </div>
 
           <hr className="mb-2" />

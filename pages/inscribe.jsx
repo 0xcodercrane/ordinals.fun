@@ -115,11 +115,11 @@ const Inscribe = () => {
 
       <Banner lastBlock={lastBlock} />
 
-      <ControlPanel
+      {/* <ControlPanel
         setBulkMintAmount={setBulkMintAmount}
         from={lastBlock - pageStep}
         to={lastBlock - (pageStep + pageSize - 1)}
-      />
+      /> */}
 
       <ReactPaginate
         key={pageSize + "1"}
