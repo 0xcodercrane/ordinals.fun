@@ -172,10 +172,10 @@ export default function BulkListModal({
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-       console.log(error);
-      toast.error(
-        "Something went wrong when creating PSBT. Please try again after some mins."
-      );
+      console.log(error);
+      // toast.error(
+      //   "Something went wrong when creating PSBT. Please try again after some mins."
+      // );
     }
   }
 
