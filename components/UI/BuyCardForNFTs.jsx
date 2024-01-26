@@ -67,13 +67,24 @@ export default function BuyCardForNFTs({
           onClick={() => goToDetails(inscription?.data?.inscriptionId)}
         >
           <div className="in-content overflow-hidden">
-            <img
-              key={inscription?.data?.inscriptionId}
-              src={`https://ordinalslite.com/content/${inscription?.data?.inscriptionId}`}
-              className="object-cover w-full h-full"
-              alt=""
-              onError={(e) => empyImage(e)}
-            />
+            {"71e0f6dc87a473aa69787fff8e09e5eddfdca96e587928a5b1a25c0ae16dc0eei0" ==
+            inscription?.data?.inscriptionId ? (
+              <img
+                key={inscription?.data?.inscriptionId}
+                src={`/0.jpg`}
+                className="object-cover w-full h-full"
+                alt=""
+                onError={(e) => empyImage(e)}
+              />
+            ) : (
+              <img
+                key={inscription?.data?.inscriptionId}
+                src={`https://ordinalslite.com/content/${inscription?.data?.inscriptionId}`}
+                className="object-cover w-full h-full"
+                alt=""
+                onError={(e) => empyImage(e)}
+              />
+            )}
           </div>
 
           <hr className="mb-2" />
