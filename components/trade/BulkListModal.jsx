@@ -32,6 +32,7 @@ export default function BulkListModal({
   setSelectedBlocks,
   tag = "litemap",
   cancelBlocks,
+  setLisedItermsOnPage,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -55,35 +56,11 @@ export default function BulkListModal({
     setSelectedBlocks(filter);
   };
 
-  const handleUpdateStatus = async (tag, inscriptionIndex) => {
-    //  console.log("running");
-
-    const dbQueryForWallet = query(ref(db, `wallet/${address}`));
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletExist = walletSnapshot.val();
-
-    if (walletExist) {
-      const key = Object.keys(walletExist)[0];
-      const dbQueryForWalletUpdate = ref(
-        db,
-        `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
-      );
-
-      await update(dbQueryForWalletUpdate, {
-        ...walletExist[key]["inscriptions"][inscriptionIndex],
-        listed: true,
-        tag: tag,
-      });
-    }
-  };
-
   async function generatePSBTListingInscriptionForSale(
     inscription,
     content,
     listingPrice,
-    toInfoAddress,
-    inscriptionIndex
+    toInfoAddress
   ) {
     const psbt = new Psbt({
       network: networks["litecoin"],
@@ -190,13 +167,12 @@ export default function BulkListModal({
           content,
           listingPrice
         );
-        await handleUpdateStatus(tag, inscriptionIndex);
         await sleep(0.2);
       }
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-      //  console.log(error);
+       console.log(error);
       toast.error(
         "Something went wrong when creating PSBT. Please try again after some mins."
       );
@@ -226,11 +202,12 @@ export default function BulkListModal({
             block.inscription,
             block.content,
             listingPrice,
-            toInfo.address,
-            block.inscriptionIndex
+            toInfo.address
           );
         })
       );
+
+      setLisedItermsOnPage(blocks);
 
       const dbQuery = query(ref(db, `status/${tag}`));
 
@@ -240,9 +217,9 @@ export default function BulkListModal({
       if (!exist) {
         const dbRefStatus = ref(db, `/status/${tag}`);
         await push(dbRefStatus, {
-          TVL: Number(listingPrice),
-          floor: Number(listingPrice),
-          listed: 1,
+          TVL: Number(listingPrice) * blocks.length,
+          floor: Number(listingPrice) * blocks.length,
+          listed: blocks.length,
         });
       } else {
         const key = Object.keys(exist)[0];
@@ -282,7 +259,7 @@ export default function BulkListModal({
           return (
             <div
               key={key}
-              className="w-full h-24 rounded-md bg-primary-contentDark text-sm flex justify-center items-center my-3 relative p-3"
+              className="w-full h-24 rounded-md bg-primary-contentDark text-sm flex justify-center items-center relative p-3"
               style={{ overflowWrap: "anywhere" }}
             >
               {block?.inscription?.contentType.indexOf("image") > -1 && (
@@ -349,7 +326,7 @@ export default function BulkListModal({
       <div className="flex gap-2">
         <button
           className="main_btn w-full py-2 px-3 rounded-md mt-3"
-          onClick={() => setIsOpen(false)}
+          onClick={closeModal}
         >
           Close
         </button>

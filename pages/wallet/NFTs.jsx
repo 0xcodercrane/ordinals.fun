@@ -1,10 +1,5 @@
 import Layout from "@/components/sections/Layout";
-import { WalletContext } from "@/context/wallet";
-import { useContext, useState } from "react";
-import { useEffect } from "react";
-import { get, onValue, push, query, ref, update } from "firebase/database";
-import { db } from "@/services/firebase";
-import { useWallet } from "@/store/hooks";
+import { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import BulkListModal from "@/components/trade/BulkListModal";
@@ -13,95 +8,21 @@ import Tabs from "@/components/UI/Tabs";
 import NFTs from "@/components/sections/NFTs";
 import Head from "next/head";
 import { useLastBlock } from "../../store/hooks";
+import useInscriptions from "../../hooks/useInscriptions";
 
 export default function Inscribe() {
-  const wallet = useContext(WalletContext);
-  const address = wallet.getAddress();
-  const { inscriptions } = useWallet();
   const { lastBlock } = useLastBlock();
-  const [fetchingData, setFetchingData] = useState(true);
-  const [inscriptionsFromDB, setInscriptionFromDB] = useState("");
+  const { inscriptionsFromDB, fetchingData } = useInscriptions();
   const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [bulkSelect, setBulkSelect] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [NFTSlug, setNFTSlug] = useState("");
-  let pushing = false;
+  const [listedItermsOnPage, setLisedItermsOnPage] = useState();
 
   const cancelBlocks = () => {
     setSelectedBlocks([]);
     setBulkSelect(false);
   };
-
-  const saveInscriptionToDB = async (data) => {
-    if (pushing) {
-      return;
-    }
-    pushing = true;
-    const dbRef = ref(db, `wallet/${address}`);
-
-    //  console.log("running");
-    try {
-      const snapshot = await get(dbRef);
-      const exist = snapshot.exists();
-
-      if (exist) {
-        const key = Object.keys(snapshot.val())[0];
-        const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
-        if (data && key !== "activities") {
-          const existedInscriptions = snapshot.val()[key].inscriptions;
-
-          const listedInscriptions = existedInscriptions.filter(
-            (inscription) => inscription?.listed === true
-          );
-
-          let updatedinscriptions = [];
-          data.map((inscription) => {
-            const filter = listedInscriptions?.filter(
-              (list) => list?.inscriptionId == inscription?.inscriptionId
-            );
-            if (filter.length > 0) {
-              updatedinscriptions.push({
-                ...inscription,
-                listed: true,
-                tag: filter[0]?.tag,
-              });
-            } else {
-              updatedinscriptions.push(inscription);
-            }
-          });
-          await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
-        } else {
-          if (data) {
-            const dbRef = ref(db, `wallet/${address}`);
-            await push(dbRef, { inscriptions: data });
-          }
-        }
-        await fetchInscriptions();
-        pushing = false;
-      } else {
-        if (data) {
-          const dbRef = ref(db, `wallet/${address}`);
-          await push(dbRef, { inscriptions: data });
-        }
-        setFetchingData(false);
-      }
-    } catch (error) {
-      setFetchingData(false);
-      pushing = false;
-      console.error("Error saving transaction:", error);
-    }
-  };
-
-  async function fetchInscriptions() {
-    const dbQuery = query(ref(db, `wallet/${address}`));
-    onValue(dbQuery, async (snapshot) => {
-      const exist = snapshot.val();
-      if (exist) {
-        setInscriptionFromDB(exist[Object.keys(exist)[0]]["inscriptions"]);
-      }
-      setFetchingData(false);
-    });
-  }
 
   const BulkList = () => {
     if (selectedBlocks.length <= 0) {
@@ -111,14 +32,6 @@ export default function Inscribe() {
     setBulkSelect(false);
     setIsOpen(true);
   };
-
-  useEffect(() => {
-    if (address) {
-      saveInscriptionToDB(inscriptions.list);
-    } else {
-      setFetchingData(false);
-    }
-  }, [inscriptions, address]);
 
   return (
     <Layout>
@@ -130,9 +43,7 @@ export default function Inscribe() {
         />
       </Head>
 
-      <h1 className="text-3xl font-semibold my-16 text-center">
-        My Wallet
-      </h1>
+      <h1 className="text-3xl font-semibold my-16 text-center">My Wallet</h1>
 
       {!bulkSelect ? (
         <button
@@ -169,7 +80,7 @@ export default function Inscribe() {
           </button>
         )}
       </div>
-
+ 
       <NFTs
         inscriptionsFromDB={inscriptionsFromDB}
         loading={fetchingData}
@@ -178,6 +89,7 @@ export default function Inscribe() {
         setSelectedBlocks={setSelectedBlocks}
         selectedBlocks={selectedBlocks}
         lastBlock={lastBlock}
+        listedItermsOnPage={listedItermsOnPage}
       />
 
       <div
@@ -209,6 +121,7 @@ export default function Inscribe() {
         blocks={selectedBlocks}
         setSelectedBlocks={setSelectedBlocks}
         cancelBlocks={cancelBlocks}
+        setLisedItermsOnPage={setLisedItermsOnPage}
       />
     </Layout>
   );

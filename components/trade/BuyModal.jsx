@@ -300,7 +300,7 @@ export default function BuyModal({
       // Service fee
       var market_fee = 0;
       if (feeAddress != undefined && service_fee_rate != undefined) {
-        market_fee = price * service_fee_rate;
+        market_fee = Number((price * service_fee_rate).toFixed(0));
 
         if (market_fee > 0) {
           psbt.addOutput({
@@ -309,7 +309,6 @@ export default function BuyModal({
           });
         }
       }
-      // console.log(market_fee)
 
       // Create two new dummy utxos outputs for the next purchase
       psbt.addOutput({

@@ -154,7 +154,8 @@ export default function NFTCollectionBanner({
           {collection?.description}
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-sm">
-          <div className="flex gap-1">
+          <div></div>
+          {/* <div className="flex gap-1">
             <p className="text-gray-300">Averge price:</p>
             <p className="text-white font-semibold">
               {status ? (
@@ -164,7 +165,7 @@ export default function NFTCollectionBanner({
               )}{" "}
               LTC
             </p>
-          </div>
+          </div> */}
           <div className="flex gap-1">
             <p className="text-gray-300">Total volume:</p>
             <p className="text-white font-semibold">

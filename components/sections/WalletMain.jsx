@@ -27,17 +27,16 @@ import Modal from "react-modal";
 import { useWallet } from "../../store/hooks";
 import useActivities from "../../hooks/useActivities";
 import { useRouter } from "next/router";
+import ContentForWalletList from "../UI/ContentForWalletList";
 
 export default function WalletMain({ setContentType }) {
   const { account, ltc20, balance, inscriptions, price } = useWallet();
   const wallet = useContext(WalletContext);
   const router = useRouter();
-  const { removeListFromMarket } = useActivities();
+  const { listedIterms, handleCancelList } = useActivities();
   const [listType, setListType] = useState("inscriptions");
   const [pending, setPending] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [lists, setLists] = useState();
-  const [fetchingLists, setFetchingLists] = useState(true);
 
   const goToDetails = (ticker) => {
     router.push("/wallet/ltc20Token/" + ticker);
@@ -63,126 +62,9 @@ export default function WalletMain({ setContentType }) {
     }, [500]);
   };
 
-  async function fetchLists() {
-    setFetchingLists(true);
-    const dbQuery = query(ref(db, `wallet/${account?.accounts[0]?.address}`));
-    const snapshot = await get(dbQuery);
-    const exist = snapshot.val();
-
-    if (exist) {
-      const key = Object.keys(exist)[0];
-      if (key !== "activities") {
-        const dbQueryList = query(
-          ref(
-            db,
-            `wallet/${account?.accounts[0]?.address}/${key}/inscriptions`
-          ),
-          orderByChild("listed"),
-          equalTo(true)
-        );
-        const snapshotList = await get(dbQueryList);
-        const existList = snapshotList.val();
-        if (existList) {
-          setLists(existList);
-        }
-      }
-    }
-    setFetchingLists(false);
-  }
-
-  const handleCancelList = async (ticker, inscriptionId) => {
-    if (!account?.accounts[0]?.address) {
-      toast.error("Please connect your wallet.");
-      return;
-    }
-
-    let listedInscriptionData;
-    const dbRef = ref(db, "market/" + ticker);
-    const dbQuery = query(
-      dbRef,
-      orderByChild("data/inscriptionId"),
-      equalTo(inscriptionId)
-    );
-
-    const snapshot = await get(dbQuery);
-    const exist = snapshot.val();
-
-    if (exist) {
-      const key = Object.keys(exist)[0];
-      listedInscriptionData = exist[key];
-
-      await remove(ref(db, `market/${ticker}/${key}`));
-    }
-
-    const dbRefWallet = ref(db, "wallet/" + account?.accounts[0]?.address);
-    const dbQueryForWallet = query(dbRefWallet);
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletData = walletSnapshot.val();
-
-    const key = Object.keys(walletData)[0];
-
-    const dbRefInscription = ref(
-      db,
-      `wallet/${account?.accounts[0]?.address}/${key}/inscriptions`
-    );
-    const dbQueryForInscription = query(
-      dbRefInscription,
-      orderByChild("inscriptionId"),
-      equalTo(inscriptionId)
-    );
-
-    const inscriptionSnapshot = await get(dbQueryForInscription);
-    const inscriptionData = inscriptionSnapshot.val();
-
-    const keyInscription = Object.keys(inscriptionData)[0];
-
-    const dbRefUpdate = ref(
-      db,
-      `wallet/${account?.accounts[0]?.address}/${key}/inscriptions/${keyInscription}`
-    );
-
-    await update(dbRefUpdate, { listed: false, tag: "" });
-
-    const dbRefStatus = ref(db, "status/" + ticker);
-    const dbQueryForStatus = query(dbRefStatus);
-
-    const statusSnapshot = await get(dbQueryForStatus);
-    const statusData = statusSnapshot.val();
-
-    if (statusData) {
-      const key = Object.keys(statusData)[0];
-      const dbRefUpdate = ref(db, `status/${ticker}/${key}`);
-
-      const updates = {};
-
-      updates[`TVL`] =
-        Number(statusData[key]?.TVL) - Number(listedInscriptionData?.price) ||
-        0;
-      updates[`floor`] =
-        Number(statusData[key]?.listed) - 1 == 0
-          ? 0
-          : (Number(statusData[key]?.TVL) -
-              Number(listedInscriptionData?.price)) /
-              (Number(statusData[key]?.listed) - 1) || 0;
-      updates[`listed`] = Number(statusData[key]?.listed) - 1 || 0;
-
-      await update(dbRefUpdate, updates);
-    }
-
-    await removeListFromMarket(inscriptionId);
-    fetchLists();
-  };
-
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (account && account.accounts) {
-      fetchLists();
-    }
-  }, [account]);
 
   return (
     <>
@@ -314,45 +196,29 @@ export default function WalletMain({ setContentType }) {
             <>
               {listType == "list" ? (
                 <>
-                  {!fetchingLists && lists ? (
+                  {listedIterms.length ? (
                     <>
                       <div className="grid grid-cols-3 text-sm text-gay-300">
                         <div>In-Number</div>
                         <div>Tag</div>
                         <div>Action</div>
                       </div>
-                      {Object.keys(lists).map((key) => {
+                      {listedIterms.map((iterm, key) => {
                         return (
                           <div
-                            key={lists[key]?.inscriptionId}
+                            key={iterm?.inscriptionId}
                             className="rounded-md bg-primary-dark/20  py-2 px-3 grid grid-cols-3 hover:bg-primary-dark/30  transition ease-in-out cursor-pointer mt-2 mb-1"
                           >
                             <div className="flex gap-2 items-center">
-                              {lists[key]?.contentType.indexOf("image") >
-                                -1 && (
-                                <>
-                                  <Image
-                                    key={lists[key]?.inscriptionId}
-                                    src={`https://ordinalslite.com/content/${lists[key]?.inscriptionId}`}
-                                    width={40}
-                                    height={60}
-                                    className="rounded-md"
-                                    onError={(e) => empyImage(e)}
-                                  />
-                                </>
-                              )}
-
-                              {lists[key]?.contentType.indexOf("text") > -1 && (
-                                <>{lists[key]?.inscriptionNumber}</>
-                              )}
+                              <ContentForWalletList content={iterm?.content} />
                             </div>
-                            <p>{lists[key]?.tag}</p>
+                            <p>{iterm?.tag}</p>
                             <button
                               className="main_btn text-sm rounded-md px-1"
                               onClick={() =>
                                 handleCancelList(
-                                  lists[key]?.tag,
-                                  lists[key]?.inscriptionId
+                                  iterm?.tag,
+                                  iterm?.id
                                 )
                               }
                             >

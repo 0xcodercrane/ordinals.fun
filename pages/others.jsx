@@ -1,18 +1,6 @@
 import React from "react";
 import Layout from "@/components/sections/Layout";
-import {
-  onValue,
-  ref,
-  query,
-  orderByChild,
-  equalTo,
-  get,
-  update,
-  remove,
-  orderByKey,
-  endAt,
-  limitToLast,
-} from "firebase/database";
+import { ref, query, get, limitToLast } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -30,7 +18,6 @@ export default function Home() {
     useUTXOs();
   const { price } = useWallet();
   const [lists, setLists] = useState([]);
-  const [totalItems, setTotalItems] = useState(0);
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
   const [listedNumber, setListedNumber] = useState(540);
@@ -44,9 +31,9 @@ export default function Home() {
   const fetchTotalItems = async () => {
     let dbQuery;
     if (lastKey) {
-      dbQuery = query(ref(db, "market/others"), limitToLast(12 * (offset + 1)));
+      dbQuery = query(ref(db, "market/others"), limitToLast(42 * (offset + 1)));
     } else {
-      dbQuery = query(ref(db, "market/others"), limitToLast(12));
+      dbQuery = query(ref(db, "market/others"), limitToLast(42));
     }
 
     const othersSnapShot = await get(dbQuery);
@@ -54,7 +41,7 @@ export default function Home() {
 
     if (exist) {
       setLists(exist);
-      setLastKey(Object.keys(exist)[11]);
+      setLastKey(Object.keys(exist)[41]);
     }
     setFetchingData(false);
   };
@@ -78,16 +65,16 @@ export default function Home() {
       />
 
       {fetchingData ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
-          {Array.from({ length: 12 }, (_, index) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
+          {Array.from({ length: 24 }, (_, index) => {
             return <BuyCardSkelenton key={index} />;
           })}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
           {Object.keys(lists)
             .reverse()
-            .slice(offset * 12, offset * 12 + 12)
+            .slice(offset * 42, offset * 42 + 42)
             .map((index, list) => {
               return (
                 <BuyCard
@@ -111,7 +98,7 @@ export default function Home() {
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={Math.ceil(listedNumber / 12)}
+        pageCount={Math.ceil(listedNumber / 42)}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"

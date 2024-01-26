@@ -122,7 +122,7 @@ export default function Collection() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
                 {Object.keys(listedNFTs)
                   .reverse()
-                  .slice(offsetListed * 24, offsetListed * 24 + 24)
+                  .slice(offsetListed * 42, offsetListed * 42 + 42)
                   .map((key, index) => {
                     return (
                       <BuyCardForLTC20
@@ -147,7 +147,7 @@ export default function Collection() {
                 onPageChange={handlePageClickForListed}
                 pageRangeDisplayed={2}
                 marginPagesDisplayed={1}
-                pageCount={Math.ceil(listedNumber / 24)}
+                pageCount={Math.ceil(listedNumber / 42)}
                 previousLabel="<"
                 renderOnZeroPageCount={null}
                 className="pagination"

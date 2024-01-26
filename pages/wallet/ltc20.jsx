@@ -5,18 +5,12 @@ import Tabs from "@/components/UI/Tabs";
 import LTC20BalanceCard from "../../components/UI/LTC20BalanceCard";
 import ReactPaginate from "react-paginate";
 import { useContext, useEffect, useState } from "react";
-import { MdCancel } from "react-icons/md";
-import { useLastBlock } from "../../store/hooks";
 import { WalletContext } from "@/context/wallet";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function WalletLTC20() {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
-  const [selectedBlocks, setSelectedBlocks] = useState([]);
-  const [bulkSelect, setBulkSelect] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const { lastBlock } = useLastBlock();
 
   const [fetchingData, setfetchingData] = useState(true);
   const [tokenList, setTokenList] = useState();

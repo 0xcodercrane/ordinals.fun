@@ -6,6 +6,7 @@ import InscriptionCardSkelenton from "../UI/InscriptionCardSkelenton";
 import Link from "next/link";
 import InscriptionCard from "../UI/InscriptionCard";
 import ReactPaginate from "react-paginate";
+import useActivities from "../../hooks/useActivities";
 
 export default function NFTs({
   inscriptionsFromDB,
@@ -15,6 +16,7 @@ export default function NFTs({
   setSelectedBlocks,
   selectedBlocks,
   lastBlock,
+  listedItermsOnPage
 }) {
   const [index, setIndex] = useState(0);
   const [meta, setmeta] = useState();
@@ -22,6 +24,8 @@ export default function NFTs({
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
   const [collectionsData, setcollectionsData] = useState();
+  const [listedIterms, setListedIterms] = useState();
+  const { getListedIterms } = useActivities(meta?.slug);
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
@@ -37,13 +41,15 @@ export default function NFTs({
   }
 
   async function getCollection(collectionSlug) {
+    const res = await getListedIterms();
+    setListedIterms(res);
+
     const [inscriptions] = await Promise.all([
       fetch(
         `https://raw.githubusercontent.com/nextidearly/collections/main/collections/${collectionSlug}/inscriptions.json`
       ).then((response) => response.json()),
     ]);
     let NFTs = [];
-    // console.log(inscriptionsFromDB, inscriptions);
     inscriptionsFromDB.map((inscription, key) => {
       const filter = inscriptions.filter(
         (item) => item.id === inscription.inscriptionId
@@ -147,7 +153,7 @@ export default function NFTs({
 
       <div className="my-2">
         {fetchingData ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
             {Array.from({ length: 10 }, (_, key) => {
               return <InscriptionCardSkelenton key={key} />;
             })}
@@ -156,10 +162,10 @@ export default function NFTs({
           <>
             {myInscriptions.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
                   {myInscriptions &&
                     myInscriptions
-                      .slice(offset * 10, offset * 10 + 10)
+                      .slice(offset * 42, offset * 42 + 42)
                       .map((inscription, key) => {
                         return (
                           <InscriptionCard
@@ -172,6 +178,8 @@ export default function NFTs({
                             selectedBlocks={selectedBlocks}
                             isNFT={true}
                             lastBlock={lastBlock}
+                            listedIterms={listedIterms}
+                            listedItermsOnPage={listedItermsOnPage}
                           />
                         );
                       })}
@@ -182,7 +190,7 @@ export default function NFTs({
                   onPageChange={handlePageClick}
                   pageRangeDisplayed={2}
                   marginPagesDisplayed={1}
-                  pageCount={Math.ceil(Object.keys(myInscriptions).length / 10)}
+                  pageCount={Math.ceil(Object.keys(myInscriptions).length / 42)}
                   previousLabel="<"
                   renderOnZeroPageCount={null}
                   className="pagination"

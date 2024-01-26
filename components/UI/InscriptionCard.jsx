@@ -1,22 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import openApi from "@/services/openAPI";
 import { useState } from "react";
 import { useEffect } from "react";
-import {
-  ref,
-  query,
-  orderByChild,
-  equalTo,
-  update,
-  remove,
-  get,
-} from "firebase/database";
-import { db } from "@/services/firebase";
 import ListModal from "../trade/ListModal";
 import TransferModal from "../trade/TransferModal";
 import { addressFormat, validateInscription } from "@/utils";
 import { toast } from "react-hot-toast";
-import { WalletContext } from "../../context/wallet";
 import { AiOutlineLoading } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import { TbArticleOff } from "react-icons/tb";
@@ -24,6 +13,7 @@ import { TbGiftOff } from "react-icons/tb";
 import useActivities from "../../hooks/useActivities";
 import SpliteModal from "../trade/SpliteModal";
 import { useRouter } from "next/router";
+import Content from "./Content";
 
 export default function InscriptionCard({
   inscription,
@@ -34,11 +24,11 @@ export default function InscriptionCard({
   selectedBlocks,
   isNFT = false,
   lastBlock,
+  listedIterms,
+  listedItermsOnPage,
 }) {
   const router = useRouter();
-  const wallet = useContext(WalletContext);
-  const address = wallet.getAddress();
-  const { removeListFromMarket } = useActivities();
+  const { handleCancelList } = useActivities();
   const [content, setContent] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isOpenTransfer, setIsOpenTransfer] = useState(false);
@@ -50,11 +40,8 @@ export default function InscriptionCard({
   const [isNeedToSplit, setIsNeedToSplit] = useState(false);
   const [isMultiStuck, setIsMultiStuck] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [isListed, setIsListed] = useState(false);
   const HIGH_BALANCE = 10000;
-
-  const empyImage = (e) => {
-    e.target.src = "/empty.png";
-  };
 
   const goToDetails = (id) => {
     router.push("/inscription/" + id);
@@ -104,81 +91,16 @@ export default function InscriptionCard({
           const data = await fetch(url);
           const textData = await data.text();
           setContent(textData);
+        } else {
+          setContent(inscription.inscriptionId);
         }
       } catch (error) {
         //  console.log("content fetch", error);
       }
   };
 
-  const handleCancelList = async (tag, inscriptionIndex) => {
-    if (!address) {
-      toast.error("Please connect your wallet.");
-      return;
-    }
-
-    let listedInscriptionData;
-    const dbRef = ref(db, "market/" + tag);
-    const dbQuery = query(
-      dbRef,
-      orderByChild("data/inscriptionId"),
-      equalTo(inscription.inscriptionId)
-    );
-
-    const snapshot = await get(dbQuery);
-    const exist = snapshot.val();
-
-    if (exist) {
-      const key = Object.keys(exist)[0];
-      listedInscriptionData = exist[key];
-
-      await remove(ref(db, `market/${tag}/${key}`));
-    }
-
-    const dbRefWallet = ref(db, "wallet/" + address);
-    const dbQueryForWallet = query(dbRefWallet);
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletData = walletSnapshot.val();
-
-    const key = Object.keys(walletData)[0];
-    const dbRefUpdate = ref(
-      db,
-      `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
-    );
-
-    await update(dbRefUpdate, { listed: false, tag: "" });
-
-    const dbRefStatus = ref(db, "status/" + tag);
-    const dbQueryForStatus = query(dbRefStatus);
-
-    const statusSnapshot = await get(dbQueryForStatus);
-    const statusData = statusSnapshot.val();
-
-    if (statusData) {
-      const key = Object.keys(statusData)[0];
-      const dbRefUpdate = ref(db, `status/${tag}/${key}`);
-
-      const updates = {};
-
-      updates[`TVL`] =
-        Number(statusData[key]?.TVL) - Number(listedInscriptionData?.price) ||
-        0;
-      updates[`floor`] =
-        Number(statusData[key]?.listed) - 1 == 0
-          ? 0
-          : (Number(statusData[key]?.TVL) -
-              Number(listedInscriptionData?.price)) /
-              (Number(statusData[key]?.listed) - 1) || 0;
-      updates[`listed`] = Number(statusData[key]?.listed) - 1 || 0;
-
-      await update(dbRefUpdate, updates);
-    }
-
-    await removeListFromMarket(inscription.inscriptionId);
-  };
-
   const AddList = async () => {
-    if (!content) {
+    if (!content && !isNFT) {
       toast.error("Please wait until feching content");
       return;
     }
@@ -282,7 +204,7 @@ export default function InscriptionCard({
         getContent();
       }
     }
-  }, [inscription, inscriptionIndex]);
+  }, [inscription]);
 
   useEffect(() => {
     const exist = selectedBlocks.filter(
@@ -295,52 +217,46 @@ export default function InscriptionCard({
     }
   }, [selectedBlocks]);
 
-  // if (tag === "litemap" && content.indexOf(".litemap") == -1) {
-  //   return;
-  // } else {
+  useEffect(() => {
+    if (listedIterms && inscription) {
+      const filter = listedIterms.filter(
+        (item) => item.id === inscription.inscriptionId
+      );
+
+      if (filter.length > 0) {
+        setIsListed(true);
+      } else {
+        setIsListed(false);
+      }
+    } else {
+      setIsListed(false);
+    }
+  }, [listedIterms]);
+
+  useEffect(() => {
+    if (listedItermsOnPage && inscription) {
+      const filter = listedItermsOnPage.filter(
+        (item) => item.inscription.inscriptionId === inscription.inscriptionId
+      );
+
+      if (filter.length > 0) {
+        setIsListed(true);
+      }
+    }
+  }, [listedItermsOnPage]);
+
   return (
     <div className="relative">
       <div
         className={`${added && "cs-border"} in-card`}
         onClick={() => goToDetails(inscription.inscriptionId)}
       >
-        <div className="in-content overflow-hidden">
-          {inscription?.contentType.indexOf("image") > -1 && (
-            <>
-              <img
-                key={inscription?.inscriptionId}
-                src={`https://ordinalslite.com/content/${inscription?.inscriptionId}`}
-                className="w-full h-full object-cover"
-                alt=""
-                onError={(e) => empyImage(e)}
-              />
-            </>
-          )}
-
-          {inscription?.contentType.indexOf("text") > -1 && (
-            <>
-              {content && (
-                <>
-                  {content.indexOf("tick") > -1 ? (
-                    <div
-                      className="text-lg font-bold px-3"
-                      key={inscription?.inscriptionId + "content"}
-                    >
-                      <p>{JSON.parse(content).tick}</p>
-                      <p>{JSON.parse(content).amt}</p>
-                    </div>
-                  ) : (
-                    <div
-                      className="text-lg font-bold px-3"
-                      key={inscription?.inscriptionId + "content"}
-                    >
-                      {content}
-                    </div>
-                  )}
-                </>
-              )}
-            </>
-          )}
+        <div className="in-content overflow-hidden text-sm">
+          <Content
+            inscriptionId={inscription.inscriptionId}
+            contentType={inscription?.contentType}
+            content={content}
+          />
 
           <button
             onClick={(e) => {
@@ -359,13 +275,14 @@ export default function InscriptionCard({
 
         <hr className="mb-2" />
 
-        {inscription?.listed ? (
+        {isListed ? (
           <>
             <button
               className="main_btn py-1 rounded-md bg-transparent disabled:bg-primary-light/10 w-full flex gap-1 justify-center items-center"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
-                handleCancelList(inscription?.tag, inscriptionIndex);
+                handleCancelList(tag, inscription?.inscriptionId);
+                setIsListed(false);
               }}
             >
               <TbGiftOff /> Listed
@@ -424,6 +341,7 @@ export default function InscriptionCard({
       </div>
 
       <ListModal
+        setIsListed={setIsListed}
         setIsOpenSplit={setIsOpenSplit}
         isNeedToSplit={isNeedToSplit}
         isMultiStuck={isMultiStuck}
@@ -465,5 +383,4 @@ export default function InscriptionCard({
       />
     </div>
   );
-  // }
 }

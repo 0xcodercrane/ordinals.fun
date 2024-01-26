@@ -1,14 +1,9 @@
 import Layout from "@/components/sections/Layout";
 import InscriptionCard from "@/components/UI/InscriptionCard";
-import { WalletContext } from "@/context/wallet";
-import { useContext, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ReactPaginate from "react-paginate";
 import InscriptionCardSkelenton from "@/components/UI/InscriptionCardSkelenton";
-import { get, onValue, push, query, ref, update } from "firebase/database";
-import { db } from "@/services/firebase";
-import { useWallet } from "@/store/hooks";
 import { MdCancel } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import BulkListModal from "@/components/trade/BulkListModal";
@@ -16,95 +11,29 @@ import { toast } from "react-hot-toast";
 import Tabs from "@/components/UI/Tabs";
 import Head from "next/head";
 import { useLastBlock } from "../../store/hooks";
+import useInscriptions from "../../hooks/useInscriptions";
+import useActivities from "../../hooks/useActivities";
 
 export default function WalletLiteMap() {
-  const wallet = useContext(WalletContext);
-  const address = wallet.getAddress();
-  const { inscriptions } = useWallet();
   const { lastBlock } = useLastBlock();
-  const [fetchingData, setFetchingData] = useState(true);
+  const { inscriptionsFromDB, fetchingData } = useInscriptions();
+  const { getListedIterms } = useActivities("litemap");
   const [offset, setOffset] = useState(0);
-  const [inscriptionsFromDB, setInscriptionFromDB] = useState("");
   const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [bulkSelect, setBulkSelect] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  let pushing = false;
+  const [listedItermsOnPage, setLisedItermsOnPage] = useState();
+  const [listedIterms, setListedIterms] = useState();
+
+  const fetchListedIterms = async () => {
+    const res = await getListedIterms();
+    setListedIterms(res);
+  };
 
   const cancelBlocks = () => {
     setSelectedBlocks([]);
     setBulkSelect(false);
   };
-
-  const saveInscriptionToDB = async (data) => {
-    if (pushing) {
-      return;
-    }
-    pushing = true;
-    const dbRef = ref(db, `wallet/${address}`);
-
-    //  console.log("running");
-    try {
-      const snapshot = await get(dbRef);
-      const exist = snapshot.exists();
-
-      if (exist) {
-        const key = Object.keys(snapshot.val())[0];
-        const dbRefToUpdate = ref(db, `/wallet/${address}/${key}`);
-        if (data && key !== "activities") {
-          const existedInscriptions = snapshot.val()[key].inscriptions;
-
-          const listedInscriptions = existedInscriptions.filter(
-            (inscription) => inscription?.listed === true
-          );
-
-          let updatedinscriptions = [];
-          data.map((inscription) => {
-            const filter = listedInscriptions?.filter(
-              (list) => list?.inscriptionId == inscription?.inscriptionId
-            );
-            if (filter.length > 0) {
-              updatedinscriptions.push({
-                ...inscription,
-                listed: true,
-                tag: filter[0]?.tag,
-              });
-            } else {
-              updatedinscriptions.push(inscription);
-            }
-          });
-          await update(dbRefToUpdate, { inscriptions: updatedinscriptions });
-        } else {
-          if (data) {
-            const dbRef = ref(db, `wallet/${address}`);
-            await push(dbRef, { inscriptions: data });
-          }
-        }
-        await fetchInscriptions();
-        pushing = false;
-      } else {
-        if (data) {
-          const dbRef = ref(db, `wallet/${address}`);
-          await push(dbRef, { inscriptions: data });
-        }
-        setFetchingData(false);
-      }
-    } catch (error) {
-      setFetchingData(false);
-      pushing = false;
-      console.error("Error saving transaction:", error);
-    }
-  };
-
-  async function fetchInscriptions() {
-    const dbQuery = query(ref(db, `wallet/${address}`));
-    onValue(dbQuery, async (snapshot) => {
-      const exist = snapshot.val();
-      if (exist) {
-        setInscriptionFromDB(exist[Object.keys(exist)[0]]["inscriptions"]);
-      }
-      setFetchingData(false);
-    });
-  }
 
   const BulkList = () => {
     if (selectedBlocks.length <= 0) {
@@ -120,12 +49,8 @@ export default function WalletLiteMap() {
   };
 
   useEffect(() => {
-    if (address) {
-      saveInscriptionToDB(inscriptions.list);
-    } else {
-      setFetchingData(false);
-    }
-  }, [inscriptions, address]);
+    fetchListedIterms();
+  }, []);
 
   return (
     <Layout>
@@ -179,8 +104,8 @@ export default function WalletLiteMap() {
         {" "}
         {fetchingData ? (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
-              {Array.from({ length: 10 }, (_, key) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
+              {Array.from({ length: 24 }, (_, key) => {
                 return <InscriptionCardSkelenton key={key} />;
               })}
             </div>
@@ -204,22 +129,25 @@ export default function WalletLiteMap() {
               </>
             ) : (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
                   {inscriptionsFromDB &&
                     inscriptionsFromDB
-                      .slice(offset * 10, offset * 10 + 10)
+                      .slice(offset * 30, offset * 30 + 30)
                       .map((inscription, key) => {
                         return (
                           <InscriptionCard
                             inscription={inscription}
                             key={inscription.inscriptionId + "litemaps"}
-                            inscriptionIndex={key + offset * 10}
+                            inscriptionIndex={key + offset * 30}
                             bulkSelect={bulkSelect}
                             tag={"litemap"}
                             setSelectedBlocks={setSelectedBlocks}
                             selectedBlocks={selectedBlocks}
                             lastBlock={lastBlock}
                             isNFT={false}
+                            listedIterms={listedIterms}
+                            fetchListedIterms={fetchListedIterms}
+                            listedItermsOnPage={listedItermsOnPage}
                           />
                         );
                       })}
@@ -231,7 +159,7 @@ export default function WalletLiteMap() {
                   pageRangeDisplayed={2}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(
-                    Object.keys(inscriptionsFromDB).length / 10
+                    Object.keys(inscriptionsFromDB).length / 30
                   )}
                   previousLabel="<"
                   renderOnZeroPageCount={null}
@@ -272,6 +200,7 @@ export default function WalletLiteMap() {
         blocks={selectedBlocks}
         setSelectedBlocks={setSelectedBlocks}
         cancelBlocks={cancelBlocks}
+        setLisedItermsOnPage={setLisedItermsOnPage}
       />
     </Layout>
   );

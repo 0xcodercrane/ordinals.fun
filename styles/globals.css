@@ -804,7 +804,7 @@ section > .marquee {
 }
 
 .in-content {
-  @apply bg-primary-dark/60 relative  text-xl text-center  mb-3 flex items-center p-2 justify-center font-semibold w-full h-[150px] lg:h-[180px] md:h-[170px] sm:h-[160px];
+  @apply bg-primary-dark/60 relative  text-xl text-center  mb-3 flex items-center justify-center font-semibold w-full lg:h-[160px] md:h-[140px] sm:h-[130px] h-[120px];
   overflow-wrap: anywhere !important;
 }
 

@@ -32,6 +32,7 @@ export default function LTCBulkListModal({
   setSelectedBlocks,
   tag,
   cancelBlocks,
+  setLisedItermsOnPage,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -60,42 +61,6 @@ export default function LTCBulkListModal({
       (block) => block.inscription.inscriptionId !== id
     );
     setSelectedBlocks(filter);
-  };
-
-  const handleUpdateStatus = async (tag) => {
-    //  console.log("running");
-
-    const dbQueryForWallet = query(ref(db, `wallet/${address}`));
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletExist = walletSnapshot.val();
-
-    if (walletExist) {
-      const key = Object.keys(walletExist)[0];
-
-      const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
-      const dbQueryForInscription = query(
-        dbRefInscription,
-        orderByChild("inscriptionId"),
-        equalTo(inscription.inscriptionId)
-      );
-
-      const inscriptionSnapshot = await get(dbQueryForInscription);
-      const inscriptionData = inscriptionSnapshot.val();
-
-      const keyInscription = Object.keys(inscriptionData)[0];
-
-      const dbQueryForWalletUpdate = ref(
-        db,
-        `wallet/${address}/${key}/inscriptions/${keyInscription}`
-      );
-
-      await update(dbQueryForWalletUpdate, {
-        ...walletExist[key]["inscriptions"][keyInscription],
-        listed: true,
-        tag: tag,
-      });
-    }
   };
 
   async function generatePSBTListingInscriptionForSale(
@@ -207,16 +172,12 @@ export default function LTCBulkListModal({
           content,
           listingPrice * amount
         );
-        await handleUpdateStatus(tag);
         await sleep(0.2);
       }
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
-      //  console.log(error);
-      toast.error(
-        "Something went wrong when creating PSBT. Please try again after some mins."
-      );
+      console.log(error);
     }
   }
 
@@ -248,6 +209,7 @@ export default function LTCBulkListModal({
         })
       );
 
+      setLisedItermsOnPage(blocks);
       const dbQuery = query(ref(db, `status/${tag}`));
 
       const snapshot = await get(dbQuery);
@@ -280,7 +242,7 @@ export default function LTCBulkListModal({
       }
       closeModal();
     } catch (error) {
-      //  console.log(error);
+      console.log(error);
     }
   }
 
@@ -300,7 +262,7 @@ export default function LTCBulkListModal({
           return (
             <div
               key={key}
-              className="w-full h-24 rounded-md bg-primary-contentDark flex justify-center items-center my-3 relative p-3"
+              className="w-full h-24 rounded-md bg-primary-contentDark flex justify-center items-center relative p-3"
               style={{ overflowWrap: "anywhere" }}
             >
               <div className=" font-bold px-3">

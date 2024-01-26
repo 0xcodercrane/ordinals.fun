@@ -20,6 +20,7 @@ import { MdCancel } from "react-icons/md";
 import Ltc20SummaryBar from "../../../components/UI/Ltc20SummaryBar";
 import LTCBulkListModal from "../../../components/trade/LTCBulkListModal";
 import InscribeModal from "../../../components/trade/Inscribe";
+import useActivities from "../../../hooks/useActivities";
 
 export default function LTC20Token() {
   const wallet = useContext(WalletContext);
@@ -51,17 +52,14 @@ export default function LTC20Token() {
     transferableList: [],
   });
 
+  const { getListedIterms } = useActivities(ticker);
+  const [listedIterms, setListedIterms] = useState();
+  const [listedItermsOnPage, setLisedItermsOnPage] = useState();
+
   const [transferableList, setTransferableList] = useState();
   const [total, setTotal] = useState();
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(30);
   const [offset, setOffset] = useState(0);
-
-  const outOfMint =
-    tokenSummary.tokenInfo.totalMinted == tokenSummary.tokenInfo.totalSupply;
-
-  const shouldShowSafe =
-    tokenSummary.tokenBalance.availableBalanceSafe !==
-    tokenSummary.tokenBalance.availableBalance;
 
   const balance = useMemo(() => {
     if (!tokenSummary) {
@@ -81,10 +79,7 @@ export default function LTC20Token() {
 
   const getTokenSummary = async (address, ticker) => {
     try {
-      const res = await openApi.getAddressTokenSummary(
-        address,
-        ticker
-      );
+      const res = await openApi.getAddressTokenSummary(address, ticker);
       setTokenSummary(res);
     } catch (error) {
       console.log(error);
@@ -100,6 +95,9 @@ export default function LTC20Token() {
         offset + 1,
         pageSize
       );
+      const res = await getListedIterms();
+      setListedIterms(res);
+
       setTransferableList(list);
       setTotal(total);
     } catch (e) {
@@ -212,7 +210,7 @@ export default function LTC20Token() {
         <>
           {transferableList?.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
                 {transferableList.map((item, index) => {
                   return (
                     <Ltc20tokenCard
@@ -223,6 +221,8 @@ export default function LTC20Token() {
                       setSelectedBlocks={setSelectedBlocks}
                       selectedBlocks={selectedBlocks}
                       cancelBlocks={cancelBlocks}
+                      listedIterms={listedIterms}
+                      listedItermsOnPage={listedItermsOnPage}
                     />
                   );
                 })}
@@ -233,7 +233,7 @@ export default function LTC20Token() {
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={2}
                 marginPagesDisplayed={1}
-                pageCount={Math.ceil(total / 12)}
+                pageCount={Math.ceil(total / 30)}
                 previousLabel="<"
                 renderOnZeroPageCount={null}
                 className="pagination"
@@ -278,6 +278,7 @@ export default function LTC20Token() {
         blocks={selectedBlocks}
         setSelectedBlocks={setSelectedBlocks}
         cancelBlocks={cancelBlocks}
+        setLisedItermsOnPage={setLisedItermsOnPage}
       />
 
       <InscribeModal

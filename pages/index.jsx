@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "@/components/sections/Layout";
-import { onValue, ref, query, orderByChild, equalTo } from "firebase/database";
+import {  ref, query, limitToLast, get } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -18,34 +18,40 @@ export default function Home() {
     useUTXOs();
   const { price } = useWallet();
   const [lists, setLists] = useState([]);
-  const [totalItems, setTotalItems] = useState(0);
   const [fetchingData, setFetchingData] = useState(true);
   const [offset, setOffset] = useState(0);
   const [listedNumber, setListedNumber] = useState(0);
   const [lastSales, setLastSales] = useState();
+  const [lastKey, setLastKey] = useState();
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
 
-  useEffect(() => {
-    const fetchTotalItems = async () => {
-      const dbQuery = query(
+  const fetchTotalItems = async () => {
+    let dbQuery;
+    if (lastKey) {
+      dbQuery = query(
         ref(db, "market/litemap"),
-        orderByChild("paid"),
-        equalTo(false)
+        limitToLast(42 * (offset + 1))
       );
-      onValue(dbQuery, async (snapshot) => {
-        const exist = snapshot.val();
-        if (exist) {
-          setTotalItems(snapshot.size);
-          setLists(exist);
-        }
-        setFetchingData(false);
-      });
-    };
+    } else {
+      dbQuery = query(ref(db, "market/litemap"), limitToLast(42));
+    }
+
+    const snaphot = await get(dbQuery);
+    const exist = snaphot.val();
+
+    if (exist) {
+      setLists(exist);
+      setLastKey(Object.keys(exist)[41]);
+    }
+    setFetchingData(false);
+  };
+
+  useEffect(() => {
     fetchTotalItems();
-  }, []);
+  }, [offset]);
 
   return (
     <Layout>
@@ -63,7 +69,7 @@ export default function Home() {
 
       {fetchingData ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
-          {Array.from({ length: 12 }, (_, index) => {
+          {Array.from({ length: 42 }, (_, index) => {
             return <BuyCardSkelenton key={index} />;
           })}
         </div>
@@ -71,7 +77,7 @@ export default function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
           {Object.keys(lists)
             .reverse()
-            .slice(offset * 12, offset * 12 + 12)
+            .slice(offset * 42, offset * 42 + 42)
             .map((index, list) => {
               return (
                 <BuyCard
@@ -95,7 +101,7 @@ export default function Home() {
         onPageChange={handlePageClick}
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
-        pageCount={Math.ceil(totalItems / 12)}
+        pageCount={Math.ceil(listedNumber / 42)}
         previousLabel="<"
         renderOnZeroPageCount={null}
         className="pagination"

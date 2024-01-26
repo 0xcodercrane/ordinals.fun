@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import InscriptionCardSkelenton from "../UI/InscriptionCardSkelenton";
 import InscriptionCard from "../UI/InscriptionCard";
 import ReactPaginate from "react-paginate";
+import useActivities from "../../hooks/useActivities";
+import { useEffect } from "react";
 
 export default function Others({
   inscriptionsFromDB,
@@ -10,19 +12,31 @@ export default function Others({
   setSelectedBlocks,
   selectedBlocks,
   lastBlock,
+  listedItermsOnPage,
 }) {
   const [offset, setOffset] = useState(0);
+  const [listedIterms, setListedIterms] = useState();
+  const { getListedIterms } = useActivities("others");
+  
+  const fetchListedIterms = async () => {
+    const res = await getListedIterms();
+    setListedIterms(res);
+  };
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
 
+  useEffect(() => {
+    fetchListedIterms();
+  }, []);
+ 
   return (
     <div className={`w-full ${!inscriptionsFromDB && "my-auto"}`}>
       <div className="my-2">
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
-            {Array.from({ length: 10 }, (_, key) => {
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
+            {Array.from({ length: 12 }, (_, key) => {
               return <InscriptionCardSkelenton key={key} />;
             })}
           </div>
@@ -30,22 +44,25 @@ export default function Others({
           <>
             {inscriptionsFromDB ? (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-8 w-full">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2 mt-8 w-full">
                   {inscriptionsFromDB &&
                     inscriptionsFromDB
-                      .slice(offset * 10, offset * 10 + 10)
+                      .slice(offset * 42, offset * 42 + 42)
                       .map((inscription, key) => {
                         return (
                           <InscriptionCard
                             inscription={inscription}
                             key={inscription?.inscriptionId + "others"}
-                            inscriptionIndex={key + offset * 10}
+                            inscriptionIndex={key + offset * 42}
                             bulkSelect={bulkSelect}
                             tag="others"
                             setSelectedBlocks={setSelectedBlocks}
                             selectedBlocks={selectedBlocks}
                             isNFT={false}
                             lastBlock={lastBlock}
+                            listedIterms={listedIterms}
+                            fetchListedIterms={fetchListedIterms}
+                            listedItermsOnPage={listedItermsOnPage}
                           />
                         );
                       })}
@@ -57,7 +74,7 @@ export default function Others({
                   pageRangeDisplayed={2}
                   marginPagesDisplayed={1}
                   pageCount={Math.ceil(
-                    Object.keys(inscriptionsFromDB).length / 10
+                    Object.keys(inscriptionsFromDB).length / 42
                   )}
                   previousLabel="<"
                   renderOnZeroPageCount={null}

@@ -20,7 +20,6 @@ export default function Banner({ title, tag, setListedNumber, setLastSales }) {
   const { lastBlock } = useLastBlock();
   const [status, setStatus] = useState(0);
   const [volume24, setVolume24] = useState(0);
-  const [volumeh, setVolumeh] = useState(0);
   const [trade24, setTrades24] = useState(0);
 
   useEffect(() => {
@@ -60,23 +59,6 @@ export default function Banner({ title, tag, setListedNumber, setLastSales }) {
           setVolume24(TVL);
         }
       });
-
-      const dbTradesh = query(ref(db, "market/" + tag), orderByChild("date"));
-
-      // startAt(Date.now() - 3600000)
-
-      onValue(dbTradesh, async (snapshot) => {
-        const exist = snapshot.val();
-        if (exist) {
-          let TVLh = 0;
-          Object.keys(exist).map((index) => {
-            if (exist.paid) {
-              TVLh += Number(exist[index].price);
-            }
-          });
-          setVolumeh(TVLh);
-        }
-      });
     }
     fetchStatus();
   }, []);
@@ -97,7 +79,7 @@ export default function Banner({ title, tag, setListedNumber, setLastSales }) {
             )}{" "}
             LTC
           </p>
-          <p className="text-sm text-gray-300 ">Averge price</p>
+          <p className="text-sm text-gray-300 ">Price</p>
         </div>
         <div>
           <p className="font-semibold">
@@ -138,9 +120,9 @@ export default function Banner({ title, tag, setListedNumber, setLastSales }) {
       </div>
 
       <div className="w-full my-8 flex justify-between">
-        {/* <div className="main_btn px-3 py-2 rounded-md w-fit">
-          🔥 {volumeh} buys in last hour
-        </div> */}
+        <div className="main_btn px-3 py-2 rounded-md w-fit">
+          🔥 {trade24} buys in 24 hours
+        </div>
         <Link href={"/wallet"} className="main_btn px-3 py-2 rounded-md w-fit">
           Create Listing
         </Link>

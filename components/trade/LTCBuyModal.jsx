@@ -67,7 +67,7 @@ export default function LTCBuyModal({
 
   function validateSellerPSBTAndExtractPrice(
     sellerSignedPsbtBase64,
-    utxo = list?.inscriptionId
+    utxo = list?.data.inscriptionId
   ) {
     try {
       const sellerSignedPsbt = bitcoin.Psbt.fromBase64(sellerSignedPsbtBase64, {
@@ -78,7 +78,7 @@ export default function LTCBuyModal({
         .reverse()
         .toString("hex")}:${sellerInput.index}`;
 
-      if (sellerSignedPsbtInput.slice(0, 64) != utxo) {
+      if (sellerSignedPsbtInput.slice(0, 64) != utxo.slice(0, 64)) {
         toast.error(
           `Seller signed PSBT does not match this inscription\n\n${sellerSignedPsbtInput}\n!=\n${utxo}`
         );

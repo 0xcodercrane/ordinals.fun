@@ -27,10 +27,10 @@ export default function Ltc20tokenCard({
   bulkSelect,
   setSelectedBlocks,
   selectedBlocks,
+  listedIterms,
+  listedItermsOnPage,
 }) {
-  const wallet = useContext(WalletContext);
-  const address = wallet.getAddress();
-  const { removeListFromMarket } = useActivities();
+  const { handleCancelList } = useActivities();
   const [content, setContent] = useState(data.amount);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isOpenTransfer, setIsOpenTransfer] = useState(false);
@@ -38,7 +38,6 @@ export default function Ltc20tokenCard({
   const [adding, setAdding] = useState(false);
 
   const [isListed, setIsListed] = useState(false);
-  const [checkingListed, setCheckingListed] = useState(true);
 
   const openListModal = async () => {
     setIsOpen(true);
@@ -46,86 +45,6 @@ export default function Ltc20tokenCard({
 
   const openTransferModal = async () => {
     setIsOpenTransfer(true);
-  };
-
-  const handleCancelList = async (ticker, inscriptionId) => {
-    if (!address) {
-      toast.error("Please connect your wallet.");
-      return;
-    }
-
-    let listedInscriptionData;
-    const dbRef = ref(db, "market/" + ticker);
-    const dbQuery = query(
-      dbRef,
-      orderByChild("data/inscriptionId"),
-      equalTo(inscriptionId)
-    );
-
-    const snapshot = await get(dbQuery);
-    const exist = snapshot.val();
-
-    if (exist) {
-      const key = Object.keys(exist)[0];
-      listedInscriptionData = exist[key];
-
-      await remove(ref(db, `market/${ticker}/${key}`));
-    }
-
-    const dbRefWallet = ref(db, "wallet/" + address);
-    const dbQueryForWallet = query(dbRefWallet);
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletData = walletSnapshot.val();
-
-    const key = Object.keys(walletData)[0];
-
-    const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
-    const dbQueryForInscription = query(
-      dbRefInscription,
-      orderByChild("inscriptionId"),
-      equalTo(inscriptionId)
-    );
-
-    const inscriptionSnapshot = await get(dbQueryForInscription);
-    const inscriptionData = inscriptionSnapshot.val();
-
-    const keyInscription = Object.keys(inscriptionData)[0];
-
-    const dbRefUpdate = ref(
-      db,
-      `wallet/${address}/${key}/inscriptions/${keyInscription}`
-    );
-
-    await update(dbRefUpdate, { listed: false, tag: "" });
-
-    const dbRefStatus = ref(db, "status/" + ticker);
-    const dbQueryForStatus = query(dbRefStatus);
-
-    const statusSnapshot = await get(dbQueryForStatus);
-    const statusData = statusSnapshot.val();
-
-    if (statusData) {
-      const key = Object.keys(statusData)[0];
-      const dbRefUpdate = ref(db, `status/${ticker}/${key}`);
-
-      const updates = {};
-
-      updates[`TVL`] =
-        Number(statusData[key]?.TVL) - Number(listedInscriptionData?.price) ||
-        0;
-      updates[`floor`] =
-        Number(statusData[key]?.listed) - 1 == 0
-          ? 0
-          : (Number(statusData[key]?.TVL) -
-              Number(listedInscriptionData?.price)) /
-              (Number(statusData[key]?.listed) - 1) || 0;
-      updates[`listed`] = Number(statusData[key]?.listed) - 1 || 0;
-
-      await update(dbRefUpdate, updates);
-    }
-
-    await removeListFromMarket(inscriptionId);
   };
 
   const AddList = async () => {
@@ -159,34 +78,6 @@ export default function Ltc20tokenCard({
     }
   };
 
-  const checkListed = async (id) => {
-    setCheckingListed(true);
-
-    const dbQueryForWallet = query(ref(db, `wallet/${address}`));
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletExist = walletSnapshot.val();
-
-    if (walletExist) {
-      const key = Object.keys(walletExist)[0];
-
-      const dbRefInscription = ref(db, `wallet/${address}/${key}/inscriptions`);
-      const dbQueryForInscription = query(
-        dbRefInscription,
-        orderByChild("inscriptionId"),
-        equalTo(id)
-      );
-
-      const inscriptionSnapshot = await get(dbQueryForInscription);
-      const inscriptionData = inscriptionSnapshot.val();
-      if (inscriptionData) {
-        if (inscriptionData[Object.keys(inscriptionData)[0]]?.listed)
-          setIsListed(true);
-      }
-    }
-    setCheckingListed(false);
-  };
-
   const removeFromList = () => {
     const filter = selectedBlocks.filter(
       (block) => block.inscriptionId !== data.inscriptionId
@@ -207,10 +98,32 @@ export default function Ltc20tokenCard({
   }, [selectedBlocks]);
 
   useEffect(() => {
-    if (data) {
-      checkListed(data?.inscriptionId);
+    if (listedIterms && data) {
+      const filter = listedIterms.filter(
+        (item) => item.id === data.inscriptionId
+      );
+
+      if (filter.length > 0) {
+        setIsListed(true);
+      } else {
+        setIsListed(false);
+      }
+    } else {
+      setIsListed(false);
     }
-  }, [data]);
+  }, [listedIterms]);
+
+  useEffect(() => {
+    if (listedItermsOnPage && data) {
+      const filter = listedItermsOnPage.filter(
+        (item) => item.inscriptionId === data.inscriptionId
+      );
+
+      if (filter.length > 0) {
+        setIsListed(true);
+      }
+    }
+  }, [listedItermsOnPage]);
 
   return (
     <>
@@ -242,6 +155,7 @@ export default function Ltc20tokenCard({
               onClick={(e) => {
                 e.stopPropagation();
                 handleCancelList(data?.ticker, data.inscriptionId);
+                setIsListed(false);
               }}
             >
               <TbGiftOff /> Listed
@@ -286,20 +200,14 @@ export default function Ltc20tokenCard({
               </>
             ) : (
               <button
-                disabled={isListed || checkingListed}
+                disabled={isListed}
                 className="main_btn mt-1  py-1 h-8 rounded-md w-full flex justify-center items-center gap-2"
                 onClick={(e) => {
                   e.stopPropagation();
                   openListModal();
                 }}
               >
-                <>
-                  {checkingListed ? (
-                    <AiOutlineLoading className="text-lg text-white font-semibold animate-spin" />
-                  ) : (
-                    <>List</>
-                  )}
-                </>
+                List
               </button>
             )}
           </>
@@ -307,6 +215,7 @@ export default function Ltc20tokenCard({
       </div>
 
       <LTCListModal
+        setIsListed={setIsListed}
         modalIsOpen={modalIsOpen}
         setIsOpen={setIsOpen}
         ticker={ticker}

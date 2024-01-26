@@ -31,11 +31,11 @@ export default function ListModal({
   content,
   inscription,
   tag = "litemap",
-  inscriptionIndex,
   setIsOpenSplit,
   isNeedToSplit,
   isMultiStuck,
   checking,
+  setIsListed,
 }) {
   const wallet = useContext(WalletContext);
   const address = wallet.getAddress();
@@ -77,25 +77,6 @@ export default function ListModal({
       updates[`listed`] = Number(exist[key]?.listed) + 1;
 
       await update(dbRefStatus, updates);
-    }
-
-    const dbQueryForWallet = query(ref(db, `wallet/${address}`));
-
-    const walletSnapshot = await get(dbQueryForWallet);
-    const walletExist = walletSnapshot.val();
-
-    if (walletExist) {
-      const key = Object.keys(walletExist)[0];
-      const dbQueryForWallet = ref(
-        db,
-        `wallet/${address}/${key}/inscriptions/${inscriptionIndex}`
-      );
-
-      await update(dbQueryForWallet, {
-        ...walletExist[key]["inscriptions"][inscriptionIndex],
-        listed: true,
-        tag: tag,
-      });
     }
   };
 
@@ -249,13 +230,14 @@ export default function ListModal({
           content,
           listingPrice
         );
+        setIsListed(true);
         closeModal();
       }
       setPendingTx(false);
     } catch (error) {
       setPendingTx(false);
       console.log(error);
-      toast.error("Something went wrong when creating PSBT");
+      // toast.error("Something went wrong when creating PSBT");
     }
   }
 
