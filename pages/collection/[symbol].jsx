@@ -22,6 +22,7 @@ import { db } from "@/services/firebase";
 import BuyCardShowAll from "../../components/UI/BuyCardShowAll";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import LastSales from "../../components/sections/LastSales";
+import Link from "next/link";
 
 export default function Collection() {
   const router = useRouter();
@@ -126,6 +127,12 @@ export default function Collection() {
         tag={slug}
         setLastSales={setLastSales}
       />
+
+      <div className="flex justify-end w-full">
+        <Link href={"/wallet/NFTs"} className="main_btn px-3 py-2 rounded-md">
+          Create Listing
+        </Link>
+      </div>
 
       {showAll && (
         <div className="w-full my-3 ml-1">
