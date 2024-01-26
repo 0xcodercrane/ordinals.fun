@@ -11,7 +11,7 @@ export const collectionsData = [
   {
     description: "Lite Pandas - 1000 pixelated pandas on Litecoin Ordinals!",
     inscription_icon:
-      "cb42f3eeb3e3be91614730a7eecbf8d25d27a11a079d5c0ed5c6059a44c42de0i0",
+      "cbf3eeb3e3be91614730a7eecbf8d25d27a11a079d5c0ed5c6059a44cde0i0",
     name: "Litecoin Pandas",
     slug: "litecoin-panda",
     supply: "9200",
@@ -23,7 +23,7 @@ export const collectionsData = [
   {
     name: "Ordinal Smokes",
     inscription_icon:
-      "43e6d68b6504969b71414d63533363d33850667dfdfb43999423d8e3ffc12075i0",
+      "43e6d68b6504969b71414d63533363d33850667dfdfb439993d8e3ffc12075i0",
     supply: "111",
     slug: "ordinal-smokes",
     description: "Smokes chilling on the Bitcoin Blockchai",
@@ -36,7 +36,7 @@ export const collectionsData = [
       "Litecoin Moonbirds are a collection of 9200 early Litecoin Ordinals crated by nextidearly",
     discord_link: "https://discord.com/invite/nextidearly",
     inscription_icon:
-      "13f9e646cf1ab2a3679420a49dbaf7aff0a1fd3a47f274b7202664777b589790i0",
+      "13f9e646cf1ab2a36790a49dbaf7aff0a1fd3a47f274b7202664777b589790i0",
     name: "Litecoin Moonbirds",
     slug: "litecoin-moonbirds",
     supply: "9200",
@@ -109,7 +109,7 @@ export const collectionsData = [
     description: "Smallest Pixel Ordinal Collection",
     discord_link: "",
     inscription_icon:
-      "561c68adf3293507aba28e2b426f1090c86aa310456d5446a2dd6d7b04f04f15i0",
+      "561c68adf3293507aba28e2b6f1090c86aa310456d5446a2dd6d7b04f04f15i0",
     name: "Litecoin Peeps",
     slug: "litecoin-peeps",
     supply: "9998",
@@ -123,7 +123,7 @@ export const collectionsData = [
     supply: "100",
     slug: "litecoin-punks",
     description:
-      "Litecoin Punks are a collection of 100 early Litecoin Ordinals with inscriptions #642 to #834.",
+      "Litecoin Punks are a collection of 100 early Litecoin Ordinals with inscriptions #6 to #834.",
     twitter_link: "https://twitter.com/LitecoinPunks",
     discord_link: "https://discord.com/invite/litecoinpunks",
     website_link: "https://litecoinpunks.xyz/",
