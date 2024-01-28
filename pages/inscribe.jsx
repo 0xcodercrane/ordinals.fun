@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import ControlPanel from "../components/ControlPanel";
 import { useBlocks, useInscribe, useLastBlock } from "../store/hooks";
 import isMobile from "is-mobile";
+import { blocks } from "./../configs/available";
 
 const Inscribe = () => {
   const dispatch = useDispatch();
@@ -23,11 +24,12 @@ const Inscribe = () => {
   const { lastBlock } = useLastBlock();
   const { mintedBlocks } = useBlocks();
   const { selectedBlock } = useInscribe();
+  const searchableBlock = lastBlock - 900;
 
   const [pageStep, setPageStep] = useState(1);
-  const [pageSize, setPageSize] = useState(300);
-  const [pageCount, setPageCount] = useState(lastBlock / 300);
-  const [bulkMintAmount, setBulkMintAmount] = useState(0);
+  const [pageSize, setPageSize] = useState(100);
+  const [pageCount, setPageCount] = useState(blocks.length / 100);
+  const [bulkMintAmount, setBulkMintAmount] = useState(100);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(2013994);
 
@@ -64,9 +66,9 @@ const Inscribe = () => {
 
     let bulkMintArray = [];
     for (let index = 0; index < Number(bulkMintAmount); index++) {
-      if (binarySearch(lastBlock - (index + pageStep))) {
+      if (binarySearch(blocks[index + (pageStep - 1)])) {
         bulkMintArray.push({
-          blockNumber: lastBlock - (index + pageStep),
+          blockNumber: blocks[index + (pageStep - 1)],
           id: "",
           date: Date.now(),
           orderCreated: false,
@@ -98,7 +100,7 @@ const Inscribe = () => {
   useEffect(() => {
     if (isMobile()) {
       setPageSize(102);
-      setPageCount(lastBlock / 102);
+      setPageCount(searchableBlock / 102);
     }
   }, [isMobile()]);
 
@@ -114,12 +116,21 @@ const Inscribe = () => {
       </Head>
 
       <Banner lastBlock={lastBlock} />
-
+      {/* 
       <ControlPanel
         setBulkMintAmount={setBulkMintAmount}
-        from={lastBlock - pageStep}
-        to={lastBlock - (pageStep + pageSize - 1)}
-      />
+        from={searchableBlock - pageStep}
+        to={searchableBlock - (pageStep + pageSize - 1)}
+      /> */}
+
+      <button
+        className="main_btn px-3 py-2 rounded-md"
+        onClick={async () => {
+          bulkMint();
+        }}
+      >
+        Mint All
+      </button>
 
       <ReactPaginate
         key={pageSize + "1"}
@@ -134,16 +145,9 @@ const Inscribe = () => {
         className="pagination"
       />
 
-      <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
-        {Array.from({ length: pageSize }, (_, index) => {
-          if (lastBlock - (index + pageStep) >= 1)
-            return (
-              <Block
-                index={index}
-                key={index}
-                blockNumber={lastBlock - (index + pageStep)}
-              />
-            );
+      <div className="w-full grid grid-cols-6 sm:grid-grid-cols-8 md:grid-cols-10 gap-2">
+        {blocks.slice(pageStep - 1, pageStep + 99).map((blockNumber, index) => {
+          return <Block index={index} key={index} blockNumber={blockNumber} />;
         })}
       </div>
 

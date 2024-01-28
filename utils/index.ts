@@ -11,7 +11,7 @@ export function addressFormat(address, length) {
       return formattedAddress;
     }
   } catch (error) {
-  //  console.log(error);
+    //  console.log(error);
   }
 }
 
@@ -248,7 +248,7 @@ export const currentPrice = async () => {
     const currentPrice = jsonData?.Price;
     return currentPrice;
   } catch (error) {
-  //  console.log(error);
+    //  console.log(error);
   }
 };
 
@@ -268,7 +268,7 @@ export const calculateFee = (
     vouts * outSize +
     Number(includeChangeOutput) * outSize;
   const fee = txSize * recommendedFeeRate;
-  console.log(fee)
+  console.log(fee);
 
   return fee;
 };
@@ -299,7 +299,27 @@ export const validateInscription = async (key, inscriptionid) => {
       return true;
     }
   } catch (error) {
-  //  console.log(error);
+    //  console.log(error);
     return true;
+  }
+};
+
+export const validateLitemap = async (key) => {
+  try {
+    const res = await fetch(`/searchInscription/text?text=${key}`);
+    const resJson = await res.json();
+    if (resJson?.count > 0) {
+      const filter = resJson?.results;
+      if (filter[0].contentstr.indexOf(key) > -1) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+  } catch (error) {
+    //  console.log(error);
+    return false;
   }
 };

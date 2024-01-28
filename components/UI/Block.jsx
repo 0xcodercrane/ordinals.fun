@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedBlock, cancelBlock } from "@/store/slices/inscribe";
 import { useBlocks } from "../../store/hooks";
+import { validateLitemap } from "@/utils";
+import { AiOutlineLoading } from "react-icons/ai";
+import { toast } from "react-hot-toast";
 
 export default function Block(props) {
   const dispatch = useDispatch();
@@ -12,6 +15,7 @@ export default function Block(props) {
   const [isSelected, setIsSelected] = useState(false);
   const { mintedBlocks } = useBlocks();
   const [minted, setMinted] = useState(false);
+  const [validating, setValidating] = useState(false);
 
   function binarySearch(target) {
     let left = 0;
@@ -34,8 +38,17 @@ export default function Block(props) {
     return true; // Block number not found
   }
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!isSelected) {
+      // setValidating(true);
+      // const validation = await validateLitemap(props.blockNumber + ".litemap");
+      // if (!validation) {
+      //   toast.error("Already minted");
+      //   setValidating(false);
+      //   return;
+      // }
+      // setValidating(false);
+
       const newBlock = {
         blockNumber: props.blockNumber,
         id: "",
@@ -96,7 +109,13 @@ export default function Block(props) {
             : "bg-[#19659fd1]  drop-shadow-lg w-100 h-[35px]"
         }`}
       >
-        {props.blockNumber}
+        {validating ? (
+          <>
+            <AiOutlineLoading className="animate-spin text-lg" />
+          </>
+        ) : (
+          <> {props.blockNumber}</>
+        )}
       </div>
     );
   }

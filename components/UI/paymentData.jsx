@@ -38,7 +38,6 @@ export default function PaymentData({ data }) {
     return Number(satoshis.toFixed(0));
   }, [data, fee]);
 
-
   const splite = (feeAddress, toSatoshis2) => {
     wallet
       .createBitcoinTx(
@@ -114,12 +113,8 @@ export default function PaymentData({ data }) {
               address: data?.newAddress,
               amount: toSatoshis1,
             },
-            {
-              address: feeAddress,
-              amount: toSatoshis2,
-            },
           ],
-          toSatoshis1 + toSatoshis2,
+          toSatoshis1,
           4,
           false
         )
@@ -141,6 +136,7 @@ export default function PaymentData({ data }) {
           {data && (
             <BillsOnPayment
               length={data?.files?.length ? data?.files?.length : 0}
+              toSatoshis1={toSatoshis1}
               setFee={setFee}
             />
           )}

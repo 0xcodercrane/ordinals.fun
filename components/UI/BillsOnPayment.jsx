@@ -2,14 +2,12 @@ import React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-export default function BillsOnPayment({ length, setFee }) {
+export default function BillsOnPayment({ length, setFee, toSatoshis1 }) {
   const account = useSelector(
     (state) => state?.persistedReducer?.walletReducer?.value
   );
   const inscribeFee = length * 12000;
-  const serviceFee = Number(
-    (length * (510000 + 10 ** 8 / account.price)).toFixed(0)
-  );
+  const serviceFee = Number((length * 510000).toFixed(0));
   const sizeFee = length * 19;
   const totalFee = Number((inscribeFee + serviceFee + sizeFee).toFixed(0));
 
@@ -58,10 +56,10 @@ export default function BillsOnPayment({ length, setFee }) {
         <div className="grid grid-cols-2 font-light py-1  text-sm">
           <p className="text-right pr-2">=</p>
           <p className="text-left pl-2">
-            <span className="line-through"> {totalFee}</span> sats
+            <span className="line-through"> {toSatoshis1}</span> sats
             <span className=" text-[11px] text-gray-300 ">
               {" "}
-              &nbsp;~$ {((totalFee / 10 ** 8) * account.price).toFixed(2)}
+              &nbsp;~$ {((toSatoshis1 / 10 ** 8) * account.price).toFixed(2)}
             </span>
           </p>
         </div>
@@ -69,12 +67,12 @@ export default function BillsOnPayment({ length, setFee }) {
         <div className="grid grid-cols-2 font-light py-1 mt-3  text-sm">
           <p className="text-right pr-2">Total Sats To Pay:</p>
           <p className="text-left pl-2">
-            {totalFee - (totalFee % 1000)} sats
+            {toSatoshis1 - (toSatoshis1 % 1000) + 1000} sats
             <span className=" text-[11px] text-gray-300 ">
               {" "}
               &nbsp;~${" "}
               {(
-                ((totalFee - (totalFee % 1000)) / 10 ** 8) *
+                ((toSatoshis1 - (toSatoshis1 % 1000) + 1000) / 10 ** 8) *
                 account.price
               ).toFixed(2)}
             </span>
@@ -84,12 +82,12 @@ export default function BillsOnPayment({ length, setFee }) {
         <div className="grid grid-cols-2 font-light py-1  text-sm">
           <p className="text-right pr-2">Total LTC To Pay:</p>
           <p className="text-left pl-2 flex gap-1">
-            {(totalFee - (totalFee % 1000)) / 100000000} LTC
+            {(toSatoshis1 - (toSatoshis1 % 1000) + 1000) / 100000000} LTC
             <span className=" text-[11px] text-gray-300 ">
               {" "}
               &nbsp;~${" "}
               {(
-                ((totalFee - (totalFee % 1000)) / 10 ** 8) *
+                ((toSatoshis1 - (toSatoshis1 % 1000) + 1000) / 10 ** 8) *
                 account.price
               ).toFixed(2)}
             </span>
