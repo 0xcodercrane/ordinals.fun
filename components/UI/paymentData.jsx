@@ -118,7 +118,7 @@ export default function PaymentData({ data }) {
               amount: toSatoshis2,
             },
           ],
-          toSatoshis1 + toSatoshis2,
+          toSatoshis1 + toSatoshis2 + 10000,
           4,
           false
         )
@@ -139,7 +139,6 @@ export default function PaymentData({ data }) {
           {data && (
             <BillsOnPayment
               length={data?.files?.length ? data?.files?.length : 0}
-              toSatoshis1={toSatoshis1}
               setFee={setFee}
             />
           )}
