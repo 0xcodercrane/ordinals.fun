@@ -8,7 +8,9 @@ export default function Bills() {
 
   const length = selectedBlock.length;
   const inscribeFee = length * 10000;
-  const serviceFee = Number((length * 510000).toFixed(0));
+  const serviceFee = Number(
+    (length * (510000 + (5 * 10 ** 7) / price)).toFixed(0)
+  );
   const sizeFee = length * 19;
   const totalFee = Number((inscribeFee + serviceFee + sizeFee).toFixed(0));
 
