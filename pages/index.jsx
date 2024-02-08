@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "@/components/sections/Layout";
-import {  ref, query, limitToLast, get } from "firebase/database";
+import { ref, query, limitToLast, get, orderByChild } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -36,7 +36,11 @@ export default function Home() {
         limitToLast(42 * (offset + 1))
       );
     } else {
-      dbQuery = query(ref(db, "market/litemap"), limitToLast(42));
+      dbQuery = query(
+        ref(db, "market/litemap"),
+        orderByChild("price", "desc"),
+        limitToLast(42)
+      );
     }
 
     const snaphot = await get(dbQuery);
