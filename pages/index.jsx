@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import Layout from "@/components/sections/Layout";
-import { ref, query, limitToLast, get, orderByChild } from "firebase/database";
+import {
+  ref,
+  query,
+  limitToLast,
+  get,
+  orderByChild,
+  limitToFirst,
+} from "firebase/database";
 import { db } from "@/services/firebase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -22,40 +29,35 @@ export default function Home() {
   const [offset, setOffset] = useState(0);
   const [listedNumber, setListedNumber] = useState(0);
   const [lastSales, setLastSales] = useState();
-  const [lastKey, setLastKey] = useState();
+  const isMounted = useRef(false);
 
   const handlePageClick = (e) => {
     setOffset(e.selected);
   };
 
   const fetchTotalItems = async () => {
-    let dbQuery;
-    if (lastKey) {
-      dbQuery = query(
-        ref(db, "market/litemap"),
-        limitToLast(42 * (offset + 1))
-      );
-    } else {
-      dbQuery = query(
-        ref(db, "market/litemap"),
-        orderByChild("price", "desc"),
-        limitToLast(42)
-      );
-    }
+    let dbQuery = query(ref(db, "market/litemap"));
 
     const snaphot = await get(dbQuery);
     const exist = snaphot.val();
 
     if (exist) {
-      setLists(exist);
-      setLastKey(Object.keys(exist)[41]);
+      let data = [];
+      Object.keys(exist).map((index) => {
+        data.push(exist[index]);
+      });
+      data.sort((a, b) => a.price - b.price);
+      setLists(data);
     }
     setFetchingData(false);
   };
 
   useEffect(() => {
-    fetchTotalItems();
-  }, [offset]);
+    if (!isMounted.current) {
+      fetchTotalItems();
+      isMounted.current = true;
+    }
+  }, []);
 
   return (
     <Layout>
@@ -79,23 +81,20 @@ export default function Home() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-4 w-full">
-          {Object.keys(lists)
-            .reverse()
-            .slice(offset * 42, offset * 42 + 42)
-            .map((index, list) => {
-              return (
-                <BuyCard
-                  key={list}
-                  list={lists[index]}
-                  price={price}
-                  utxos={utxos}
-                  sortedUtxos={sortedUtxos}
-                  dummyUTXOs={dummyUTXOs}
-                  refreshUTXOs={refreshUTXOs}
-                  selectUtxos={selectUtxos}
-                />
-              );
-            })}
+          {lists.slice(offset * 42, offset * 42 + 42).map((list, key) => {
+            return (
+              <BuyCard
+                key={key}
+                list={list}
+                price={price}
+                utxos={utxos}
+                sortedUtxos={sortedUtxos}
+                dummyUTXOs={dummyUTXOs}
+                refreshUTXOs={refreshUTXOs}
+                selectUtxos={selectUtxos}
+              />
+            );
+          })}
         </div>
       )}
 
