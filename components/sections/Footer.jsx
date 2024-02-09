@@ -29,7 +29,7 @@ export default function Footer() {
       </div>
       <div className="w-full flex justify-end mt-1">
         <a href="https://t.me/genius021120" target="_blank">
-          @Contact The Dev
+          🍊Contact Dev
         </a>
       </div>
     </div>
