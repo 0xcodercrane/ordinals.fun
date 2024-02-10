@@ -27,11 +27,11 @@ export default function Footer() {
           <FaMedium />
         </button>
       </div>
-      <div className="w-full flex justify-end mt-1">
+      {/* <div className="w-full flex justify-end mt-1">
         <a href="https://t.me/genius021120" target="_blank">
           🍊Contact Dev
         </a>
-      </div>
+      </div> */}
     </div>
   );
 }

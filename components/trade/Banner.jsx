@@ -6,7 +6,6 @@ import {
   orderByChild,
   query,
   ref,
-  startAt,
 } from "firebase/database";
 import { db } from "@/services/firebase";
 import { useEffect } from "react";
@@ -37,8 +36,7 @@ export default function Banner({ title, tag, setListedNumber, setLastSales }) {
       const dbTradesQuery = query(
         ref(db, "activities"),
         orderByChild("tag"),
-        equalTo(tag),
-        limitToLast(100)
+        equalTo(tag)
       );
 
       onValue(dbTradesQuery, async (snapshot) => {
@@ -54,6 +52,9 @@ export default function Banner({ title, tag, setListedNumber, setLastSales }) {
             lastSales.push(exist[index]);
           });
           const sortedSales = lastSales.sort((a, b) => b.price - a.price);
+          const sortedd = lastSales.sort((a, b) => b.date - a.date);
+
+          console.log(sortedd);
           setLastSales(sortedSales.slice(0, 12));
           setTrades24(trades);
           setVolume24(TVL);
